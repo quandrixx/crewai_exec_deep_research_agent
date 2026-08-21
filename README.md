@@ -96,31 +96,50 @@ machinery working, but no deliverable) · `1` crashed.
 
 ## How it works
 
+```mermaid
+flowchart TD
+    topic(["Topic"]) --> research
+
+    subgraph research["Research Crew"]
+        direction TB
+        web["Web Researcher<br/>web_search"]
+        internal["Internal Researcher<br/>internal_kb_lookup"]
+        barrier["Barrier task<br/>what lets the two above run concurrently"]
+        web --> barrier
+        internal --> barrier
+    end
+
+    research -->|ResearchFindings| analysis
+
+    subgraph analysis["Analysis Crew"]
+        direction TB
+        sector["Sector Analyst<br/>organises the evidence"]
+        strategist["Investment Strategist<br/>takes a position"]
+        sector --> strategist
+    end
+
+    analysis -->|AnalysisResult| gate{{"Fact-check gate"}}
+
+    gate -->|passed| report
+    gate -->|"failed, first time"| revise[["Re-run the analysis with<br/>the failed citations named"]]
+    revise --> regate{{"Fact-check gate"}}
+    regate -->|passed| report
+    regate -->|"failed again"| escalate(["Report withheld,<br/>escalated for human review"])
+
+    subgraph report["Report Crew"]
+        direction TB
+        writer["Briefing Writer"]
+        reviewer["Style Reviewer"]
+        writer --> reviewer
+    end
+
+    report -->|FinalReport| assemble[["Insert verified funding table,<br/>build sources appendix"]]
+    assemble --> out(["report.md"])
 ```
-                    ┌─────────────────────────────────────┐
-  topic ──▶ Research Crew                                 │
-            ├── Web Researcher      ─┐  run concurrently  │
-            └── Internal Researcher ─┘                    │
-                    │  ResearchFindings (typed claims)    │
-                    ▼                                     │
-            Analysis Crew                                 │
-            ├── Sector Analyst        (organizes evidence)│
-            └── Investment Strategist (takes a position)  │
-                    │  AnalysisResult                     │
-                    ▼                                     │
-            ┌───────────────────┐                         │
-            │ Fact-check gate   │  plain Python, no LLM   │
-            └───────────────────┘                         │
-                 pass │ fail                              │
-                      │  └──▶ revise once ──▶ still fail ─┴─▶ escalate,
-                      ▼                                       report withheld
-            Report Crew
-            ├── Briefing Writer
-            └── Style Reviewer
-                    │  FinalReport
-                    ▼
-              report.md
-```
+
+Rectangles are agents. **Hexagons and double-bordered boxes are plain Python** —
+the fact-check gate, the revision hand-back, and the assembly of the funding
+table and sources appendix never touch a model.
 
 A CrewAI **Flow** orchestrates three **Crews**. Every boundary between them is a
 typed Pydantic model ([`models.py`](src/crewai_exec_deep_research_agent/models.py)) —

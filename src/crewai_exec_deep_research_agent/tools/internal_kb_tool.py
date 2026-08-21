@@ -16,6 +16,7 @@ chunks, since these mock docs are already written in short paragraphs. A real
 backend would chunk more carefully (headers, token limits, overlap windows).
 """
 
+import os
 import re
 from pathlib import Path
 from typing import Type
@@ -31,7 +32,30 @@ _STOPWORDS = {
     "our", "than", "into", "from", "not", "no", "which", "their", "them",
 }
 
-_INTERNAL_DOCS_DIR = Path(__file__).parent.parent / "knowledge" / "internal_docs"
+def _find_internal_docs_dir() -> Path:
+    """Locate knowledge/internal_docs/ by walking up from this file.
+
+    The docs live at the repository root, not inside the installed package, so
+    a fixed relative path breaks depending on where the process starts. Walking
+    up covers both the editable install used in development and a plain
+    `python -m` run from any working directory. INTERNAL_DOCS_DIR overrides
+    this entirely, which is also the seam a real deployment would use to point
+    at a mounted document store instead.
+    """
+    override = os.getenv("INTERNAL_DOCS_DIR")
+    if override:
+        return Path(override)
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        candidate = parent / "knowledge" / "internal_docs"
+        if candidate.is_dir():
+            return candidate
+    # Nothing found - return the conventional location so the error message
+    # downstream names a concrete path rather than nothing at all.
+    return here.parents[3] / "knowledge" / "internal_docs"
+
+
+_INTERNAL_DOCS_DIR = _find_internal_docs_dir()
 _TOP_K = 4
 
 
@@ -43,6 +67,8 @@ def _significant_words(text: str) -> set[str]:
 def _load_chunks() -> list[dict]:
     """Returns a list of {source, heading, text} chunks across all internal docs."""
     chunks = []
+    if not _INTERNAL_DOCS_DIR.is_dir():
+        return chunks
     for path in sorted(_INTERNAL_DOCS_DIR.glob("*.md")):
         text = path.read_text()
         current_heading = path.stem
@@ -66,6 +92,17 @@ def _load_chunks() -> list[dict]:
 # Loaded once at import time - these are static files, no need to re-read
 # the filesystem on every tool call.
 _CHUNKS = _load_chunks()
+
+
+def known_document_names() -> set[str]:
+    """Every filename the tool can legitimately cite.
+
+    Public because the Research Crew's guardrail checks internal citations
+    against this set - a claim citing a document that doesn't exist is a
+    fabrication, and that's cheap to catch deterministically rather than
+    hoping the fact-check gate notices later.
+    """
+    return {chunk["source"] for chunk in _CHUNKS}
 
 
 def _search(query: str, top_k: int = _TOP_K) -> list[dict]:
@@ -99,6 +136,18 @@ class InternalKBLookupTool(BaseTool):
     args_schema: Type[BaseModel] = InternalKBSearchInput
 
     def _run(self, query: str) -> str:
+        # An empty index and an empty result set mean very different things to
+        # the agent: one is a broken deployment, the other is a real finding.
+        # Collapsing them would let a misconfigured knowledge base masquerade
+        # as "Northbridge has no view on this."
+        if not _CHUNKS:
+            return (
+                f"The internal knowledge base could not be loaded (no documents "
+                f"found at {_INTERNAL_DOCS_DIR}). This is a configuration "
+                f"problem, NOT a finding - do not report that Northbridge has "
+                f"no internal work on this topic, and do not fabricate internal "
+                f"views. Report that the internal knowledge base was unavailable."
+            )
         results = _search(query)
         if not results:
             return (

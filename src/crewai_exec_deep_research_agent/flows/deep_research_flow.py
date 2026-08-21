@@ -17,7 +17,7 @@ not just recommendations - this changed once the models became domain-specific:
 from pydantic import BaseModel
 from crewai.flow.flow import Flow, start, listen, router
 
-from .models import (
+from crewai_exec_deep_research_agent.models import (
     ResearchFindings,
     AnalysisResult,
     FactCheckResult,
@@ -43,17 +43,17 @@ class DeepResearchFlow(Flow[ResearchState]):
 
     @listen(intake_topic)
     def run_research(self):
-        # Kicks off Research Crew. Its two tasks (web research, internal KB
-        # research) both carry async_execution=True in tasks.yaml, so they
-        # genuinely run concurrently rather than just being conceptually
-        # independent.
-        from .crews.research_crew.research_crew import ResearchCrew
-        result = ResearchCrew().crew().kickoff(inputs={"topic": self.state.topic})
-        self.state.research = result.pydantic  # -> ResearchFindings
+        # Kicks off the Research Crew, which runs its external and internal
+        # halves concurrently as two separate single-agent crews. That shape is
+        # forced by CrewAI - a single crew cannot end with two async tasks - and
+        # .run() is what merges both results into one ResearchFindings, so
+        # prefer it over kicking off either crew directly.
+        from ..crews.research_crew.research_crew import ResearchCrew
+        self.state.research = ResearchCrew().run(self.state.topic)
 
     @listen(run_research)
     def run_analysis(self):
-        from .crews.analysis_crew.analysis_crew import AnalysisCrew
+        from ..crews.analysis_crew.analysis_crew import AnalysisCrew
         result = AnalysisCrew().crew().kickoff(inputs={
             "topic": self.state.topic,
             "internal_claims": self.state.research.internal_claims,
@@ -65,7 +65,7 @@ class DeepResearchFlow(Flow[ResearchState]):
     def fact_check(self):
         # Deterministic - not a crew. Checks recommendation, company, and
         # funding-event claim indices all resolve against all_claims.
-        from .tools.citation_check_tool import check_citations
+        from ..tools.citation_check_tool import check_citations
         self.state.fact_check = check_citations(self.state.analysis)
 
     @router(fact_check)
@@ -82,7 +82,7 @@ class DeepResearchFlow(Flow[ResearchState]):
         # Re-run Analysis Crew, feeding the specific fact_check issues back
         # in as extra context so the retry has something concrete to fix
         # rather than just "try again."
-        from .crews.analysis_crew.analysis_crew import AnalysisCrew
+        from ..crews.analysis_crew.analysis_crew import AnalysisCrew
         result = AnalysisCrew().crew().kickoff(inputs={
             "topic": self.state.topic,
             "internal_claims": self.state.research.internal_claims,
@@ -94,7 +94,7 @@ class DeepResearchFlow(Flow[ResearchState]):
 
     @listen("generate_report")
     def generate_report(self):
-        from .crews.report_crew.report_crew import ReportCrew
+        from ..crews.report_crew.report_crew import ReportCrew
         result = ReportCrew().crew().kickoff(inputs={
             "analysis": self.state.analysis,
             "fact_check_status": "passed",

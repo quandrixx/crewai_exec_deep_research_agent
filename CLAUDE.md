@@ -76,12 +76,10 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 87 total):**
+**Built and verified (tests run and passing - 141 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
-  Research and analysis steps are wired to real crews; `generate_report` still
-  imports a Report Crew that doesn't exist yet.
 - `tools/citation_check_tool.py` + 12 tests - deterministic fact-check gate
 - `tools/internal_kb_tool.py` + 15 tests - keyword retrieval over mock docs
 - `tools/web_search_tool.py` + 10 tests - Serper.dev wrapper. Network calls are
@@ -92,6 +90,14 @@ it to match.
 - **Analysis Crew - complete and verified against a live run**, including the
   Flow's fact-check gate passing on real output (42 citations verified). See
   its own section below.
+- **Report Crew - complete and verified against a live run.** See its own
+  section below. `sample_runs/report_small_modular_reactors.md` is a finished
+  briefing produced end-to-end from real research.
+- `flows/deep_research_flow.py` is fully wired: all three crews, the fact-check
+  gate, the bounded revision loop, and human escalation. Verified structurally
+  in `tests/test_flow_wiring.py`; the full flow has NOT yet been run end-to-end
+  in one go (each stage has been run live from the previous stage's saved
+  output).
 - `knowledge/internal_docs/*.md` - 5 mock internal documents covering all four
   demo technologies plus two cross-cutting docs
 - `knowledge/style_guide.md` + `knowledge/prior_exec_report_sample.md` - house
@@ -106,11 +112,8 @@ it to match.
   directly.
 
 **Not started yet - this is where to resume:**
-- Report Crew (Formatter + Style Reviewer agents). Use JSONC, following the
-  Analysis Crew's shape.
-- Wiring the report crew into `flows/deep_research_flow.py`. Research and
-  analysis are wired; `generate_report` still imports a module that
-  doesn't exist.
+- One full end-to-end `DeepResearchFlow().kickoff()` run on a fresh topic, to
+  confirm the stages hand off correctly in a single process.
 - `main.py` - still the untouched `crewai create` template. It defines a
   `ContentFlow` importing a nonexistent `content_crew`, and `pyproject.toml`'s
   scripts point at it, so `crewai run` does not work yet.
@@ -197,6 +200,42 @@ a claim the Research Crew gathered. An analyst that could search the web would
 introduce evidence no citation index can point at. This has a surprising
 consequence for model choice - see known gap #3.
 
+## The Report Crew
+
+`crews/report_crew/`. Renders a fact-checked `AnalysisResult` into a
+`FinalReport`. Two sequential tasks: an Investment Briefing Writer produces the
+draft, then a Style Reviewer corrects it against `knowledge/style_guide.md`.
+
+**Three things are deliberately kept away from the LLM**, all in
+`report_crew.py`:
+
+  - **The sources appendix**, built from `AnalysisResult.all_claims`. This is
+    the single most important one. It's the only place a fabrication would slip
+    past every other check in the pipeline - the fact-check gate verifies claim
+    *indices*, not source strings, and nothing downstream re-reads the appendix.
+    Deriving it from the verified claim list makes "every listed source actually
+    backed a claim" true by construction.
+  - **The funding table**, rendered from structured `FundingEvent` data, exactly
+    as models.py always intended. Passed into the prompt pre-rendered, with the
+    writer told to paste it verbatim.
+  - **`fact_check_status`**, set by the Flow from the gate's result - not by an
+    agent's opinion of its own work. A report that needed a revision round is
+    marked `passed_with_flags`, and `render_markdown()` puts that warning on the
+    face of the document.
+
+**The style guide is unusually checkable**, so `report_guardrails.py` enforces
+the mechanical half (required sections, order, no hand-written Sources section,
+length band, banned promotional phrases) and the Style Reviewer agent spends its
+attention on judgment - vagueness, decisiveness, whether each recommendation
+states its risk.
+
+One tuning note worth keeping: the length band matters more than it looks. With
+a loose ceiling, a live run shipped at **1151 words** against the guide's 600-900
+target while the reviewer reported nothing to fix. Tightening the ceiling to
+1100 and making length an explicit required edit in the reviewer's prompt
+brought the next run to **850 words**, with the guardrail bouncing one draft
+along the way.
+
 ## CrewAI JSONC config - verified mechanics
 
 The user asked for JSONC (`crew.jsonc` + `agents/<name>.jsonc`) rather than
@@ -275,24 +314,39 @@ CrewAI is ever upgraded.
    research agents have tools, so they never take this path at all. Revisit when
    CrewAI's allowlist learns about sonnet-5.
 
-4. **`internal_kb_tool.py`'s keyword-overlap retrieval returns loosely related
+4. **A Flow listener label must never equal a handler's own name.** CrewAI
+   rejects `@listen("revise_analysis")` on a method also called
+   `revise_analysis` - it reads as a listener triggered by its own completion,
+   an infinite loop - and it raises at *construction* time, so nothing catches
+   it until something actually instantiates the flow. The skeleton shipped with
+   this bug in three places and it stayed invisible for most of the project.
+   Routing labels are now named for the decision (`needs_revision`,
+   `ready_for_report`, `needs_human_review`) and handlers for the work.
+   `tests/test_flow_wiring.py` constructs the flow so a regression fails loudly.
+
+   Related: a `@router` only re-evaluates when its source method runs as part of
+   the flow. Calling that method directly from a handler updates state without
+   re-triggering routing, so the revision loop uses a second `@router` on
+   `revise_analysis` rather than calling `fact_check()` by hand.
+
+5. **`internal_kb_tool.py`'s keyword-overlap retrieval returns loosely related
    chunks whenever there's *any* shared vocabulary**, even for queries the docs
    don't really answer. This is a known, accepted limitation - the internal
    researcher's task description explicitly instructs the agent to judge
    relevance itself rather than trusting the tool.
-5. **`citation_check_tool.py`'s weak-support heuristic is deliberately
+6. **`citation_check_tool.py`'s weak-support heuristic is deliberately
    conservative** (low overlap threshold) to avoid false-positiving on
    legitimate, well-paraphrased citations. It will miss some real problems.
    This tradeoff was made on purpose - don't "fix" it by raising the threshold
    without re-running the full test suite, since
    `test_paraphrased_but_related_citation_is_not_flagged_as_weak` exists
    specifically to catch that regression.
-6. **The external researcher over-produces.** Its task asks for 8-15 claims;
+7. **The external researcher over-produces.** Its task asks for 8-15 claims;
    live runs returned 31, then 20 after the instruction was tightened to "stop
    once you have that many". All were well-sourced, so this is a
    prompt-adherence gap rather than a correctness bug, but tighten it further if
    the Analysis Crew struggles with the volume.
-7. **Internal document filenames are part of the deliverable.** They're cited
+8. **Internal document filenames are part of the deliverable.** They're cited
    verbatim in the report's Sources appendix, so they follow a consistent
    `internal_*` convention and are spelled correctly. Three tests assert
    specific filenames; renaming a doc means updating
@@ -302,9 +356,10 @@ CrewAI is ever upgraded.
 
 1. Read this file, then the documents in `knowledge/` (`style_guide.md` first -
    it defines the report the whole pipeline is building toward).
-2. Build the Report Crew next, following the Analysis Crew's patterns above.
-   `sample_runs/analysis_small_modular_reactors.json` is a real `AnalysisResult`
-   you can develop against without paying for upstream runs.
+2. Run the whole flow end-to-end next, then write `main.py` and the README.
+   Every stage can be developed against saved output in `sample_runs/` instead
+   of paying for upstream runs - `ResearchFindings`, `AnalysisResult`, and
+   `FinalReport` all load with `.model_validate_json(path.read_text())`.
 3. Run `load_crew()` on any new JSONC config before a live run - it catches
    config errors for free.
 4. Run `pytest` after every change that touches existing tested code. The

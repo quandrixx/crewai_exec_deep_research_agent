@@ -18,9 +18,12 @@ claim reference:
 
 Two failure classes are distinguished:
   - STRUCTURAL: the cited index doesn't exist at all. Always a hard fail.
-  - WEAK_SUPPORT: the index exists, but the claim text and the thing citing
-    it share almost no words in common - a cheap, conservative signal that
-    the citation may be spurious (e.g. right ballpark, wrong specific fact).
+  - WEAK_SUPPORT: the indices exist, but NONE of the cited claims share any
+    words with the thing citing them - a cheap, conservative signal that the
+    citation set may be spurious (e.g. right ballpark, wrong specific fact).
+    Evaluated across the whole citation set rather than claim by claim, since
+    an entity's claims each tend to support a different part of it; see
+    _check_weak_support for the live failure that established this.
     Deliberately conservative thresholds to minimize false positives; this
     is a narrow, bounded heuristic, not a claim of semantic verification.
     Swap in a narrowly-scoped LLM call here later if the heuristic proves
@@ -76,18 +79,39 @@ def _validate_index(
 
 def _check_weak_support(
     citing_text: str,
-    claim_text: str,
+    claim_texts: list[str],
     label: str,
     issues: list[CitationIssue],
 ) -> None:
-    if _overlap_count(citing_text, claim_text) < _MIN_OVERLAP_WORDS:
-        issues.append(CitationIssue(
-            claim_or_entity=citing_text,
-            problem=(
-                f"{label} cites a claim with almost no shared terminology "
-                f"('{claim_text[:80]}...') - possible spurious citation."
-            ),
-        ))
+    """Flag an entity only when NONE of its cited claims relate to it.
+
+    Evaluated across the whole citation set, not per claim. An entity usually
+    cites several claims that each support a different part of it - a company
+    profile might cite one claim for the funding round and another for the
+    technical differentiation - so demanding that EVERY cited claim share
+    vocabulary with the citing text flags correct output constantly. A live
+    end-to-end run escalated to human review for exactly this: a CorPower Ocean
+    profile whose differentiation described cost reductions, citing a
+    perfectly good claim about its Series B.
+
+    A citation set where nothing relates to the citing text is still the
+    egregious case this heuristic was written to catch, and it is still caught.
+    """
+    if not claim_texts:
+        return
+    if any(
+        _overlap_count(citing_text, claim_text) >= _MIN_OVERLAP_WORDS
+        for claim_text in claim_texts
+    ):
+        return
+    issues.append(CitationIssue(
+        claim_or_entity=citing_text,
+        problem=(
+            f"{label} cites {len(claim_texts)} claim(s), none with any shared "
+            f"terminology (e.g. '{claim_texts[0][:80]}...') - possible "
+            f"spurious citation."
+        ),
+    ))
 
 
 def check_citations(analysis: AnalysisResult) -> FactCheckResult:
@@ -103,12 +127,12 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
                 problem="Recommendation has no supporting claims cited.",
             ))
             continue
+        cited: list[str] = []
         for idx in rec.supporting_claim_indices:
             if _validate_index(idx, max_index, "Recommendation", rec.text, issues):
                 verified += 1
-                _check_weak_support(
-                    rec.text, analysis.all_claims[idx].claim, "Recommendation", issues
-                )
+                cited.append(analysis.all_claims[idx].claim)
+        _check_weak_support(rec.text, cited, "Recommendation", issues)
 
     # -- 2. Company profiles (incumbents + new entrants) ---------------
     for company in [*analysis.incumbents, *analysis.new_entrants]:
@@ -119,13 +143,17 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
                 problem=f"{label} has no supporting claims cited.",
             ))
             continue
+        cited = []
         for idx in company.supporting_claim_indices:
             if _validate_index(idx, max_index, label, company.name, issues):
                 verified += 1
-                _check_weak_support(
-                    company.differentiation, analysis.all_claims[idx].claim,
-                    label, issues,
-                )
+                cited.append(analysis.all_claims[idx].claim)
+        # Name included in the citing text on purpose: a claim that names the
+        # company plainly supports its profile, even when the differentiation
+        # prose is about some other attribute entirely.
+        _check_weak_support(
+            f"{company.name} {company.differentiation}", cited, label, issues,
+        )
 
     # -- 3. Funding events -----------------------------------------------
     for event in analysis.funding_events:
@@ -137,8 +165,10 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
                 f"{event.company_name} {event.round.value} "
                 f"{event.amount_usd or ''} {event.lead_investor or ''}"
             )
+            # Single index by construction, so this is the one place the check
+            # is genuinely per-claim.
             _check_weak_support(
-                event_text, analysis.all_claims[idx].claim, label, issues
+                event_text, [analysis.all_claims[idx].claim], label, issues
             )
 
     return FactCheckResult(

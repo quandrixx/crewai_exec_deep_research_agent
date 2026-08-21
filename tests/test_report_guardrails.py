@@ -131,6 +131,18 @@ def test_hand_written_sources_section_is_rejected():
     assert "Sources" in feedback and "appended automatically" in feedback
 
 
+def test_model_written_markdown_table_is_rejected():
+    """Same class of rule as the Sources ban. A live run had the model rewrite
+    the funding table from the underlying claims, reporting a round in the
+    wrong currency; the verified table is inserted by Python instead."""
+    passed, feedback = validate_report_draft(
+        draft_output(text=body(extra="\n\n| Company | Round |\n| --- | --- |\n| Acme | Seed |"))
+    )
+    assert passed is False
+    assert "markdown table" in feedback
+    assert "inserted" in feedback
+
+
 # ---------------------------------------------------------------------------
 # Tone and length
 # ---------------------------------------------------------------------------

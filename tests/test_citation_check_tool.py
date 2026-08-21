@@ -245,6 +245,67 @@ def test_paraphrased_but_related_citation_is_not_flagged_as_weak():
     assert result.passed is True
 
 
+def test_citation_set_is_judged_as_a_whole_not_claim_by_claim():
+    """Regression test for an escalation on genuinely good output.
+
+    An entity normally cites several claims that each back a different part of
+    it. Here the recommendation is about catalyst costs and cites two claims:
+    one about catalysts, one about a funding round. Judging each claim
+    separately flags the funding claim and fails the report - which is exactly
+    what happened on a live end-to-end run, where a CorPower Ocean profile
+    describing cost reductions cited a perfectly valid claim about its Series B
+    and sent the whole briefing to human review.
+    """
+    analysis = base_analysis(
+        recommendations=[
+            Recommendation(
+                action=RecommendationAction.PRIORITIZE_DILIGENCE,
+                text="Prioritize diligence given falling catalyst costs.",
+                # index 1 shares 'catalyst'; index 0 shares nothing with the text.
+                supporting_claim_indices=[0, 1],
+            )
+        ]
+    )
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+
+
+def test_citation_set_with_nothing_relevant_is_still_flagged():
+    """The relaxation above must not switch the heuristic off. A set where NO
+    cited claim relates to the citing text is still the egregious case."""
+    analysis = base_analysis(
+        recommendations=[
+            Recommendation(
+                action=RecommendationAction.MONITOR,
+                text="Watch quarterly earnings calls for sentiment shifts.",
+                supporting_claim_indices=[0, 2],  # funding and tax credits - neither relates
+            )
+        ]
+    )
+    result = check_citations(analysis)
+    assert result.passed is False
+    assert any("shared terminology" in issue.problem for issue in result.issues)
+
+
+def test_company_profile_is_supported_by_a_claim_naming_the_company():
+    """A claim that names the company supports its profile even when the
+    differentiation prose is about some other attribute - which is why the
+    company's name is part of the text being matched."""
+    analysis = base_analysis(
+        all_claims=[make_claim("CorPower Ocean completed a Series B financing round.")],
+        new_entrants=[
+            CompanyProfile(
+                name="CorPower Ocean",
+                entity_type=EntityType.NEW_ENTRANT,
+                differentiation="Published analysis showing 20% lower installed capacity.",
+                supporting_claim_indices=[0],
+            )
+        ],
+    )
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+
+
 # ---------------------------------------------------------------------------
 # Multiple simultaneous issues
 # ---------------------------------------------------------------------------

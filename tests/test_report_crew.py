@@ -22,6 +22,7 @@ from crewai_exec_deep_research_agent.crews.report_crew.report_crew import (
     _build_sources_appendix,
     _format_amount,
     _format_analysis_block,
+    _insert_funding_block,
     _render_funding_table,
     render_markdown,
 )
@@ -203,6 +204,44 @@ def test_amounts_are_formatted_for_scanning(amount, expected):
 
 
 # ---------------------------------------------------------------------------
+# Funding block insertion - the determinism guarantee
+# ---------------------------------------------------------------------------
+
+def test_funding_block_is_inserted_under_its_heading():
+    body = _insert_funding_block(BODY, "| Company | Round |\n| --- | --- |")
+    capital = body.index("## Where Capital Is Flowing")
+    table = body.index("| Company | Round |")
+    next_section = body.index("## Investment Recommendation")
+    assert capital < table < next_section
+
+
+def test_inserted_figures_are_the_structured_ones_not_the_models(monkeypatch):
+    """The reason this is inserted rather than pasted by the writer. On a live
+    run the model rewrote the table from the underlying claims, shipping
+    'EUR 32M' where the verified figure was $36M and 'Premium to market' where
+    it was $4M. Inserting in Python is what actually guarantees the numbers."""
+    events = [event("Panthalassa", 140_000_000), event("CorPower", 35_840_000),
+              event("Eco Wave", 4_000_000)]
+    stub = StubCrew(reviewed_output())
+    monkeypatch.setattr(ReportCrew, "crew", lambda self: stub)
+
+    report = ReportCrew().run(analysis(funding_events=events))
+
+    assert _render_funding_table(events) in report.body_markdown
+    assert "**$36M**" in report.body_markdown
+    assert "EUR" not in report.body_markdown
+
+
+def test_funding_block_is_appended_if_the_heading_somehow_vanished():
+    """The guardrail requires the section, so this is a belt-and-braces path -
+    but silently dropping verified funding figures would be the worst possible
+    failure mode here."""
+    body = _insert_funding_block("## Executive Summary\nText.", "TABLE-HERE")
+    assert "TABLE-HERE" in body
+    assert "## Where Capital Is Flowing" in body
+
+
+# ---------------------------------------------------------------------------
 # Prompt assembly
 # ---------------------------------------------------------------------------
 
@@ -240,7 +279,11 @@ def test_run_assembles_the_report_from_reviewer_output_and_python_parts(monkeypa
     report = ReportCrew().run(source)
 
     assert report.title == "Should We Invest?"
-    assert report.body_markdown == BODY
+    # The reviewer's prose survives intact, with the verified funding block
+    # inserted under its heading - the body is no longer a pure pass-through.
+    assert "It is investable. Timing favors entry." in report.body_markdown
+    assert "1. Source deals, with regulatory risk." in report.body_markdown
+    assert _render_funding_table(source.funding_events) in report.body_markdown
     # Executive summary comes from the analysis, not the draft - it already
     # went through the strategist and the fact-check gate.
     assert report.executive_summary == source.executive_summary

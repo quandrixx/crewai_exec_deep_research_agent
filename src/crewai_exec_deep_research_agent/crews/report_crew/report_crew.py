@@ -101,6 +101,33 @@ def _render_funding_table(events: list[FundingEvent]) -> str:
     return "\n".join(rows)
 
 
+_CAPITAL_HEADING = "Where Capital Is Flowing"
+
+
+def _insert_funding_block(body: str, funding_block: str) -> str:
+    """Put the canonical funding figures into the report, replacing nothing.
+
+    The writer is told not to produce a table at all, and the guardrail rejects
+    one - so this inserts the rendered block directly after the 'Where Capital
+    Is Flowing' heading, leaving the agent's interpretation of the figures
+    underneath it.
+
+    Asking the model to paste a pre-rendered table verbatim was tried first and
+    does not hold. On a live run the model rewrote the table from the
+    underlying claims instead, shipping 'EUR 32M' where the structured data
+    said $36M and 'Premium to market' where it said $4M. Inserting the block in
+    Python is the only version of this that is actually guaranteed.
+    """
+    lines = body.splitlines()
+    for index, line in enumerate(lines):
+        if line.startswith("## ") and _CAPITAL_HEADING.lower() in line.lower():
+            return "\n".join([*lines[: index + 1], "", funding_block, *lines[index + 1:]])
+
+    # The guardrail requires this section, so reaching here means the section
+    # was lost after validation. Append rather than silently drop the figures.
+    return f"{body}\n\n## {_CAPITAL_HEADING}\n\n{funding_block}"
+
+
 def _build_sources_appendix(claims: list[SourcedClaim]) -> list[str]:
     """Every distinct source behind the report, external first then internal.
 
@@ -183,13 +210,18 @@ class ReportCrew:
 
         reviewed = _task_output(result, _REVIEW_TASK, ReviewedReport)
 
+        body = _insert_funding_block(
+            reviewed.body_markdown,
+            _render_funding_table(analysis.funding_events),
+        )
+
         return FinalReport(
             title=reviewed.title,
             # From the analysis, not the draft: the strategist wrote it, the
             # fact-check gate ran against it, and it should not drift during
             # formatting.
             executive_summary=analysis.executive_summary,
-            body_markdown=reviewed.body_markdown,
+            body_markdown=body,
             sources_appendix=_build_sources_appendix(analysis.all_claims),
             fact_check_status=fact_check_status,
         )

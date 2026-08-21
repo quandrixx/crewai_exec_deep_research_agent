@@ -76,7 +76,7 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 141 total):**
+**Built and verified (tests run and passing - 148 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
@@ -93,11 +93,12 @@ it to match.
 - **Report Crew - complete and verified against a live run.** See its own
   section below. `sample_runs/report_small_modular_reactors.md` is a finished
   briefing produced end-to-end from real research.
-- `flows/deep_research_flow.py` is fully wired: all three crews, the fact-check
-  gate, the bounded revision loop, and human escalation. Verified structurally
-  in `tests/test_flow_wiring.py`; the full flow has NOT yet been run end-to-end
-  in one go (each stage has been run live from the previous stage's saved
-  output).
+- `flows/deep_research_flow.py` is fully wired and **verified end-to-end**.
+  A full `kickoff()` on "wave and tidal energy" ran research → analysis →
+  fact-check → report in 271s: 16 external + 8 internal claims, gate passed
+  first time with 22 citations verified, 979-word briefing. An earlier run on
+  the same topic exercised the *failure* path just as designed - gate failed,
+  bounded revision fired, still failed, escalated with the report withheld.
 - `knowledge/internal_docs/*.md` - 5 mock internal documents covering all four
   demo technologies plus two cross-cutting docs
 - `knowledge/style_guide.md` + `knowledge/prior_exec_report_sample.md` - house
@@ -112,14 +113,19 @@ it to match.
   directly.
 
 **Not started yet - this is where to resume:**
-- One full end-to-end `DeepResearchFlow().kickoff()` run on a fresh topic, to
-  confirm the stages hand off correctly in a single process.
 - `main.py` - still the untouched `crewai create` template. It defines a
   `ContentFlow` importing a nonexistent `content_crew`, and `pyproject.toml`'s
   scripts point at it, so `crewai run` does not work yet.
 - `README.md` - still the `{{crew_name}}` template
 - `sample_runs/topics.json` (a small set of energy-tech topics to run
   end-to-end once the pipeline works)
+
+**Unverified, needs one live run when API credits allow:** the Report Crew's
+writer is now told not to restate individual round amounts in the prose under
+the funding table. That fix went in *after* the last successful live run, so
+`sample_runs/report_wave_tidal_energy.md` still shows the problem it addresses:
+the table reads **$36M** while the sentence below it reads **EUR 32 million**.
+The table itself is correct and verified; only the prose rule is untested.
 
 ## The Research Crew (reference implementation - copy its patterns)
 
@@ -329,24 +335,47 @@ CrewAI is ever upgraded.
    re-triggering routing, so the revision loop uses a second `@router` on
    `revise_analysis` rather than calling `fact_check()` by hand.
 
-5. **`internal_kb_tool.py`'s keyword-overlap retrieval returns loosely related
+5. **The weak-support heuristic judges a citation SET, not each citation.**
+   An entity normally cites several claims that each back a different part of
+   it - a company profile might cite one claim for the funding round and
+   another for the technical differentiation. The original check compared every
+   cited claim against the citing text individually and flagged any that did
+   not overlap, which fails correct output routinely. A live end-to-end run
+   escalated a perfectly good briefing to human review because a CorPower Ocean
+   profile describing cost reductions also cited a valid claim about its Series
+   B. It now flags only when NO cited claim relates, and a company's name is
+   part of the text being matched. This is a change of aggregation, not of the
+   threshold - the deliberately conservative threshold and
+   `test_paraphrased_but_related_citation_is_not_flagged_as_weak` are untouched.
+
+6. **Never ask a model to paste pre-rendered content "verbatim".** It will not.
+   The funding table was originally passed into the prompt with instructions to
+   reproduce it exactly; on a live run the model rewrote it from the underlying
+   claims instead, shipping **EUR 32M** where the verified figure was $36M and
+   "Premium to market" where it was $4M. The fix is structural: the writer is
+   told to produce no table at all, a guardrail rejects any markdown table in
+   the draft, and `_insert_funding_block()` splices the rendered table in
+   afterwards. Generalize the instinct - if Python can guarantee it, do not
+   ask an agent to preserve it.
+
+7. **`internal_kb_tool.py`'s keyword-overlap retrieval returns loosely related
    chunks whenever there's *any* shared vocabulary**, even for queries the docs
    don't really answer. This is a known, accepted limitation - the internal
    researcher's task description explicitly instructs the agent to judge
    relevance itself rather than trusting the tool.
-6. **`citation_check_tool.py`'s weak-support heuristic is deliberately
+8. **`citation_check_tool.py`'s weak-support heuristic is deliberately
    conservative** (low overlap threshold) to avoid false-positiving on
    legitimate, well-paraphrased citations. It will miss some real problems.
    This tradeoff was made on purpose - don't "fix" it by raising the threshold
    without re-running the full test suite, since
    `test_paraphrased_but_related_citation_is_not_flagged_as_weak` exists
    specifically to catch that regression.
-7. **The external researcher over-produces.** Its task asks for 8-15 claims;
+9. **The external researcher over-produces.** Its task asks for 8-15 claims;
    live runs returned 31, then 20 after the instruction was tightened to "stop
    once you have that many". All were well-sourced, so this is a
    prompt-adherence gap rather than a correctness bug, but tighten it further if
    the Analysis Crew struggles with the volume.
-8. **Internal document filenames are part of the deliverable.** They're cited
+10. **Internal document filenames are part of the deliverable.** They're cited
    verbatim in the report's Sources appendix, so they follow a consistent
    `internal_*` convention and are spelled correctly. Three tests assert
    specific filenames; renaming a doc means updating
@@ -356,7 +385,9 @@ CrewAI is ever upgraded.
 
 1. Read this file, then the documents in `knowledge/` (`style_guide.md` first -
    it defines the report the whole pipeline is building toward).
-2. Run the whole flow end-to-end next, then write `main.py` and the README.
+2. Write `main.py` and the README next. NOTE: the Anthropic API ran out of
+   credits at the end of the last session, so any live run will fail with a 400
+   until that is topped up - the full test suite runs offline and is unaffected.
    Every stage can be developed against saved output in `sample_runs/` instead
    of paying for upstream runs - `ResearchFindings`, `AnalysisResult`, and
    `FinalReport` all load with `.model_validate_json(path.read_text())`.

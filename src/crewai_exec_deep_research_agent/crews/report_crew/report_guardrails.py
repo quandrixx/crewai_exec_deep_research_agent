@@ -111,6 +111,15 @@ def _check_report_body(title: str, body: str, problems: list[str]) -> None:
             f"sections are out of order: found {ordered}, expected {expected}"
         )
 
+    if any(line.lstrip().startswith("|") for line in body.splitlines()):
+        problems.append(
+            "body_markdown contains a markdown table. Do not write one - the "
+            "funding figures are rendered from structured data and inserted "
+            "automatically. Write only your interpretation of what the funding "
+            "pattern means. (A model rewriting the table from the underlying "
+            "claims once shipped 'EUR 32M' where the verified figure was $36M.)"
+        )
+
     if _find_section(headings, "Sources") is not None:
         problems.append(
             "body_markdown contains a '## Sources' section. Remove it - the "

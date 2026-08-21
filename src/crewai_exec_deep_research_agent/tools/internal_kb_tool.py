@@ -24,6 +24,8 @@ from typing import Type
 from pydantic import BaseModel, Field
 from crewai.tools import BaseTool
 
+from crewai_exec_deep_research_agent.knowledge_paths import find_knowledge_dir
+
 
 _STOPWORDS = {
     "the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "with",
@@ -33,26 +35,17 @@ _STOPWORDS = {
 }
 
 def _find_internal_docs_dir() -> Path:
-    """Locate knowledge/internal_docs/ by walking up from this file.
+    """Locate knowledge/internal_docs/.
 
-    The docs live at the repository root, not inside the installed package, so
-    a fixed relative path breaks depending on where the process starts. Walking
-    up covers both the editable install used in development and a plain
-    `python -m` run from any working directory. INTERNAL_DOCS_DIR overrides
-    this entirely, which is also the seam a real deployment would use to point
-    at a mounted document store instead.
+    INTERNAL_DOCS_DIR overrides this entirely, which is the seam a real
+    deployment would use to point at a mounted document store instead.
+    Otherwise the shared knowledge/ lookup walks up to the repo root - see
+    knowledge_paths.py, which the Report Crew also uses for the style guide.
     """
     override = os.getenv("INTERNAL_DOCS_DIR")
     if override:
         return Path(override)
-    here = Path(__file__).resolve()
-    for parent in here.parents:
-        candidate = parent / "knowledge" / "internal_docs"
-        if candidate.is_dir():
-            return candidate
-    # Nothing found - return the conventional location so the error message
-    # downstream names a concrete path rather than nothing at all.
-    return here.parents[3] / "knowledge" / "internal_docs"
+    return find_knowledge_dir() / "internal_docs"
 
 
 _INTERNAL_DOCS_DIR = _find_internal_docs_dir()

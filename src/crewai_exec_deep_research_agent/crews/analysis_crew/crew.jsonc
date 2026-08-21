@@ -1,0 +1,85 @@
+{
+  // Analysis Crew - stage two of the Deep Research Flow.
+  //
+  // Takes the Research Crew's claims and produces the structured content of
+  // the report: what changed, who is competing, where capital went, where the
+  // sources disagree, and what to do about it.
+  //
+  // Two sequential tasks, not two parallel ones - the strategist genuinely
+  // depends on the analyst's output, so there is nothing to gain from async
+  // here and no need for the barrier task the Research Crew requires.
+  //
+  // Why the split at all: organizing evidence and committing to a position are
+  // different jobs, and one agent emitting the whole AnalysisResult would mean
+  // one large nested payload - the exact shape that got truncated mid-JSON in
+  // a live Research Crew run and silently lost every finding. Two smaller
+  // outputs stay well inside the model's output budget. analysis_crew.py
+  // merges them.
+  //
+  // NOTE: neither agent has tools, deliberately. Every fact in the report must
+  // trace to a numbered claim the Research Crew gathered; letting an analyst
+  // search the web here would introduce evidence that no citation index can
+  // point at, which is precisely what the fact-check gate exists to catch.
+  //
+  // Note on {"python": ...} refs: they resolve relative to THIS directory, so
+  // they point at analysis_refs. See analysis_refs.py for why.
+  "name": "analysis_crew",
+
+  "agents": [
+    "sector_analyst",
+    "investment_strategist"
+  ],
+
+  "tasks": [
+    {
+      "name": "landscape_analysis_task",
+      "agent": "sector_analyst",
+
+      "description": "Organize the research findings on {topic} into the structured evidence an investment committee briefing needs.\n\nYou are working ONLY from the numbered claims below. Every entry you produce must cite the index numbers of the claims supporting it, using the numbers exactly as shown. Do not use knowledge you have about this sector that is not in this list - if it is not a numbered claim, it is not evidence, and a later automated check will reject anything citing a claim that does not exist.\n\nCLAIMS:\n{claims_block}\n\n{prior_issues_block}\n\nProduce four things:\n\n1. market_shifts - 4-6 specific changes that make this sector different NOW than 12-24 months ago. The delta, not background. 'Regulatory approval was granted to three developers in 2026 where none had it before' is a shift; 'the sector is attracting interest' is not.\n\n2. incumbents - established players, and what is actually new about their approach. Never 'is active in this space'. If the claims do not support a real incumbent story, return an empty list rather than padding it.\n\n3. new_entrants - newer companies worth watching, with founding year and funding stage where the claims state them. Leave those fields null when the claims do not say - do not guess a year or a stage.\n\n4. funding_events - specific rounds, with amounts, dates, and lead investors where the claims give them. These become a table in the final report, so precision matters more than volume. One event per round; every event cites the single claim it came from.\n\nFor entity_type, mark a company an incumbent if the claims describe it as established or operating at scale, and a new_entrant if the claims describe it as recently founded or early-stage. When the claims genuinely do not say, prefer new_entrant only if there is direct evidence of recent founding or an early funding round.\n\nDo not write an executive summary, recommendations, or any assessment of whether this is a good investment. That is the next task's job.",
+
+      "expected_output": "A LandscapeAnalysis JSON object with exactly these keys: market_shifts, incumbents, new_entrants, funding_events. Each entry carries the claim indices that support it.",
+
+      "output_pydantic": { "python": "analysis_refs.LandscapeAnalysis" },
+
+      // Deterministic structural check. Whether the cited indices actually
+      // exist is verified later by the Flow's citation gate, which unlike a
+      // guardrail has the claim list in hand.
+      "guardrail": { "python": "analysis_refs.validate_landscape_analysis" },
+      "guardrail_max_retries": 2
+    },
+
+    {
+      "name": "investment_judgment_task",
+      "agent": "investment_strategist",
+
+      // Sequential dependency, not a parallel pair: the strategist reasons
+      // over the landscape the analyst just produced.
+      "context": ["landscape_analysis_task"],
+
+      "description": "Decide what Northbridge Ventures should do about {topic}, based on the landscape analysis you have just been given plus the original claims below.\n\nThe same rule applies: every recommendation cites the index numbers of the claims that justify it, using the numbers exactly as shown. Anything citing a claim that does not exist will be rejected by an automated check.\n\nCLAIMS:\n{claims_block}\n\n{prior_issues_block}\n\nProduce three things:\n\n1. tensions_or_conflicts - places where Northbridge's own internal knowledge (claims marked 'internal') and outside research (claims marked 'external') point in different directions. This is the most valuable section in the briefing when it is real: a prior internal thesis that recent external evidence contradicts tells the committee where the firm's edge either is or was. Pay particular attention to internal claims recording a prior pass or a stated reservation, and check whether external evidence has since overtaken the reasoning.\n\n   Return an EMPTY list if the sources genuinely agree. Manufacturing tension to look rigorous is worse than reporting agreement.\n\n2. recommendations - 2-4 concrete actions the committee could vote on. Each carries an action (source_deals, prioritize_diligence, monitor, or pass), the reasoning, and the claim indices behind it. Each must state its main risk - regulatory, technical, capital-intensity, or timeline - in the same breath as the recommendation, not as a separate caveat. 'Monitor for two quarters pending NRC decisions, with the risk that the licensing backlog slips again' is a recommendation; 'consider watching this space' is not.\n\n3. executive_summary - 3-5 sentences, no more. The thesis stated plainly: is this sector investable right now, why, and at what stage. A partner should be able to read only this and know whether to keep reading or forward it to a specific deal team. Write it last, after the recommendations, so it reflects the position you actually took.\n\nWrite plainly. Avoid 'revolutionary', 'game-changing', 'poised to disrupt' - partners read hype-adjacent language as a signal that the underlying thesis is weak. Be direct about genuine uncertainty where it exists rather than hedging every sentence.",
+
+      "expected_output": "An InvestmentJudgment JSON object with exactly these keys: executive_summary, tensions_or_conflicts, recommendations. Each recommendation carries the claim indices that justify it.",
+
+      "output_pydantic": { "python": "analysis_refs.InvestmentJudgment" },
+
+      "guardrail": { "python": "analysis_refs.validate_investment_judgment" },
+      "guardrail_max_retries": 2
+    }
+  ],
+
+  "process": "sequential",
+  "verbose": true,
+
+  // Off for the same reason as the Research Crew: memory would leak findings
+  // between runs on different topics.
+  "memory": false,
+
+  // Default kickoff inputs; every one of these is overridden per run by
+  // AnalysisCrew.run(). Present so the config is loadable and inspectable
+  // on its own.
+  "inputs": {
+    "topic": "small modular reactors",
+    "claims_block": "[0] (external, confidence 0.9) Example claim. [source: https://example.test]",
+    "prior_issues_block": ""
+  }
+}

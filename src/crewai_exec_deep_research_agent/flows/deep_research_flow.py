@@ -53,13 +53,13 @@ class DeepResearchFlow(Flow[ResearchState]):
 
     @listen(run_research)
     def run_analysis(self):
+        # .run() rather than .crew().kickoff(): the crew emits two partial
+        # objects (landscape, then judgment) and never emits all_claims at all,
+        # so there is no single CrewOutput.pydantic to take. .run() merges the
+        # halves and attaches the claim list the agents were shown, which is
+        # what makes the fact-check gate's index lookups meaningful.
         from ..crews.analysis_crew.analysis_crew import AnalysisCrew
-        result = AnalysisCrew().crew().kickoff(inputs={
-            "topic": self.state.topic,
-            "internal_claims": self.state.research.internal_claims,
-            "external_claims": self.state.research.external_claims,
-        })
-        self.state.analysis = result.pydantic  # -> AnalysisResult
+        self.state.analysis = AnalysisCrew().run(self.state.research)
 
     @listen(run_analysis)
     def fact_check(self):
@@ -83,13 +83,10 @@ class DeepResearchFlow(Flow[ResearchState]):
         # in as extra context so the retry has something concrete to fix
         # rather than just "try again."
         from ..crews.analysis_crew.analysis_crew import AnalysisCrew
-        result = AnalysisCrew().crew().kickoff(inputs={
-            "topic": self.state.topic,
-            "internal_claims": self.state.research.internal_claims,
-            "external_claims": self.state.research.external_claims,
-            "prior_issues": [i.model_dump() for i in self.state.fact_check.issues],
-        })
-        self.state.analysis = result.pydantic
+        self.state.analysis = AnalysisCrew().run(
+            self.state.research,
+            prior_issues=self.state.fact_check.issues,
+        )
         return self.fact_check()  # loop back through the gate once
 
     @listen("generate_report")

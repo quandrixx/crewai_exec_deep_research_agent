@@ -35,6 +35,9 @@ Pydantic parsing before a guardrail ever sees it.
 from typing import Any
 
 from crewai.tasks.task_output import TaskOutput
+from pydantic import ValidationError
+
+from crewai_exec_deep_research_agent.json_salvage import salvage_json_object
 
 from crewai_exec_deep_research_agent.models import ClaimList, SourceType
 from crewai_exec_deep_research_agent.tools.internal_kb_tool import known_document_names
@@ -43,6 +46,19 @@ from crewai_exec_deep_research_agent.tools.internal_kb_tool import known_documen
 # How many bad claims to name in the feedback before truncating. Enough for the
 # agent to see the pattern, few enough that the retry prompt stays readable.
 _MAX_REPORTED = 5
+
+
+def _excerpt(raw: str | None, limit: int = 200) -> str:
+    """A short, single-line look at what the model actually returned.
+
+    Included in the retry feedback because "could not be parsed" alone gives
+    the model nothing to correct - seeing its own opening tells it whether it
+    fenced the JSON, prefaced it, or ran out of room mid-object.
+    """
+    if not raw:
+        return "(empty)"
+    flattened = " ".join(raw.split())
+    return flattened[:limit] + ("..." if len(flattened) > limit else "")
 
 
 def _format_problems(problems: list[str]) -> str:
@@ -62,6 +78,23 @@ def _validate_claims(
 ) -> tuple[bool, Any]:
     claims = output.pydantic
 
+    # Salvage before rejecting. A rejection is not cheap: CrewAI answers a
+    # failed guardrail by calling agent.execute_task() again, a fresh ReAct
+    # loop that re-runs every tool call - a measured run paid for two extra
+    # rounds of web searches to fix output that was already correct apart from
+    # its wrapper. Unwrapping good JSON from a markdown fence or a stray
+    # sentence is a string operation; paying an agent to redo it is not.
+    repaired: str | None = None
+    if not isinstance(claims, ClaimList):
+        salvaged = salvage_json_object(output.raw, required_key="claims")
+        if salvaged is not None:
+            text, parsed = salvaged
+            try:
+                claims = ClaimList.model_validate(parsed)
+                repaired = text
+            except ValidationError:
+                claims = None
+
     if not isinstance(claims, ClaimList):
         return (
             False,
@@ -71,7 +104,8 @@ def _validate_claims(
             "(string), source_type (string), confidence (number between 0 and 1). "
             "Return ONLY that JSON object, with no surrounding prose. If your "
             "previous answer was long, keep each claim to one sentence so the "
-            "whole object fits in a single response.",
+            "whole object fits in a single response. "
+            f"Your previous answer started: {_excerpt(output.raw)}",
         )
 
     if not claims.claims and not allow_empty:
@@ -129,7 +163,7 @@ def _validate_claims(
             f"than adjusting its source to pass this check.",
         )
 
-    return (True, output)
+    return (True, repaired if repaired is not None else output)
 
 
 def validate_external_claims(output: TaskOutput) -> tuple[bool, Any]:

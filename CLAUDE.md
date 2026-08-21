@@ -76,7 +76,7 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 187 total):**
+**Built and verified (tests run and passing - 206 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
@@ -297,26 +297,41 @@ that looks like it worked.
 Every run reports its own cost, per stage, in the CLI summary and in
 `output/<topic>/cost.json`. Rates are Anthropic list prices verified 2026-08-21.
 
-Measured baseline - enhanced geothermal systems, clean run, no revision round:
+Measured on enhanced geothermal systems, clean runs, no revision round:
 
 | Stage | Model | Cost | Tokens |
 |---|---|---|---|
-| research | `claude-sonnet-5` | $0.30 | 116k in / 13k out, 14 requests |
-| analysis | `claude-sonnet-4-5` | $0.08 | 14k in / 2k out |
-| report | `claude-sonnet-4-5` | $0.10 | 12k in / 4k out |
-| **total** | | **$0.49** | |
+| research | `claude-sonnet-5` | $0.12 | 34k in / 6k out, 6 requests |
+| analysis | `claude-sonnet-4-5` | $0.08 | 13k in / 2k out |
+| report | `claude-sonnet-4-5` | $0.11 | 13k in / 4k out |
+| **total** | | **$0.31** | |
+
+That is down from **$0.49** after two fixes, both described below - research
+input tokens fell 116k → 34k. Output quality held: 19 external claims, 35
+citations verified, fact-check passed, six-section report.
 
 **Research dominates because agent loops are quadratic.** Each iteration
 resends the whole accumulated conversation, so a stage making N tool calls pays
-input tokens proportional to N². Measured runs made 38-42 tool executions
-against tasks asking for "4-6 SEPARATE, NARROW searches" - so the
-over-production noted in known gap #9 is also the main cost driver, and halving
-the tool calls would cut cost roughly fourfold rather than in half. That is the
-single biggest lever if cost ever matters.
+input tokens proportional to N². Two things were driving that up, both since
+fixed - keep them in mind before changing either prompt:
 
-**A run costs more than the baseline when it takes the revision path** - a
-failed fact-check re-runs the entire Analysis Crew - or when the guardrails
-bounce a draft, which re-runs one task.
+  1. **The search instruction contradicted itself.** It asked for "4-6
+     SEPARATE, NARROW searches" and then required six numbered angles of
+     coverage plus 8-15 claims. Six angles cannot be covered in 4-6 searches,
+     and the model resolved the conflict in favour of coverage - correctly.
+     Both research tasks now tie their budget to their angle list with an
+     explicit ceiling (8 external, 6 internal). Searches fell 25 → 8, internal
+     lookups 13 → 6.
+  2. **Guardrail rejections re-run the entire task.** CrewAI answers a failed
+     guardrail with `agent.execute_task(...)` - a fresh ReAct loop that repeats
+     every tool call. A measured run bounced twice and paid for two extra
+     rounds of web searches to fix output that was already valid apart from a
+     markdown fence. `json_salvage.py` now unwraps that case deterministically
+     and hands the cleaned string back, which CrewAI re-exports through
+     `output_pydantic` - see the note on that contract below.
+
+**A run still costs more when it takes the revision path** - a failed
+fact-check re-runs the entire Analysis Crew.
 
 Two findings worth acting on if this is ever tuned:
 
@@ -329,6 +344,14 @@ Two findings worth acting on if this is ever tuned:
     `claude-sonnet-4-5` is $3/$15 against `claude-sonnet-5`'s $2/$10. That is a
     consequence of known gap #3, not a choice - revisit if CrewAI's
     structured-output allowlist learns about sonnet-5.
+
+**The guardrail-return contract is load-bearing.** A guardrail that returns
+`(True, <str>)` makes CrewAI replace `task_output.raw` and re-export it through
+`output_pydantic`; returning `(True, output)` passes the output through
+untouched. That is what lets `research_guardrails.py` repair a fenced payload
+instead of rejecting it. Salvage only ever *unwraps* - it must never repair
+truncated JSON, or it would resurrect the bug in known gap #2 that silently
+discarded 15 real claims. `tests/test_json_salvage.py` pins both directions.
 
 **Watch out:** `LEDGER` is a process-wide singleton (the alternative was
 threading a ledger through the Flow and all three crews). `main.py` resets it
@@ -463,11 +486,13 @@ CrewAI is ever upgraded.
    without re-running the full test suite, since
    `test_paraphrased_but_related_citation_is_not_flagged_as_weak` exists
    specifically to catch that regression.
-9. **The external researcher over-produces.** Its task asks for 8-15 claims;
-   live runs returned 31, then 20 after the instruction was tightened to "stop
-   once you have that many". All were well-sourced, so this is a
-   prompt-adherence gap rather than a correctness bug, but tighten it further if
-   the Analysis Crew struggles with the volume.
+9. **Quantities in a task must not contradict the coverage it demands.** The
+   search instruction asked for "4-6 searches" while requiring six angles and
+   8-15 claims, and the model - reasonably - honoured coverage over the number.
+   Diagnosing that as the agent ignoring instructions was wrong; it was
+   following the more specific one. When a task states a budget, tie it to the
+   list it has to cover and give an explicit ceiling. Claim counts have the
+   same shape: live runs returned 31, then 20, then 19 against a stated 8-15.
 10. **Internal document filenames are part of the deliverable.** They're cited
    verbatim in the report's Sources appendix, so they follow a consistent
    `internal_*` convention and are spelled correctly. Three tests assert

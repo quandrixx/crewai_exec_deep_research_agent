@@ -18,6 +18,8 @@ Guardrails are exercised through real TaskOutput objects rather than mocks,
 since the contract with CrewAI is specifically "reads output.pydantic".
 """
 
+import json
+
 import pytest  # pyrefly: ignore
 from crewai.tasks.task_output import TaskOutput
 from pydantic import ValidationError
@@ -78,6 +80,65 @@ def test_claim_list_rejects_missing_claims_key():
 # ---------------------------------------------------------------------------
 # Unparseable output
 # ---------------------------------------------------------------------------
+
+def test_fenced_json_is_salvaged_instead_of_bouncing():
+    """The expensive case made cheap.
+
+    A guardrail rejection makes CrewAI re-run the whole agent loop including
+    every tool call, and a measured run paid for two extra rounds of web
+    searches to fix output that was already valid apart from a markdown fence.
+    Salvaging returns the cleaned JSON string, which CrewAI re-exports through
+    output_pydantic - so the task is repaired rather than retried.
+    """
+    payload = json.dumps({"claims": [{
+        "claim": "Company A raised $42M in March 2026.",
+        "source": "https://example-news.test/a",
+        "source_type": "external",
+        "confidence": 0.9,
+    }]})
+    raw = f"Here are my findings:\n```json\n{payload}\n```"
+
+    passed, result = validate_external_claims(make_output(None, raw=raw))
+
+    assert passed is True
+    # A string, not the TaskOutput - that is what triggers CrewAI's re-export.
+    assert isinstance(result, str)
+    assert json.loads(result)["claims"][0]["claim"].startswith("Company A")
+
+
+def test_salvaged_output_is_still_content_validated():
+    """Salvage repairs the wrapper, never the substance. A fenced payload whose
+    claims are unsourced must still be rejected."""
+    payload = json.dumps({"claims": [{
+        "claim": "An unsourced assertion.",
+        "source": "TechCrunch",
+        "source_type": "external",
+        "confidence": 0.7,
+    }]})
+    passed, feedback = validate_external_claims(
+        make_output(None, raw=f"```json\n{payload}\n```")
+    )
+    assert passed is False
+    assert "not a URL" in feedback
+
+
+def test_truncated_output_is_not_salvaged_into_a_partial_result():
+    """The salvage must not resurrect the truncation bug. A cut-off payload
+    fails loudly rather than silently becoming a shorter claim list."""
+    raw = '{"claims": [{"claim": "A.", "source": "https://example.test/a", "conf'
+    passed, feedback = validate_external_claims(make_output(None, raw=raw))
+    assert passed is False
+    assert "ClaimList" in feedback
+
+
+def test_failure_feedback_shows_the_model_its_own_output():
+    """'Could not be parsed' alone gives the model nothing to correct."""
+    passed, feedback = validate_external_claims(
+        make_output(None, raw="I was unable to format the findings as JSON.")
+    )
+    assert passed is False
+    assert "I was unable to format" in feedback
+
 
 def test_unparsed_output_fails_with_schema_instructions():
     """When pydantic parsing failed entirely, the feedback has to restate the

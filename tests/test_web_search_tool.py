@@ -65,6 +65,36 @@ def test_successful_response_includes_source_urls(mock_post):
 
 
 @patch("crewai_exec_deep_research_agent.tools.web_search_tool.requests.post")
+def test_date_is_surfaced_when_serper_provides_one(mock_post):
+    """Serper returns 'date' on news-style results (confirmed against the live
+    API). It's carried into the source header because FundingEvent.date is a
+    required field downstream - without it the agent has to guess a date or
+    drop the funding round."""
+    mock_post.return_value = make_mock_response({
+        "organic": [
+            {
+                "title": "Company A raises $42M Series A",
+                "link": "https://example-news.test/dated",
+                "snippet": "Company A announced a $42M Series A round.",
+                "date": "Mar 4, 2026",
+            },
+            {
+                "title": "Undated analysis piece",
+                "link": "https://example-news.test/undated",
+                "snippet": "No date on this one.",
+            },
+        ]
+    })
+    with patch.dict("os.environ", {"SERPER_API_KEY": "fake-key-for-test"}):
+        result = WebSearchTool()._run("advanced nuclear funding")
+
+    assert "[source: https://example-news.test/dated | date: Mar 4, 2026]" in result
+    # Absent dates must not produce an empty 'date:' label the agent could
+    # misread as a real value.
+    assert "[source: https://example-news.test/undated]" in result
+
+
+@patch("crewai_exec_deep_research_agent.tools.web_search_tool.requests.post")
 def test_results_are_truncated_to_top_k(mock_post):
     organic_results = [
         {"title": f"Result {i}", "link": f"https://example.test/{i}", "snippet": "..."}

@@ -101,6 +101,12 @@ class WebSearchTool(BaseTool):
             title = result.get("title", "Untitled")
             link = result.get("link", "")
             snippet = result.get("snippet", "")
-            formatted.append(f"[source: {link}]\n{title}\n{snippet}")
+            # Serper returns 'date' on many news-style results. Surfacing it
+            # matters because FundingEvent.date is a required field downstream,
+            # and an agent working from an undated snippet has to either guess
+            # or drop the funding round entirely.
+            date = result.get("date")
+            header = f"[source: {link}]" if not date else f"[source: {link} | date: {date}]"
+            formatted.append(f"{header}\n{title}\n{snippet}")
 
         return "\n\n---\n\n".join(formatted)

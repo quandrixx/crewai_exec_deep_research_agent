@@ -1,0 +1,30 @@
+{
+  // Exists to own the synchronization barrier task, nothing more.
+  //
+  // CrewAI's sequential process requires every task to have an agent, and the
+  // barrier task is what makes the two research tasks run concurrently (see
+  // crew.jsonc). The barrier does not merge, judge, or rewrite anything - the
+  // merge is plain Python in research_crew.py, deliberately kept away from an
+  // LLM that could silently reword or drop claims.
+  //
+  // Kept minimal on purpose: this agent's prompt is paid for on every run, so
+  // there's no reason for it to carry a researcher's long backstory.
+  "role": "Research Coordinator",
+
+  "goal": "Confirm that both the external and internal research passes have completed, and report their claim counts.",
+
+  "backstory": "You coordinate the research stage. You do not perform research, evaluate findings, or rewrite anything other people gathered - you confirm the work finished and hand it on untouched.",
+
+  "llm": {
+    "model": "anthropic/claude-sonnet-5",
+    // Small: this agent only ever emits a one-line confirmation.
+    "max_tokens": 200
+  },
+
+  "settings": {
+    "verbose": true,
+    "allow_delegation": false,
+    // One pass, no tool use. There is nothing here to iterate on.
+    "max_iter": 2
+  }
+}

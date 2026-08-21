@@ -71,7 +71,7 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 56 total):**
+**Built and verified (tests run and passing - 58 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
@@ -91,9 +91,10 @@ it to match.
   only real internal evidence belongs in `knowledge/internal_docs/`, since
   everything in that folder is retrievable by the internal KB tool and citable
   as a source.
-- `sample_runs/research_enhanced_geothermal.json` - real output from a live
-  Research Crew run, useful as a fixture for building the Analysis Crew without
-  paying for a research run every iteration.
+- `sample_runs/*.json` - real `ResearchFindings` output from live Research Crew
+  runs (enhanced geothermal, small modular reactors). Use these as fixtures for
+  building the Analysis Crew instead of paying for a research run every
+  iteration.
 
 **Not started yet - this is where to resume:**
 - Analysis Crew (agents/tasks). Use JSONC for consistency with the Research
@@ -111,41 +112,54 @@ it to match.
 
 ## The Research Crew (reference implementation - copy its patterns)
 
-Lives in `src/crewai_exec_deep_research_agent/crews/research_crew/`. It is
-**one stage implemented as two single-agent crews**, run concurrently in
-threads by `ResearchCrew.run()`, which merges both results into one
+Lives in `src/crewai_exec_deep_research_agent/crews/research_crew/`. One crew,
+two researchers running concurrently, plus a synchronization barrier task.
+`ResearchCrew.run()` kicks it off and merges the two claim lists into one
 `ResearchFindings`.
 
 ```
 research_crew/
-  research_crew.py            # concurrent kickoff + merge; the Flow's entry point
-  research_guardrails.py      # shared deterministic guardrails
-  external_research/
-    crew.jsonc                # external_research_task
-    agents/web_researcher.jsonc
-    external_refs.py          # project-local re-export (see below)
-  internal_research/
-    crew.jsonc                # internal_research_task
-    agents/internal_researcher.jsonc
-    internal_refs.py
+  crew.jsonc                  # 2 async research tasks + 1 sync barrier task
+  agents/web_researcher.jsonc
+  agents/internal_researcher.jsonc
+  agents/research_coordinator.jsonc   # owns the barrier task, nothing else
+  research_refs.py            # project-local re-exports for {"python": ...} refs
+  research_guardrails.py      # deterministic per-task validation
+  research_crew.py            # kickoff + merge; the Flow's entry point
 ```
 
-**Why two crews instead of one crew with two parallel tasks:** CrewAI won't
-allow it. `Crew.validate_end_with_at_most_one_async_task` rejects a crew ending
-in more than one async task, and pairing `async → sync` doesn't help either,
-because `_run_sequential_process` drains pending futures *before* starting the
-sync task. Two independent tasks genuinely cannot run concurrently inside one
-crew. The parallelism is worth the extra directory: the internal and external
-views must be gathered without either seeing the other, or the final report's
-"Where Sources Disagree" section measures contamination instead of real
-disagreement.
+**How the parallelism works, and why the third task exists.**
+`Crew.validate_end_with_at_most_one_async_task` rejects a crew whose *trailing*
+run of tasks contains more than one async task, so two async tasks alone will
+not construct. A trailing synchronous task fixes that at no cost to
+parallelism: `_run_sequential_process` submits both async tasks as futures
+before it ever reaches the sync task, which then just drains work already
+running. Verified with stubbed LLMs -
+`tests/test_research_crew_merge.py::test_the_two_research_tasks_actually_overlap_in_time`
+asserts the two research tasks genuinely overlap in wall-clock time, and it
+runs without any network calls.
 
-**Why the merge is plain Python, not a third agent task:** it's list
+The barrier's own cost is one small LLM call per run (200 max_tokens, no
+tools, minimal backstory). A `ConditionalTask` whose condition returns false is
+skipped without any LLM call while still forcing the drain, so it's a free
+alternative if that call ever matters - at the cost of being much less obvious
+to a reader.
+
+Note the ordering constraint this creates: **any new task added to this crew
+must go after the barrier, or the barrier stops being last and the crew stops
+validating.** The structure is pinned by
+`test_real_config_has_two_async_tasks_followed_by_a_sync_barrier`.
+
+**Why the two research tasks have no `context` link to each other:** they must
+be gathered without either seeing the other, or the final report's "Where
+Sources Disagree" section measures contamination instead of real disagreement.
+A context link would also serialize them.
+
+**Why the merge is plain Python, not the barrier's job:** it's list
 concatenation over already-validated `ClaimList` objects. An LLM would add
-cost and latency and a fresh chance to silently reword or drop claims.
-
-Use threads (not `asyncio.run`) for any similar fan-out - these run inside a
-Flow step, which may already own a running event loop.
+cost and latency and a fresh chance to silently reword or drop claims. The
+barrier is explicitly told its output is a checkpoint marker that nothing
+downstream reads.
 
 ## CrewAI JSONC config - verified mechanics
 
@@ -172,11 +186,11 @@ CrewAI is ever upgraded.
   similar - are a *different, restricted* resolver. `_project_module_file()`
   requires the target module to live **inside the directory holding
   crew.jsonc**, and raises "Python references in JSON configs must point to
-  modules inside the project root" otherwise. This is why each crew directory
-  has its own small `*_refs.py` re-exporting the real definitions from the
-  package. Give those modules crew-specific names - the loader imports them as
-  top-level modules, so two files both named `refs.py` would collide in
-  `sys.modules`.
+  modules inside the project root" otherwise. This is why the crew directory
+  has a small `research_refs.py` re-exporting the real definitions from the
+  package. Give these modules crew-specific names rather than something generic
+  like `refs.py` - the loader imports them as top-level modules, so two crews
+  using the same filename would collide in `sys.modules`.
 - **`llm`** accepts a config dict, not just a model string:
   `{"model": "anthropic/claude-sonnet-5", "max_tokens": 16000}`. Use the dict
   form. See known gap #1 for why `max_tokens` is not optional here.
@@ -187,6 +201,12 @@ CrewAI is ever upgraded.
   `load_crew("path/to/crew.jsonc")` builds the whole crew - agents, tools,
   refs, guardrails - without kicking anything off. Always do this before a
   live run.
+- **Long prompts have to be single-line strings with `\n` escapes.** JSON has
+  no multi-line string literal, and CrewAI passes the value straight to
+  `Task`/`Agent`, where Pydantic rejects an array of lines. A custom loader
+  that joins string arrays was built and then deliberately reverted - if this
+  comes up again, it works, but it means the project's configs can no longer
+  be read by CrewAI's own `load_crew()`, which is the cost that decided it.
 
 ## Known gaps / things to double-check before trusting this code
 
@@ -214,9 +234,10 @@ CrewAI is ever upgraded.
    `test_paraphrased_but_related_citation_is_not_flagged_as_weak` exists
    specifically to catch that regression.
 5. **The external researcher over-produces.** Its task asks for 8-15 claims;
-   a live run returned 31. All were well-sourced, so this is a prompt-adherence
-   gap rather than a correctness bug, but tighten it if the Analysis Crew
-   struggles with the volume.
+   live runs returned 31, then 20 after the instruction was tightened to "stop
+   once you have that many". All were well-sourced, so this is a
+   prompt-adherence gap rather than a correctness bug, but tighten it further if
+   the Analysis Crew struggles with the volume.
 6. **Internal document filenames are part of the deliverable.** They're cited
    verbatim in the report's Sources appendix, so they follow a consistent
    `internal_*` convention and are spelled correctly. Three tests assert

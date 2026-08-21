@@ -43,11 +43,11 @@ class DeepResearchFlow(Flow[ResearchState]):
 
     @listen(intake_topic)
     def run_research(self):
-        # Kicks off the Research Crew, which runs its external and internal
-        # halves concurrently as two separate single-agent crews. That shape is
-        # forced by CrewAI - a single crew cannot end with two async tasks - and
-        # .run() is what merges both results into one ResearchFindings, so
-        # prefer it over kicking off either crew directly.
+        # Kicks off the Research Crew, whose external and internal researchers
+        # run concurrently. Use .run() rather than .crew().kickoff(): the crew
+        # emits two separate ClaimList outputs plus a barrier task's
+        # confirmation line, and .run() is what merges them into one
+        # ResearchFindings.
         from ..crews.research_crew.research_crew import ResearchCrew
         self.state.research = ResearchCrew().run(self.state.topic)
 

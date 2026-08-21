@@ -1,0 +1,114 @@
+{
+  // Research Crew - stage one of the Deep Research Flow.
+  //
+  // Two researchers working concurrently, plus a synchronization barrier.
+  //
+  // The two research tasks carry async_execution: true and have no dependency
+  // on each other. They are independent by design, not just by convenience:
+  // the internal and external views must be gathered without either seeing the
+  // other, or the final report's "Where Sources Disagree" section measures
+  // contamination instead of genuine disagreement.
+  //
+  // Why the third task exists. CrewAI's Crew validator
+  // (validate_end_with_at_most_one_async_task) rejects a crew whose final run
+  // of tasks contains more than one async task, so two async tasks alone will
+  // not construct. Adding a trailing synchronous task satisfies the validator
+  // and costs nothing in parallelism: _run_sequential_process submits BOTH
+  // async tasks as futures before it ever reaches the sync task, and the sync
+  // task then simply drains work that is already running concurrently.
+  // Measured with stubbed LLMs: 3 x 1.5s of work completes in 3.06s, with the
+  // two research tasks genuinely overlapping in time.
+  //
+  // The barrier does NOT merge the findings. Merging is list concatenation
+  // over already-validated ClaimList objects, and research_crew.py does it in
+  // Python - handing it to an LLM would add cost and latency in exchange for a
+  // fresh opportunity to silently reword or drop claims.
+  //
+  // Cost note: because it is synchronous, the barrier is one real LLM call per
+  // run. It is deliberately tiny (200 max_tokens, no tools, minimal backstory).
+  // Swapping "type": "ConditionalTask" with a condition that returns false
+  // makes the barrier free - CrewAI skips the task without calling an LLM
+  // while still draining the futures - at the cost of being considerably less
+  // obvious to a reader.
+  //
+  // Note on {"python": ...} refs: they resolve relative to THIS directory, so
+  // they point at research_refs rather than into the package. See
+  // research_refs.py for why.
+  "name": "research_crew",
+
+  "agents": [
+    "web_researcher",
+    "internal_researcher",
+    "research_coordinator"
+  ],
+
+  "tasks": [
+    {
+      "name": "external_research_task",
+      "agent": "web_researcher",
+
+      "description": "Research what public sources say about {topic}, for an investment committee at Northbridge Ventures deciding whether to source deals in this sector.\n\nRun 4-6 SEPARATE, NARROW searches rather than one broad one. The search tool returns markedly better results for 'enhanced geothermal drilling cost per well 2026' than for the bare sector name. Cover these angles, adapting the wording to {topic}:\n  1. Recent funding rounds, investors, and valuations in the sector\n  2. Named companies - both established players and startups founded recently\n  3. Regulatory, permitting, or policy changes in the last 12-24 months\n  4. Technical or cost milestones that changed what is commercially viable\n  5. Announced commercial deployments, offtake agreements, or customer contracts\n  6. Credible skepticism - delays, cancellations, or analysts arguing the sector is overhyped\n\nThat last angle is not optional. A briefing that only surfaces good news is one a partner cannot trust.\n\nTurn what you find into atomic claims. One claim states one fact. 'Company A raised $42M in March 2026' and 'Company A uses a molten salt design' are two claims, not one. Prefer claims carrying a specific company name, dollar amount, date, or measurement - vague claims cannot be turned into the funding tables and company profiles this report needs.\n\nRules that are not negotiable:\n  - Every claim cites the exact URL the search tool returned as its source. Never cite a publication name alone, never construct a plausible-looking URL.\n  - Set source_type to 'external' on every claim.\n  - If a search returns an error message rather than results, that search failed. Report what you did find from other searches and do not invent findings to fill the gap.\n  - Set confidence honestly: around 0.9 for a specific figure stated directly by a primary or reputable source, around 0.6 when reported second-hand or approximated, around 0.4 when the source hedges or the detail is contested.\n\nReturn 8-15 well-sourced claims. Stop once you have that many good ones - a longer list padded with vague or duplicated findings is a worse result, not a better one.",
+
+      "expected_output": "A ClaimList: a JSON object with a single 'claims' key holding a list of claim objects. Each has 'claim' (one factual statement), 'source' (the exact URL returned by the search tool), 'source_type' (always 'external'), and 'confidence' (0 to 1).",
+
+      // Runs concurrently with the internal task - no context link between
+      // them, since either one seeing the other would defeat the point.
+      "async_execution": true,
+
+      "output_pydantic": { "python": "research_refs.ClaimList" },
+
+      // Deterministic check: real URLs, correct source_type, non-empty result.
+      // Plain Python, not an LLM reviewing another LLM.
+      "guardrail": { "python": "research_refs.validate_external_claims" },
+      "guardrail_max_retries": 2
+    },
+
+    {
+      "name": "internal_research_task",
+      "agent": "internal_researcher",
+
+      "description": "Search Northbridge Ventures' internal knowledge base for anything the firm already knows about {topic}.\n\nQuery the internal_kb_lookup tool SEVERAL times with different phrasings before concluding anything. Retrieval here is keyword-based, so 'advanced nuclear' and 'small modular reactor' and 'SMR licensing' can surface entirely different passages about the same subject. Try the sector name, the underlying technology, the names of specific companies, and the vocabulary a partner would use ('thesis', 'diligence', 'passed on', 'portfolio').\n\nRead every passage the tool returns and judge it yourself. The tool matches on shared vocabulary and will return loosely related passages whenever ANY significant words overlap - a memo about offshore wind logistics will surface for a wave energy query because both mention 'marine' and 'vessel costs'. Ask of each passage: does this actually say something about {topic}, or does it just share words with my query? Discard the ones that merely share words. This judgment is your job, not the tool's.\n\nWhat matters most to the committee, in order:\n  1. Prior positions the firm took - theses written, deals passed on, and the stated reasoning\n  2. Reservations or risks the firm previously recorded\n  3. Relevant portfolio company experience, including things that went badly\n  4. Prior conclusions that later evidence may have overtaken - flag these explicitly, since a stale internal view stated confidently is worse than no view\n\nRules that are not negotiable:\n  - Every claim cites the exact filename from the tool's '[source: ...]' header. Never invent a document name, never cite a document you did not actually see returned.\n  - Set source_type to 'internal' on every claim.\n  - If nothing relevant comes back, return an EMPTY claims list. That is a correct and useful answer - it tells the committee this sector is new ground for the firm. Do not infer the firm's view from an adjacent document, and do not restate external industry knowledge as though it came from an internal memo.\n  - If the tool reports that the knowledge base could not be loaded, that is a configuration failure and not a finding. Return an empty claims list and say so.\n  - Set confidence honestly: around 0.9 when a document states something directly, lower when you are reading between the lines of a passage that only partly addresses the question.\n\nAnywhere from 0 to 12 claims is a legitimate result here, depending entirely on whether the firm has prior work on this sector.",
+
+      "expected_output": "A ClaimList: a JSON object with a single 'claims' key holding a list of claim objects. Each has 'claim' (one factual statement), 'source' (the exact internal document filename returned by the tool), 'source_type' (always 'internal'), and 'confidence' (0 to 1). An empty list is valid when the firm has no prior work on the topic.",
+
+      "async_execution": true,
+
+      "output_pydantic": { "python": "research_refs.ClaimList" },
+
+      // Checks cited filenames against documents that actually exist.
+      "guardrail": { "python": "research_refs.validate_internal_claims" },
+      "guardrail_max_retries": 2
+    },
+
+    {
+      "name": "research_synchronization_task",
+      "agent": "research_coordinator",
+
+      // Synchronous, and listed last: this is what lets the two tasks above
+      // run concurrently at all. Reaching it drains both futures.
+      "async_execution": false,
+
+      // Explicit dependency on both research tasks. Not strictly required for
+      // the drain to happen, but it documents the barrier's purpose in the
+      // config itself rather than only in this comment.
+      "context": ["external_research_task", "internal_research_task"],
+
+      "description": "Both research passes on {topic} have now completed. Confirm this and report how many claims each pass produced.\n\nDo not add, remove, reword, re-evaluate, or comment on any claim. The claims are consumed directly from the two preceding tasks by downstream code, so nothing you write here affects them - your output is a checkpoint marker, not an input to the report.",
+
+      "expected_output": "A single short line, e.g. 'Research complete: 12 external claims, 4 internal claims.'"
+    }
+  ],
+
+  "process": "sequential",
+  "verbose": true,
+
+  // Off deliberately. Memory would carry claims between runs on different
+  // topics, which is exactly how a fact about one sector ends up cited in
+  // another sector's briefing. Every run researches its topic from scratch.
+  "memory": false,
+
+  // Default kickoff inputs; overridden per run by ResearchCrew.run(topic).
+  "inputs": {
+    "topic": "small modular reactors"
+  }
+}

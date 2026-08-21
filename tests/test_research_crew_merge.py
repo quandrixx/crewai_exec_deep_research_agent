@@ -2,173 +2,112 @@
 test_research_crew_merge.py
 
 Tests ResearchCrew's orchestration - the parts that are deterministic Python
-and therefore testable without spending an LLM call: that the two crews really
-do run concurrently, and that merging their outputs keeps internal and external
-claims on their own sides.
+and therefore testable without spending an LLM call.
 
-Both crews are stubbed. The point is not to test that agents research well, it
-is to test the wiring around them, which is where a silent mistake (swapped
-claim lists, a lost result) would be nearly invisible in a finished report.
+Two layers here:
+
+  1. Merge behavior, with the whole crew stubbed. Verifies that claims land on
+     the correct sides and that a task whose output never parsed fails loudly
+     instead of quietly becoming "no findings".
+
+  2. Concurrency, against the REAL crew.jsonc with only the agents' LLMs
+     swapped for stubs. This is the test that protects the crew's structure:
+     the two research tasks must be async and must be followed by a
+     synchronous barrier task, because CrewAI rejects a crew ending in more
+     than one async task. Get that ordering wrong and the crew either refuses
+     to construct or silently runs the two researchers back-to-back, which no
+     amount of unit-testing the merge would catch.
 """
 
-import threading
+import json
 import time
+from typing import ClassVar
 
 import pytest  # pyrefly: ignore
 from crewai.crews.crew_output import CrewOutput
+from crewai.llms.base_llm import BaseLLM
 from crewai.tasks.task_output import TaskOutput
 
 from crewai_exec_deep_research_agent.crews.research_crew.research_crew import ResearchCrew
 from crewai_exec_deep_research_agent.models import ClaimList, SourcedClaim, SourceType
+from crewai_exec_deep_research_agent.tools.internal_kb_tool import known_document_names
+
+
+EXTERNAL_TASK = "external_research_task"
+INTERNAL_TASK = "internal_research_task"
+BARRIER_TASK = "research_synchronization_task"
 
 
 def make_claim(text: str, source: str, source_type: SourceType) -> SourcedClaim:
     return SourcedClaim(claim=text, source=source, source_type=source_type, confidence=0.9)
 
 
-def make_crew_output(task_name: str, claims: list[SourcedClaim]) -> CrewOutput:
+def make_crew_output(*named_claims: tuple[str, list[SourcedClaim]]) -> CrewOutput:
     return CrewOutput(
         raw="{}",
         tasks_output=[
             TaskOutput(
-                name=task_name,
+                name=name,
                 description="stub",
                 raw="{}",
                 agent="Stub Agent",
                 pydantic=ClaimList(claims=claims),
             )
+            for name, claims in named_claims
         ],
         token_usage={},
     )
 
 
 class StubCrew:
-    """Stands in for a loaded Crew, recording when its kickoff ran."""
+    """Stands in for the loaded Crew."""
 
-    def __init__(self, task_name, claims, delay=0.0, recorder=None):
-        self.task_name = task_name
-        self.claims = claims
-        self.delay = delay
-        self.recorder = recorder
+    def __init__(self, output: CrewOutput):
+        self.output = output
+        self.received_inputs = None
 
     def kickoff(self, inputs=None):
-        if self.recorder is not None:
-            self.recorder.append(("start", self.task_name, time.time()))
-        time.sleep(self.delay)
-        if self.recorder is not None:
-            self.recorder.append(("end", self.task_name, time.time()))
-        return make_crew_output(self.task_name, self.claims)
-
-
-def install_stub_crews(monkeypatch, external: StubCrew, internal: StubCrew) -> None:
-    monkeypatch.setattr(ResearchCrew, "external_crew", lambda self: external)
-    monkeypatch.setattr(ResearchCrew, "internal_crew", lambda self: internal)
+        self.received_inputs = inputs
+        return self.output
 
 
 # ---------------------------------------------------------------------------
-# Concurrency - the whole reason the stage is split into two crews
-# ---------------------------------------------------------------------------
-
-def test_both_crews_run_concurrently(monkeypatch):
-    """The two halves must overlap in time. If this fails, the split into two
-    crews has bought nothing over a single crew with two sequential tasks."""
-    events: list[tuple[str, str, float]] = []
-    delay = 0.3
-    install_stub_crews(
-        monkeypatch,
-        StubCrew("external_research_task", [], delay=delay, recorder=events),
-        StubCrew("internal_research_task", [], delay=delay, recorder=events),
-    )
-    # Both stubs return no claims, so bypass the external guardrail's rules by
-    # checking timing only - claims content is covered by the merge tests below.
-    start = time.time()
-    ResearchCrew().run("some topic")
-    elapsed = time.time() - start
-
-    # Sequential execution would take at least 2 * delay.
-    assert elapsed < delay * 1.8, f"crews appear to have run sequentially ({elapsed:.2f}s)"
-
-    starts = {name: ts for kind, name, ts in events if kind == "start"}
-    ends = {name: ts for kind, name, ts in events if kind == "end"}
-    # Each crew started before the other finished - genuine overlap, not just
-    # a fast total time.
-    assert starts["external_research_task"] < ends["internal_research_task"]
-    assert starts["internal_research_task"] < ends["external_research_task"]
-
-
-def test_both_crews_receive_the_topic(monkeypatch):
-    received: dict[str, dict] = {}
-
-    class RecordingCrew(StubCrew):
-        def kickoff(self, inputs=None):
-            received[self.task_name] = inputs
-            return make_crew_output(self.task_name, self.claims)
-
-    install_stub_crews(
-        monkeypatch,
-        RecordingCrew("external_research_task", []),
-        RecordingCrew("internal_research_task", []),
-    )
-    ResearchCrew().run("wave energy")
-
-    assert received["external_research_task"] == {"topic": "wave energy"}
-    assert received["internal_research_task"] == {"topic": "wave energy"}
-
-
-# ---------------------------------------------------------------------------
-# Merge correctness
+# Merge behavior
 # ---------------------------------------------------------------------------
 
 def test_claims_are_merged_onto_the_correct_sides(monkeypatch):
     external = [make_claim("External fact.", "https://example.test/a", SourceType.EXTERNAL)]
     internal = [make_claim("Internal fact.", "internal_thesis.md", SourceType.INTERNAL)]
-    install_stub_crews(
-        monkeypatch,
-        StubCrew("external_research_task", external),
-        StubCrew("internal_research_task", internal),
-    )
+    stub = StubCrew(make_crew_output((EXTERNAL_TASK, external), (INTERNAL_TASK, internal)))
+    monkeypatch.setattr(ResearchCrew, "crew", lambda self: stub)
 
     findings = ResearchCrew().run("small modular reactors")
 
     assert findings.topic == "small modular reactors"
     assert [c.claim for c in findings.external_claims] == ["External fact."]
     assert [c.claim for c in findings.internal_claims] == ["Internal fact."]
+    assert stub.received_inputs == {"topic": "small modular reactors"}
 
 
 def test_claims_are_looked_up_by_task_name_not_position(monkeypatch):
-    """Async crews finish in whatever order they finish. Pulling results by
-    index instead of name would eventually swap the two sides, which is both
-    catastrophic and almost impossible to spot in a finished report."""
+    """Async tasks finish in whatever order they finish, and the barrier task's
+    output sits in the same list. Pulling results by index would eventually
+    swap the two sides - catastrophic, and almost invisible in a report."""
     external = [make_claim("External fact.", "https://example.test/a", SourceType.EXTERNAL)]
     internal = [make_claim("Internal fact.", "internal_thesis.md", SourceType.INTERNAL)]
-
-    # The external crew emits an unrelated task's output FIRST; a positional
-    # lookup would happily return that decoy.
-    decoy = make_crew_output("some_other_task", internal)
-    real = make_crew_output("external_research_task", external)
-    combined = CrewOutput(
-        raw="{}",
-        tasks_output=[*decoy.tasks_output, *real.tasks_output],
-        token_usage={},
-    )
-
-    class MultiTaskCrew(StubCrew):
-        def kickoff(self, inputs=None):
-            return combined
-
-    install_stub_crews(
-        monkeypatch,
-        MultiTaskCrew("external_research_task", external),
-        StubCrew("internal_research_task", internal),
-    )
+    # Internal completed first, and an unrelated task leads the list.
+    stub = StubCrew(make_crew_output(
+        ("some_other_task", []),
+        (INTERNAL_TASK, internal),
+        (EXTERNAL_TASK, external),
+    ))
+    monkeypatch.setattr(ResearchCrew, "crew", lambda self: stub)
 
     findings = ResearchCrew().run("topic")
+
     assert [c.claim for c in findings.external_claims] == ["External fact."]
+    assert [c.claim for c in findings.internal_claims] == ["Internal fact."]
 
-
-# ---------------------------------------------------------------------------
-# Loud failure - never a silently empty research stage
-# ---------------------------------------------------------------------------
 
 def test_unparsed_task_output_raises_rather_than_returning_empty(monkeypatch):
     """A task whose output never parsed must not quietly become "no findings" -
@@ -178,7 +117,7 @@ def test_unparsed_task_output_raises_rather_than_returning_empty(monkeypatch):
         raw="not json",
         tasks_output=[
             TaskOutput(
-                name="external_research_task",
+                name=EXTERNAL_TASK,
                 description="stub",
                 raw="not json",
                 agent="Stub Agent",
@@ -187,27 +126,134 @@ def test_unparsed_task_output_raises_rather_than_returning_empty(monkeypatch):
         ],
         token_usage={},
     )
-
-    class BrokenCrew(StubCrew):
-        def kickoff(self, inputs=None):
-            return broken
-
-    install_stub_crews(
-        monkeypatch,
-        BrokenCrew("external_research_task", []),
-        StubCrew("internal_research_task", []),
-    )
+    monkeypatch.setattr(ResearchCrew, "crew", lambda self: StubCrew(broken))
 
     with pytest.raises(RuntimeError, match="did not produce a valid ClaimList"):
         ResearchCrew().run("topic")
 
 
-def test_missing_task_output_raises_with_the_names_that_did_run(monkeypatch):
-    install_stub_crews(
-        monkeypatch,
-        StubCrew("renamed_task", []),
-        StubCrew("internal_research_task", []),
-    )
+def test_missing_task_output_raises_naming_the_tasks_that_did_run(monkeypatch):
+    stub = StubCrew(make_crew_output(("renamed_task", [])))
+    monkeypatch.setattr(ResearchCrew, "crew", lambda self: stub)
 
     with pytest.raises(RuntimeError, match="produced no output"):
         ResearchCrew().run("topic")
+
+
+# ---------------------------------------------------------------------------
+# Structure and concurrency, against the real crew.jsonc
+# ---------------------------------------------------------------------------
+
+def test_real_config_has_two_async_tasks_followed_by_a_sync_barrier():
+    """The exact shape CrewAI requires. Two async tasks alone fail Crew's
+    validate_end_with_at_most_one_async_task; the trailing sync task is what
+    makes the concurrent pair legal."""
+    tasks = ResearchCrew().crew().tasks
+
+    assert [t.name for t in tasks] == [EXTERNAL_TASK, INTERNAL_TASK, BARRIER_TASK]
+    assert tasks[0].async_execution is True
+    assert tasks[1].async_execution is True
+    assert tasks[2].async_execution is False
+
+
+def test_research_tasks_do_not_depend_on_each_other():
+    """A context link between them would serialize the pair and let each
+    researcher see the other's findings - which would make the report's
+    'Where Sources Disagree' section meaningless."""
+    external, internal, _barrier = ResearchCrew().crew().tasks
+
+    for task in (external, internal):
+        assert not isinstance(task.context, list) or task.context == []
+
+
+class ScriptedLLM(BaseLLM):
+    """A stand-in model: records when it ran, sleeps, returns canned output.
+
+    Lets the real crew execute end-to-end - real config, real guardrails, real
+    merge - without any network calls.
+    """
+
+    label: str = ""
+    payload: str = ""
+    work_seconds: float = 0.4
+
+    # ClassVar, not a field: a `list` field would be validated into a separate
+    # copy per instance, so the three stand-ins would each record into their
+    # own list and the timeline would come back empty.
+    events: ClassVar[list[tuple[str, str, float]]] = []
+
+    def call(self, messages, tools=None, callbacks=None, available_functions=None,
+             from_task=None, from_agent=None, **kwargs) -> str:
+        ScriptedLLM.events.append((self.label, "start", time.time()))
+        time.sleep(self.work_seconds)
+        ScriptedLLM.events.append((self.label, "end", time.time()))
+        return self.payload
+
+    def supports_function_calling(self) -> bool:
+        return False
+
+
+def build_scripted_crew():
+    """The real crew, with each agent's LLM replaced by a scripted stand-in."""
+    crew = ResearchCrew().crew()
+
+    external_payload = json.dumps({"claims": [{
+        "claim": "A named company raised $42M in March 2026.",
+        "source": "https://example-news.test/funding",
+        "source_type": "external",
+        "confidence": 0.9,
+    }]})
+    internal_payload = json.dumps({"claims": [{
+        "claim": "The firm previously reviewed this sector.",
+        "source": sorted(known_document_names())[0],
+        "source_type": "internal",
+        "confidence": 0.9,
+    }]})
+    payloads = {
+        "External Market Researcher": ("external", external_payload),
+        "Internal Knowledge Analyst": ("internal", internal_payload),
+        "Research Coordinator": ("barrier", "Research complete: 1 external, 1 internal."),
+    }
+
+    for agent in crew.agents:
+        label, payload = payloads[agent.role]
+        agent.llm = ScriptedLLM(model="stub", label=label, payload=payload)
+    return crew
+
+
+def test_the_two_research_tasks_actually_overlap_in_time():
+    """The property the whole three-task structure exists to buy. Without the
+    async flags this still passes its assertions on output, but takes twice as
+    long and the overlap check fails."""
+    ScriptedLLM.events.clear()
+    crew = build_scripted_crew()
+
+    crew.kickoff(inputs={"topic": "test topic"})
+
+    starts = {label: ts for label, kind, ts in ScriptedLLM.events if kind == "start"}
+    ends = {label: ts for label, kind, ts in ScriptedLLM.events if kind == "end"}
+
+    # Each research task began before the other finished - genuine overlap,
+    # not merely a fast total runtime.
+    assert starts["external"] < ends["internal"]
+    assert starts["internal"] < ends["external"]
+    # The barrier ran only after both had finished; that's what makes it a
+    # barrier rather than a third concurrent task.
+    assert starts["barrier"] >= ends["external"]
+    assert starts["barrier"] >= ends["internal"]
+
+
+def test_real_config_runs_end_to_end_through_guardrails_and_merge(monkeypatch):
+    """Exercises the whole path with no network: real task configs, real
+    output_pydantic parsing, real guardrails, real merge."""
+    ScriptedLLM.events.clear()
+    crew = build_scripted_crew()
+    monkeypatch.setattr(ResearchCrew, "crew", lambda self: crew)
+
+    findings = ResearchCrew().run("test topic")
+
+    assert findings.topic == "test topic"
+    assert len(findings.external_claims) == 1
+    assert len(findings.internal_claims) == 1
+    assert findings.external_claims[0].source.startswith("https://")
+    assert findings.internal_claims[0].source in known_document_names()

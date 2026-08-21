@@ -1,0 +1,175 @@
+{
+  "topic": "small modular reactors",
+  "internal_claims": [
+    {
+      "claim": "Northbridge took a first pass at advanced nuclear approximately eighteen months ago and passed on two SMR developers, primarily due to regulatory-timeline risk: both companies were assuming a faster NRC licensing path than the firm believed realistic given the design certification backlog at the time.",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.9
+    },
+    {
+      "claim": "One of the two SMR developers Northbridge passed on, referred to internally as 'Developer X' pending public disclosure, received a favorable pre-application engagement outcome with the NRC in a recent quarter, which the firm views as a meaningfully positive signal relative to its original licensing-risk thesis; the deal team has flagged this as worth revisiting but the firm has not yet re-engaged with Developer X directly.",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.9
+    },
+    {
+      "claim": "Northbridge has an open internal question, flagged for its next review, on whether the Developer X NRC signal combined with LP demand-side interest is sufficient to justify reopening diligence on the SMR sub-segment specifically, even though the firm's timeline concerns about molten salt reactor (MSR) designs remain largely unchanged.",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Northbridge historically treats molten salt reactor (MSR) developers as a distinct sub-thesis from light-water SMR designs due to different regulatory pathways and added fuel-cycle/materials-corrosion technical risk; the firm's technical advisor (informal call notes, not a formal diligence report) assessed MSR designs as technically compelling but likely 5+ years further from commercial demonstration than single-loop SMR designs.",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.8
+    },
+    {
+      "claim": "Multiple LPs have specifically asked Northbridge about its exposure (or lack thereof) to 'firm, dispatchable clean power' as a category spanning both advanced nuclear and enhanced geothermal, framed as a hedge against intermittent renewables' grid integration challenges; this cross-sub-segment dispatchability framing is relatively new in how LPs are talking to the firm about this space.",
+      "source": "internal_quarterly_energy_sector_scan.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Per the firm's quarterly sector scan, inbound deal flow tagged 'advanced nuclear' (SMR plus MSR combined) was up noticeably quarter-over-quarter, which the sourcing team attributes largely to the corporate data-center offtake narrative rather than to any underlying change in the technology itself.",
+      "source": "internal_quarterly_energy_sector_scan.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "As an adjacent, non-substitutive signal from within the existing portfolio (not itself a nuclear investment), the CEO of Gridline Storage Systems, a grid-scale battery storage portfolio company, reported that utility customers are increasingly asking Gridline to model storage deployments alongside an assumed firm-generation source, specifically naming advanced nuclear or geothermal in two recent customer conversations; the firm's own notes caveat this as one portfolio company's customer conversations, not a systematic survey, and explicitly not a substitute for direct SMR market research.",
+      "source": "internal_portfolio_checkin_gridline_storage.md",
+      "source_type": "internal",
+      "confidence": 0.55
+    },
+    {
+      "claim": "A direct internal knowledge base query specifically for the named companies NuScale, Oklo, and TerraPower returned no matching internal documents, indicating Northbridge has no prior internal work naming these specific SMR developers (its prior pass decisions instead refer only to an unnamed 'Developer X').",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.5
+    }
+  ],
+  "external_claims": [
+    {
+      "claim": "Global venture funding for nuclear energy startups exceeded $4.5 billion across 81 companies in 2026 year-to-date as of late July 2026.",
+      "source": "https://www.axios.com/2026/07/28/nuclear-energy-venture-capital",
+      "source_type": "external",
+      "confidence": 0.7
+    },
+    {
+      "claim": "Valar Atomics closed a $1 billion Series B financing round led by Sequoia Capital, announced August 3, 2026.",
+      "source": "https://www.bloomberg.com/news/articles/2026-08-03/sequoia-leads-1-billion-funding-round-for-nuclear-startup-valar",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "The $1 billion Valar Atomics Series B round values the company at $6 billion including the new funding.",
+      "source": "https://www.bloomberg.com/news/articles/2026-08-03/sequoia-leads-1-billion-funding-round-for-nuclear-startup-valar",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Valar Atomics and Nvidia are planning a 30-megawatt nuclear-powered AI facility in Utah.",
+      "source": "https://www.instagram.com/p/DbmH3D0kdFg/",
+      "source_type": "external",
+      "confidence": 0.5
+    },
+    {
+      "claim": "Valar Atomics previously raised $130 million in a Series A round led by Snowpoint Ventures with Day One and Dream, announced around November 13, 2025.",
+      "source": "https://www.ans.org/news/article-7540/new-financing-round-benefits-valar/",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "X-energy raised $700 million in a Series D funding round, reported November 30, 2025, to fund manufacturing capacity supporting more than 5 gigawatts of new nuclear projects.",
+      "source": "https://neutronbytes.com/2025/11/30/x-energy-leaps-ahead-with-700m-in-series-d-funding/",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "Amazon led a roughly $500 million investment in X-energy, anchoring a financing round to support completion of X-energy's SMR design and licensing.",
+      "source": "https://www.energy.gov/documents/46-exh-rr-amazon-invests-x-energypdf",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Amazon and chemical company Dow have partnered with X-energy to bring a four-unit SMR plant online, with Amazon seeking up to 5 gigawatts of capacity from the technology.",
+      "source": "https://www.ans.org/news/2025-10-20/article-7473/amazon-provides-update-on-its-washington-project-with-xenergy/",
+      "source_type": "external",
+      "confidence": 0.75
+    },
+    {
+      "claim": "Oklo and Meta announced an agreement in January 2026 to support development of a 1.2 GW nuclear energy power campus in Pike County, Ohio, to supply Meta's data centers.",
+      "source": "https://oklo.com/newsroom/news-details/2026/Oklo-Meta-Announce-Agreement-in-Support-of-1-2-GW-Nuclear-Energy-Development-in-Southern-Ohio/default.aspx",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Phase 1 of the Oklo-Meta Ohio nuclear power project is targeted to come online in 2030.",
+      "source": "https://www.linkedin.com/posts/brian-gitt_oklo-meta-announce-agreement-in-support-activity-7415349338090135553-MHsy",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "Oklo signed a master power agreement with data center developer Switch in December 2024 covering potential deployment of up to 12 GW of advanced reactor capacity over 20 years.",
+      "source": "https://www.utilitydive.com/news/oklo-aurora-smr-advanced-nuclear-reactor-supply-agreement-data-center-developer-switch/735933/",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "The UK's National Wealth Fund committed up to \u00a3599 million in financing to support Rolls-Royce SMR's development of its small modular reactors.",
+      "source": "https://www.nationalwealthfund.org.uk/news-and-publications/news/national-wealth-fund-commits-up-to-599m-to-rolls-royce-smr/",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Rolls-Royce SMR signed a landmark contract with Great British Energy \u2013 Nuclear (GBE-N) for delivery of the UK's first small modular reactors, announced April 13, 2026.",
+      "source": "https://www.rolls-royce.com/media/press-releases/2026/13-04-2026-rr-welcomes-contract-with-uk-government-for-delivery-of-small-modular-reactors.aspx",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Rolls-Royce SMR and \u010cEZ Group signed an Early Works Contract in September 2026 marking the next phase toward the Czech Republic's first small modular reactor.",
+      "source": "https://www.rolls-royce-smr.com/our-progress",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "President Trump's May 23, 2025 Executive Order 14300 mandates the NRC to reform and overhaul licensing processes for advanced reactors and SMRs, including eliminating delays.",
+      "source": "https://www.whitehouse.gov/presidential-actions/2025/05/ordering-the-reform-of-the-nuclear-regulatory-commission/",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Reforms addressing Executive Order 14300 establish binding licensing deadlines of no more than eighteen months for NRC decisions on new reactor applications.",
+      "source": "https://www.catf.us/resource/actions-address-executive-order-14300-reforming-nuclear-regulatory-commission/",
+      "source_type": "external",
+      "confidence": 0.75
+    },
+    {
+      "claim": "The U.S. Department of Energy named 10 companies for a fast-tracked pilot program aiming to get test reactors operating by July 4, 2026.",
+      "source": "https://www.ans.org/news/article-7273/ten-companies-named-for-fasttracked-reactor-pilots-what-to-know",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "NuScale Power cancelled its planned SMR site in Idaho in 2023 after the project's cost rose from $5 billion to $9 billion.",
+      "source": "https://www.facebook.com/groups/veienergy/posts/7884239288303384/",
+      "source_type": "external",
+      "confidence": 0.55
+    },
+    {
+      "claim": "A GLOBSEC analysis found that if SMR construction timelines extend by two years (from 5 to 7 years), total project costs would rise to $14,071 per kW.",
+      "source": "https://www.globsec.org/what-we-do/commentaries/faster-cheaper-smarter-promise-and-pitfalls-small-modular-reactors",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "An IEEFA report published May 29, 2024 found the SMR industry is still plagued by cost overruns and schedule delays, undercutting proponents' claims that new designs would avoid the problems seen in large reactor construction.",
+      "source": "https://ieefa.org/articles/small-modular-reactors-are-still-too-expensive-too-slow-and-too-risky",
+      "source_type": "external",
+      "confidence": 0.7
+    }
+  ]
+}

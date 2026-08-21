@@ -14,6 +14,11 @@ run_crew = "crewai_exec_deep_research_agent.main:kickoff"
 plot = "crewai_exec_deep_research_agent.main:plot"
 run_with_trigger = "crewai_exec_deep_research_agent.main:run_with_trigger"
 
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

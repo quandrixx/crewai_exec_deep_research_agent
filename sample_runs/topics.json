@@ -1,0 +1,38 @@
+{
+  "_comment": [
+    "Demo topics for the Deep Research Agent, chosen so a reviewer can see the",
+    "pipeline behave differently rather than four variations of the same run.",
+    "Each names the internal document that gives the run something to disagree",
+    "with - the 'Where Sources Disagree' section is the whole reason the",
+    "internal and external halves are researched independently, and it only",
+    "has material to work with when the firm has a prior view on the topic.",
+    "Run one with: uv run kickoff \"<topic>\""
+  ],
+  "topics": [
+    {
+      "topic": "small modular reactors",
+      "why": "The strongest demo. The firm passed on two SMR developers eighteen months ago on regulatory-timeline risk, and external evidence has since moved - binding NRC licensing deadlines, gigawatt-scale data centre offtake. The report should tell the committee its own prior reasoning has been overtaken.",
+      "internal_context": "internal_thesis_advanced_nuclear.md"
+    },
+    {
+      "topic": "enhanced geothermal systems",
+      "why": "The firm ran full diligence and passed for reasons unrelated to the technology. Tests whether the analysis surfaces why it passed rather than re-deriving a view from scratch.",
+      "internal_context": "internal_diligence_enhanced_geothermal.md"
+    },
+    {
+      "topic": "wave and tidal energy",
+      "why": "The firm's internal view is 'pre-commercial, too early'. External funding evidence contradicts it. Also the thinnest external coverage of the four, so it exercises the instruction to report a sparse result honestly instead of padding.",
+      "internal_context": "internal_scouting_notes_wave_energy.md"
+    },
+    {
+      "topic": "molten salt reactors",
+      "why": "The firm's technical advisor rated these years behind light-water SMRs. Useful as a contrast to the SMR run: the same sector scan, a different verdict.",
+      "internal_context": "internal_thesis_advanced_nuclear.md"
+    },
+    {
+      "topic": "green hydrogen electrolyzers",
+      "why": "Deliberately out-of-scope for the mock knowledge base - the only internal document mentioning it is the prior report used as a style reference, which is not retrievable evidence. Use this to check the internal researcher reports 'no prior internal work' instead of inventing a firm view.",
+      "internal_context": "(none - this is the point)"
+    }
+  ]
+}

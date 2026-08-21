@@ -5,3 +5,5 @@ lib/
 .claude/
 .pytest_cache/
 .venv/
+output/
+crewai_flow.html

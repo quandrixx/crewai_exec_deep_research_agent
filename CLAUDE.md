@@ -76,7 +76,7 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 148 total):**
+**Built and verified (tests run and passing - 170 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
@@ -112,20 +112,22 @@ it to match.
   run every iteration - `AnalysisResult.model_validate_json(...)` loads one
   directly.
 
-**Not started yet - this is where to resume:**
-- `main.py` - still the untouched `crewai create` template. It defines a
-  `ContentFlow` importing a nonexistent `content_crew`, and `pyproject.toml`'s
-  scripts point at it, so `crewai run` does not work yet.
-- `README.md` - still the `{{crew_name}}` template
-- `sample_runs/topics.json` (a small set of energy-tech topics to run
-  end-to-end once the pipeline works)
+- `main.py` - the CLI entry point, verified end-to-end. See its own section.
+- `sample_runs/topics.json` - five demo topics, each noting which internal
+  document gives that run something to disagree with. A test asserts every
+  referenced document actually exists, so a rename can't quietly turn a chosen
+  demo into a bland one.
 
-**Unverified, needs one live run when API credits allow:** the Report Crew's
-writer is now told not to restate individual round amounts in the prose under
-the funding table. That fix went in *after* the last successful live run, so
-`sample_runs/report_wave_tidal_energy.md` still shows the problem it addresses:
-the table reads **$36M** while the sentence below it reads **EUR 32 million**.
-The table itself is correct and verified; only the prose rule is untested.
+**Not started yet - this is where to resume:**
+- `README.md` - still the `{{crew_name}}` template. This is the last piece of
+  the submission.
+
+The prose-restatement fix noted as unverified last session is now **confirmed
+working** - a full CLI run on molten salt reactors produced a Where Capital Is
+Flowing section discussing stage, geography, and public-vs-private pattern with
+no figures restated against the table. (`sample_runs/report_wave_tidal_energy.md`
+predates the fix and still shows the old problem: table reads $36M, prose reads
+EUR 32 million. Left as-is, as the artifact of that run.)
 
 ## The Research Crew (reference implementation - copy its patterns)
 
@@ -241,6 +243,44 @@ target while the reviewer reported nothing to fix. Tightening the ceiling to
 1100 and making length an explicit required edit in the reviewer's prompt
 brought the next run to **850 words**, with the guardrail bouncing one draft
 along the way.
+
+## The CLI (`main.py`)
+
+```bash
+crewai run                                  # default topic
+uv run kickoff "enhanced geothermal systems"
+uv run kickoff --list-topics
+uv run plot                                 # -> output/flow/crewai_flow.html
+```
+
+`crewai run` resolves a flow project to the `kickoff` script in pyproject.toml
+and loads `.env` first; `main.py` also calls `load_dotenv()` so the other entry
+paths behave identically.
+
+Verified end-to-end: a full `uv run kickoff "molten salt reactors"` produced
+24 external + 8 internal claims, an analysis passing the gate with 42 citations
+verified and no revisions, and a 1049-word briefing - all five artifacts written
+to `output/molten_salt_reactors/`.
+
+Three behaviors worth preserving:
+
+  - **Artifacts are written on every path**, including escalation and crash.
+    The escalation path exists to give a human analyst a head start, which only
+    works if the research and analysis behind the failed citations survive. The
+    crash handler exists for the same reason and is not hypothetical - an API
+    credit exhaustion mid-report is how it came up.
+  - **Exit codes distinguish outcomes**: 0 report produced, 2 escalated (the
+    safety machinery working, but no deliverable), 1 crashed. A caller
+    scripting this needs to tell those apart.
+  - **Missing `ANTHROPIC_API_KEY` stops immediately; missing `SERPER_API_KEY`
+    warns and continues.** Without the model key nothing can run at all; without
+    search the run still produces a briefing from internal sources, just a much
+    weaker one, and whoever reads it deserves to know.
+
+`uv run plot` copies the whole generated bundle, not just the `.html` - CrewAI
+emits a page plus a ~110KB script holding the graph data plus a stylesheet, into
+a temp directory it then discards. Copying the page alone yields a blank diagram
+that looks like it worked.
 
 ## CrewAI JSONC config - verified mechanics
 
@@ -370,12 +410,20 @@ CrewAI is ever upgraded.
    without re-running the full test suite, since
    `test_paraphrased_but_related_citation_is_not_flagged_as_weak` exists
    specifically to catch that regression.
-9. **The external researcher over-produces.** Its task asks for 8-15 claims;
+9. **Reports run long.** The style guide targets 600-900 words in the body;
+   live runs have landed at 1151 (before the guardrail ceiling was tightened),
+   then 850, 979, and 1049. The band accepts up to 1100 because the guide
+   explicitly allows a briefing that needs more room to be honest, but the
+   Style Reviewer clearly under-cuts. Tighten the reviewer's prompt further if
+   this matters; resist tightening the ceiling much more, since the reviewer
+   would then start cutting substance to hit a number.
+
+10. **The external researcher over-produces.** Its task asks for 8-15 claims;
    live runs returned 31, then 20 after the instruction was tightened to "stop
    once you have that many". All were well-sourced, so this is a
    prompt-adherence gap rather than a correctness bug, but tighten it further if
    the Analysis Crew struggles with the volume.
-10. **Internal document filenames are part of the deliverable.** They're cited
+11. **Internal document filenames are part of the deliverable.** They're cited
    verbatim in the report's Sources appendix, so they follow a consistent
    `internal_*` convention and are spelled correctly. Three tests assert
    specific filenames; renaming a doc means updating
@@ -385,9 +433,7 @@ CrewAI is ever upgraded.
 
 1. Read this file, then the documents in `knowledge/` (`style_guide.md` first -
    it defines the report the whole pipeline is building toward).
-2. Write `main.py` and the README next. NOTE: the Anthropic API ran out of
-   credits at the end of the last session, so any live run will fail with a 400
-   until that is topped up - the full test suite runs offline and is unaffected.
+2. Write the README next - it is the last piece of the submission.
    Every stage can be developed against saved output in `sample_runs/` instead
    of paying for upstream runs - `ResearchFindings`, `AnalysisResult`, and
    `FinalReport` all load with `.model_validate_json(path.read_text())`.

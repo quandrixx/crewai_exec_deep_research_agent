@@ -29,6 +29,7 @@ from crewai import Crew
 from crewai.crews.crew_output import CrewOutput
 from crewai.project import load_crew
 
+from crewai_exec_deep_research_agent.costs import LEDGER
 from crewai_exec_deep_research_agent.models import (
     AnalysisResult,
     CitationIssue,
@@ -117,11 +118,13 @@ class AnalysisCrew:
         """
         all_claims = _build_claim_index(findings)
 
-        result = self.crew().kickoff(inputs={
+        crew = self.crew()
+        result = crew.kickoff(inputs={
             "topic": findings.topic,
             "claims_block": _format_claims(all_claims),
             "prior_issues_block": _format_prior_issues(prior_issues),
         })
+        LEDGER.record("analysis", crew, result)
 
         landscape = _task_output(result, _LANDSCAPE_TASK, LandscapeAnalysis)
         judgment = _task_output(result, _JUDGMENT_TASK, InvestmentJudgment)

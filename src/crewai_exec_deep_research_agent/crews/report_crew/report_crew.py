@@ -33,6 +33,7 @@ from crewai.crews.crew_output import CrewOutput
 from crewai.project import load_crew
 
 from crewai_exec_deep_research_agent.knowledge_paths import read_knowledge_file
+from crewai_exec_deep_research_agent.costs import LEDGER
 from crewai_exec_deep_research_agent.models import (
     AnalysisResult,
     FinalReport,
@@ -200,13 +201,15 @@ class ReportCrew:
         the sources appendix, the funding table, and fact_check_status are all
         assembled here rather than by an agent.
         """
-        result = self.crew().kickoff(inputs={
+        crew = self.crew()
+        result = crew.kickoff(inputs={
             "topic": analysis.topic,
             "style_guide": read_knowledge_file(_STYLE_GUIDE),
             "sample_report": read_knowledge_file(_SAMPLE_REPORT),
             "analysis_block": _format_analysis_block(analysis),
             "funding_table": _render_funding_table(analysis.funding_events),
         })
+        LEDGER.record("report", crew, result)
 
         reviewed = _task_output(result, _REVIEW_TASK, ReviewedReport)
 

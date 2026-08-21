@@ -76,7 +76,7 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 170 total):**
+**Built and verified (tests run and passing - 187 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
@@ -291,6 +291,49 @@ Three behaviors worth preserving:
 emits a page plus a ~110KB script holding the graph data plus a stylesheet, into
 a temp directory it then discards. Copying the page alone yields a blank diagram
 that looks like it worked.
+
+## Cost (`costs.py`)
+
+Every run reports its own cost, per stage, in the CLI summary and in
+`output/<topic>/cost.json`. Rates are Anthropic list prices verified 2026-08-21.
+
+Measured baseline - enhanced geothermal systems, clean run, no revision round:
+
+| Stage | Model | Cost | Tokens |
+|---|---|---|---|
+| research | `claude-sonnet-5` | $0.30 | 116k in / 13k out, 14 requests |
+| analysis | `claude-sonnet-4-5` | $0.08 | 14k in / 2k out |
+| report | `claude-sonnet-4-5` | $0.10 | 12k in / 4k out |
+| **total** | | **$0.49** | |
+
+**Research dominates because agent loops are quadratic.** Each iteration
+resends the whole accumulated conversation, so a stage making N tool calls pays
+input tokens proportional to N². Measured runs made 38-42 tool executions
+against tasks asking for "4-6 SEPARATE, NARROW searches" - so the
+over-production noted in known gap #9 is also the main cost driver, and halving
+the tool calls would cut cost roughly fourfold rather than in half. That is the
+single biggest lever if cost ever matters.
+
+**A run costs more than the baseline when it takes the revision path** - a
+failed fact-check re-runs the entire Analysis Crew - or when the guardrails
+bounce a draft, which re-runs one task.
+
+Two findings worth acting on if this is ever tuned:
+
+  - **Prompt caching is already active on the research stage** (35,783 tokens
+    read from cache in the measured run), but the analysis and report crews
+    read *zero* while writing ~13k each. Each runs once per pipeline with two
+    differently-prompted tasks, so they pay the 1.25× cache-write premium and
+    never read it back - a straight ~25% surcharge on those two stages.
+  - **The analysis and report crews run the more expensive model.**
+    `claude-sonnet-4-5` is $3/$15 against `claude-sonnet-5`'s $2/$10. That is a
+    consequence of known gap #3, not a choice - revisit if CrewAI's
+    structured-output allowlist learns about sonnet-5.
+
+**Watch out:** `LEDGER` is a process-wide singleton (the alternative was
+threading a ledger through the Flow and all three crews). `main.py` resets it
+per run, and `tests/conftest.py` resets it per test - without that the suite is
+order-dependent, which it briefly was.
 
 ## CrewAI JSONC config - verified mechanics
 

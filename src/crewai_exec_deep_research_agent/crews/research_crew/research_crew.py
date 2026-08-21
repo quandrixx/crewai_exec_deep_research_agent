@@ -23,6 +23,7 @@ from crewai import Crew
 from crewai.crews.crew_output import CrewOutput
 from crewai.project import load_crew
 
+from crewai_exec_deep_research_agent.costs import LEDGER
 from crewai_exec_deep_research_agent.models import ClaimList, ResearchFindings, SourcedClaim
 
 
@@ -48,7 +49,9 @@ class ResearchCrew:
         confirmation line, so CrewOutput.pydantic alone gives you none of what
         you actually want.
         """
-        result = self.crew().kickoff(inputs={"topic": topic})
+        crew = self.crew()
+        result = crew.kickoff(inputs={"topic": topic})
+        LEDGER.record("research", crew, result)
 
         return ResearchFindings(
             topic=topic,

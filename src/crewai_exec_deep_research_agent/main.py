@@ -30,6 +30,7 @@ import os
 import sys
 from pathlib import Path
 
+from crewai_exec_deep_research_agent.costs import LEDGER
 from crewai_exec_deep_research_agent.flows.deep_research_flow import DeepResearchFlow
 
 
@@ -107,6 +108,11 @@ def _save_artifacts(state, out_dir: Path) -> list[Path]:
         written.append(_save(out_dir / "analysis.json", state.analysis))
     if state.fact_check is not None:
         written.append(_save(out_dir / "fact_check.json", state.fact_check))
+    if LEDGER.stages:
+        cost_path = out_dir / "cost.json"
+        cost_path.write_text(json.dumps(LEDGER.as_dict(), indent=2))
+        written.append(cost_path)
+
     if state.final_report is not None:
         from crewai_exec_deep_research_agent.crews.report_crew.report_crew import (
             render_markdown,
@@ -146,6 +152,9 @@ def _print_summary(state, written: list[Path]) -> None:
             f"{state.revision_count} revision round(s))"
         )
 
+    for line in LEDGER.render():
+        print(line)
+
     if written:
         print("\n  written:")
         for path in written:
@@ -174,6 +183,7 @@ def _run(topic: str) -> int:
     _check_api_keys()
 
     out_dir = OUTPUT_DIR / _slug(topic)
+    LEDGER.reset()
     flow = DeepResearchFlow()
 
     try:

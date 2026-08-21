@@ -29,7 +29,7 @@ Two failure classes are distinguished:
 """
 
 import re
-from ..models import AnalysisResult, CitationIssue, FactCheckResult
+from crewai_exec_deep_research_agent.models import AnalysisResult, CitationIssue, FactCheckResult
 
 
 _STOPWORDS = {

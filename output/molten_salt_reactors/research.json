@@ -1,0 +1,127 @@
+{
+  "topic": "molten salt reactors",
+  "internal_claims": [
+    {
+      "claim": "Northbridge has historically treated molten salt reactor (MSR) developers as a distinct sub-thesis from light-water SMR designs, given the different regulatory pathway and the added fuel-cycle and materials-corrosion technical risk MSR designs carry.",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.9
+    },
+    {
+      "claim": "The firm's technical advisor's informal view (call notes, not a formal diligence report) was that MSR designs are technically compelling on paper - better passive safety characteristics and higher thermal efficiency - but carry meaningfully longer time-to-commercial-demonstration than single-loop SMR designs, likely 5+ years further out.",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.8
+    },
+    {
+      "claim": "The firm's prior pass on two SMR developers roughly eighteen months ago, on regulatory-timeline/NRC design-certification-backlog risk, was specific to light-water SMR designs; the same internal document explicitly separates MSR out as a distinct sub-thesis, so this pass rationale should not be read as the firm's conclusion on MSR specifically.",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.75
+    },
+    {
+      "claim": "In the most recent quarterly scan, inbound deal flow tagged 'advanced nuclear' (SMR and MSR combined) was up noticeably quarter-over-quarter, which the sourcing team attributes largely to the corporate data-center offtake narrative rather than to any change in the underlying MSR/SMR technology landscape.",
+      "source": "internal_quarterly_energy_sector_scan.md",
+      "source_type": "internal",
+      "confidence": 0.8
+    }
+  ],
+  "external_claims": [
+    {
+      "claim": "TerraPower closed a $650 million fundraise in June 2025, with Nvidia's NVentures among the investors backing the round.",
+      "source": "https://www.businesswire.com/news/home/20250618150590/en/TerraPower-Announces-%24650-Million-Fundraise",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "TerraPower's $650 million round (closed June 2025) is intended to advance its sodium-cooled fast reactor project (Natrium) in Wyoming, a design that integrates a molten salt-based energy storage system.",
+      "source": "https://netzeroinsights.com/resources/nuclear-fission-investment-surges-2025/",
+      "source_type": "external",
+      "confidence": 0.7
+    },
+    {
+      "claim": "Thorizon, a Franco-Dutch molten salt reactor developer, raised \u20ac20 million in a round announced March 2025, led by Dutch National Promotional Institution Invest-NL with participation from Positron Ventures, PDENH, and Impuls Zeeland.",
+      "source": "https://www.world-nuclear-news.org/articles/new-funding-to-advance-thorizon-molten-salt-reactor-development",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "Thorizon's March 2025 \u20ac20 million round brought its total capital raised to \u20ac42.5 million, including \u20ac16 million led by Invest-NL and \u20ac4 million from other participants.",
+      "source": "https://www.nucnet.org/news/franco-dutch-startup-thorizon-gets-eur20-million-in-new-funding-for-molten-salt-reactor-project-3-5-2025",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Copenhagen Atomics was awarded \u20ac2.5 million (about $2.9 million) in grant funding from the EIC Accelerator, announced July 2, 2025, to support technological development and prototype validation of its thorium molten salt reactor technology.",
+      "source": "https://copenhagenatomics.com/news/copenhagen-atomics-awarded-funding-by-eic-accelerator/",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "The U.S. Department of Energy committed $303 million to Kairos Power's Hermes advanced reactor project under a milestone-based funding deal, reported February 27, 2026.",
+      "source": "https://carboncredits.com/does-303m-bet-on-kairos-power-signals-americas-advanced-nuclear-push/",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Kairos Power generated $10.5 million in revenue in 2024 and Google has stated a target of a 500 MW fleet of Kairos reactors by 2035 under their agreement.",
+      "source": "https://www.upmarket.co/private-markets/pre-ipo/kairos-power/",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "The U.S. Nuclear Regulatory Commission issued a construction permit to Abilene Christian University for its Molten Salt Research Reactor (MSRR) on September 16, 2024, marking the first NRC construction permit for a liquid-fueled advanced reactor and only the second construction permit issued for any advanced reactor.",
+      "source": "https://www.world-nuclear-news.org/articles/construction-permit-granted-for-molten-salt-research-reactor",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "ACU and its partner Natura Resources planned to submit an operating license application for the Molten Salt Research Reactor (MSR-1) to the NRC, with the NEXT Lab website (as of 2026) indicating this submission would occur by year-end.",
+      "source": "https://acu.edu/research/next-lab/",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "Terrestrial Energy and the Texas A&M University System announced plans in February 2025 to site an Integral Molten Salt Reactor (IMSR) plant at the Texas A&M-RELLIS campus.",
+      "source": "https://en.wikipedia.org/wiki/Integral_Molten_Salt_Reactor",
+      "source_type": "external",
+      "confidence": 0.75
+    },
+    {
+      "claim": "Terrestrial Energy signed an agreement with data center and bitcoin mining company Riot Platforms, reported May 4, 2026, to develop a data center with a co-located molten salt reactor.",
+      "source": "https://www.nucnet.org/news/terrestrial-energy-signs-agreement-on-molten-salt-reactors-for-data-centres-5-4-2026",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "In 2025, Google committed to purchasing power under an offtake arrangement tied to Kairos Power building, owning, and operating molten-salt-cooled reactors for data center power supply, as part of plans for three 600 MW nuclear projects.",
+      "source": "https://neutronbytes.com/2025/05/07/google-plans-three-600-mw-nuclear-projects-for-data-centers/",
+      "source_type": "external",
+      "confidence": 0.7
+    },
+    {
+      "claim": "Global venture investment in nuclear energy startups (a category including molten salt reactor developers) exceeded $4.5 billion across 81 companies in the year-to-date period reported by Axios on July 28, 2026, putting 2026 on pace to exceed 2025's record haul of $6.2 billion.",
+      "source": "https://www.axios.com/2026/07/28/nuclear-energy-venture-capital",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "Molten Salt Reactor companies specifically raised $353 million in equity funding across 3 rounds between January and April 2026, according to Tracxn's market tracking.",
+      "source": "https://tracxn.com/d/trending-business-models/startups-in-molten-salt-reactors/__oA8k0vgpKIKP1_Hav9cH3OqQfAMGcwOria_sVnvNNJ4",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "A Carnegie Endowment analysis published June 2, 2026, titled 'Beyond the Hype,' argues that hyperscaler nuclear commitments (including advanced/molten-salt reactor deals) should be assessed skeptically against actual U.S. energy realities, implying commitments may outpace deliverable capacity.",
+      "source": "https://carnegieendowment.org/research/2026/06/beyond-the-hype-assessing-hyperscaler-nuclear-commitments-against-us-energy-realities",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "A 2021 analysis in The Conversation argued molten salt reactors face difficult unresolved technical problems (such as materials corrosion) and are unlikely to be successfully deployed anytime soon, a skepticism still cited in later discussions of the sector.",
+      "source": "https://theconversation.com/nuclear-power-why-molten-salt-reactors-are-problematic-and-canada-investing-in-them-is-a-waste-167019",
+      "source_type": "external",
+      "confidence": 0.5
+    }
+  ]
+}

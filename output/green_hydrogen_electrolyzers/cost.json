@@ -1,0 +1,36 @@
+{
+  "total_cost_usd": 0.39549979999999996,
+  "notes": [],
+  "stages": [
+    {
+      "stage": "research",
+      "model": "claude-sonnet-5",
+      "prompt_tokens": 92305,
+      "cached_prompt_tokens": 22839,
+      "cache_creation_tokens": 10028,
+      "completion_tokens": 6005,
+      "requests": 11,
+      "cost_usd": 0.20856379999999997
+    },
+    {
+      "stage": "analysis",
+      "model": "claude-sonnet-4-5",
+      "prompt_tokens": 13142,
+      "cached_prompt_tokens": 0,
+      "cache_creation_tokens": 13136,
+      "completion_tokens": 2192,
+      "requests": 2,
+      "cost_usd": 0.082158
+    },
+    {
+      "stage": "report",
+      "model": "claude-sonnet-4-5",
+      "prompt_tokens": 12598,
+      "cached_prompt_tokens": 0,
+      "cache_creation_tokens": 12592,
+      "completion_tokens": 3836,
+      "requests": 2,
+      "cost_usd": 0.10477800000000001
+    }
+  ]
+}

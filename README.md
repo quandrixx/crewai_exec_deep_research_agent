@@ -6,32 +6,40 @@ documents in parallel, reconciles what they say, verifies every citation, and
 produces an investment-committee-ready briefing.
 
 ```bash
-uv run kickoff "molten salt reactors"
+uv run kickoff "enhanced geothermal systems"
 ```
 
 ```
-TOPIC: molten salt reactors
-  research   : 24 external + 8 internal claims
-  analysis   : 5 shifts, 7 companies, 4 funding events, 3 tensions, 4 recommendations
-  fact-check : PASSED (42 citations verified, 0 issues, 0 revision round(s))
+TOPIC: enhanced geothermal systems
+  research   : 18 external + 8 internal claims
+  analysis   : 6 shifts, 4 companies, 3 funding events, 2 tensions, 4 recommendations
+  fact-check : PASSED (30 citations verified, 0 issues, 0 revision round(s))
+  cost       : $0.31 estimated
+    research      $0.13  claude-sonnet-5  (43,668 in / 5,919 out, 7 requests, 11,718 cached)
+    analysis      $0.08  claude-sonnet-4-5  (13,099 in / 2,093 out, 2 requests)
+    report        $0.10  claude-sonnet-4-5  (12,463 in / 3,768 out, 2 requests)
 
   written:
-    output/molten_salt_reactors/research.json
-    output/molten_salt_reactors/analysis.json
-    output/molten_salt_reactors/fact_check.json
-    output/molten_salt_reactors/report.json
-    output/molten_salt_reactors/report.md
+    output/enhanced_geothermal_systems/research.json
+    output/enhanced_geothermal_systems/analysis.json
+    output/enhanced_geothermal_systems/fact_check.json
+    output/enhanced_geothermal_systems/cost.json
+    output/enhanced_geothermal_systems/report.json
+    output/enhanced_geothermal_systems/report.md
 
-  Should Northbridge Increase Sourcing Activity in Molten Salt Reactors?
-  1049 words, 27 sources, fact-check status: passed
+  Should Northbridge Increase Sourcing Activity in Enhanced Geothermal Systems?
+  1035 words, 20 sources, fact-check status: passed
 ```
 
-That is a verbatim run, not an illustration. Its output is checked in:
-[`sample_runs/report_molten_salt_reactors.md`](sample_runs/report_molten_salt_reactors.md)
-— alongside briefings on
-[small modular reactors](sample_runs/report_small_modular_reactors.md) and
-[wave and tidal energy](sample_runs/report_wave_tidal_energy.md), plus the
-intermediate `research_*.json` and `analysis_*.json` each was built from.
+That is a verbatim run, not an illustration — `output/` is checked in, so the
+run above is the one you are reading:
+[`output/enhanced_geothermal_systems/report.md`](output/enhanced_geothermal_systems/report.md),
+alongside briefings on
+[small modular reactors](output/small_modular_reactors/report.md),
+[molten salt reactors](output/molten_salt_reactors/report.md) and
+[wave and tidal energy](output/wave_and_tidal_energy/report.md), each with the
+intermediate `research.json`, `analysis.json` and `cost.json` it was built
+from. Re-running a topic overwrites its directory in place.
 
 ---
 
@@ -81,13 +89,14 @@ rather than failing a minute in.
 ```bash
 crewai run                                    # default topic
 uv run kickoff "enhanced geothermal systems"  # any topic
-uv run kickoff --list-topics                  # suggested demos
-uv run plot                                   # flow diagram -> output/flow/
-uv run pytest                                 # 170 tests, no API calls
+uv run kickoff --list-topics                  # from demo_topics.json
+uv run plot                                   # flow diagram -> diagrams/
+uv run pytest                                 # 206 tests, no API calls
 ```
 
 Output lands in `output/<topic>/`: `research.json`, `analysis.json`,
-`fact_check.json`, `report.json`, `report.md`.
+`fact_check.json`, `cost.json`, `report.json`, `report.md` — written on every
+path, including when the run escalates or crashes part-way.
 
 **Exit codes:** `0` report produced · `2` escalated for human review (the safety
 machinery working, but no deliverable) · `1` crashed.
@@ -104,7 +113,7 @@ flowchart TD
         direction TB
         web["Web Researcher<br/>web_search"]
         internal["Internal Researcher<br/>internal_kb_lookup"]
-        barrier["Barrier task<br/>what lets the two above run concurrently"]
+        barrier["Barrier task<br/>why the two above can run in parallel"]
         web --> barrier
         internal --> barrier
     end
@@ -171,6 +180,7 @@ agent doesn't get to touch it:
 | Funding table | Rendered from structured data — a model asked to reproduce one instead rewrote it, reporting a round in the wrong currency |
 | Merging parallel results | List concatenation; an LLM adds cost, latency, and a chance to silently drop a claim |
 | `fact_check_status` | Read from the gate, not from an agent's opinion of its own work |
+| Unwrapping fenced JSON | A rejection makes CrewAI re-run the whole agent loop; extracting the payload is a string operation |
 
 Agents write prose and exercise judgment. Everything else is code.
 
@@ -200,10 +210,65 @@ masquerade as a research finding.
 
 ---
 
+## Cost
+
+Every run prices itself, per stage, in the summary above and in
+`output/<topic>/cost.json`. Rates are Anthropic list prices verified
+2026-08-21; the figure is an estimate, not a bill — it cannot see negotiated
+discounts.
+
+| Stage | Model | Rate (in/out per MTok) | Typical |
+| --- | --- | --- | --- |
+| research | `claude-sonnet-5` | $2 / $10 | $0.13 |
+| analysis | `claude-sonnet-4-5` | $3 / $15 | $0.08 |
+| report | `claude-sonnet-4-5` | $3 / $15 | $0.10 |
+| **total** | | | **~$0.31** |
+
+**Research dominates, and the reason is structural.** An agent loop resends its
+entire accumulated conversation on every iteration, so a stage making N tool
+calls pays input tokens proportional to N², not N. Everything about cost here
+follows from that.
+
+It started at **$0.49**, and two fixes took it to $0.31 — research input tokens
+fell 116k → 34k:
+
+- **The search instruction contradicted itself.** It asked for "4-6 SEPARATE,
+  NARROW searches" and then required six numbered angles of coverage. Six
+  angles cannot fit in 4-6 searches, and the model resolved the conflict in
+  favour of coverage — correctly. Both research tasks now tie their budget to
+  their angle list with an explicit ceiling. Searches fell 25 → 8.
+- **Guardrail rejections re-run the entire task.** CrewAI answers a failed
+  guardrail with `agent.execute_task(...)` — a fresh loop that repeats every
+  tool call. A measured run paid for two extra rounds of web searches to fix
+  output that was already valid apart from a markdown fence.
+  [`json_salvage.py`](src/crewai_exec_deep_research_agent/json_salvage.py) now
+  unwraps that case deterministically and hands the cleaned string back, which
+  CrewAI re-exports through `output_pydantic`. It only ever unwraps — it will
+  not repair truncated JSON, because inventing structure to make a parse
+  succeed is how you silently lose real findings.
+
+**Run-to-run variance is retries.** A run that trips a guardrail or fails the
+fact-check costs more, and the accounting shows exactly where: one observed run
+took three requests in the report stage instead of two — a single style-rule
+bounce — and that stage cost $0.19 instead of $0.10.
+
+Two known inefficiencies, both left in deliberately and documented in
+[`CLAUDE.md`](CLAUDE.md):
+
+- The analysis and report crews **write** to the prompt cache and never read it
+  back — each runs once per pipeline with two differently-prompted tasks, so
+  they pay the 1.25× write premium for nothing.
+- They also run the **more expensive** model. `claude-sonnet-4-5` is $3/$15
+  against `claude-sonnet-5`'s $2/$10; it is there because toolless agents plus
+  `output_pydantic` need a model on CrewAI's structured-output allowlist, not
+  because it is the better choice.
+
+---
+
 ## Testing
 
 ```bash
-uv run pytest        # 170 tests, ~5s, no API calls
+uv run pytest        # 206 tests, ~5s, no API calls
 ```
 
 Everything deterministic is tested for real: citation checking, retrieval
@@ -219,6 +284,9 @@ says so in its docstring. A few examples:
 - The citation gate once escalated a correct briefing because it demanded every
   cited claim share vocabulary with the citing text, rather than at least one.
 - `FundingStage` stopped at `series_b` until a real X-energy Series D broke it.
+- JSON salvage must unwrap a fenced payload but must *never* repair a truncated
+  one — a test pins each direction, because "fixing" truncation is how the
+  first bug on this list happened.
 
 ---
 
@@ -232,6 +300,8 @@ crews/research_crew/
   crew.jsonc                        # 2 async research tasks + 1 sync barrier
   agents/web_researcher.jsonc
   agents/internal_researcher.jsonc
+  agents/research_coordinator.jsonc # owns the barrier task, nothing else
+  research_refs.py                  # project-local targets for {"python": ...} refs
   research_guardrails.py            # deterministic output validation
   research_crew.py                  # loads the crew, merges the results
 ```
@@ -266,3 +336,8 @@ different model than the research agents.
 - **One revision round, then escalation.** Bounded deliberately — a pipeline
   that retries forever on evidence that genuinely can't support the claims is
   worse than one that asks a human.
+- **Comparison topics are not supported.** The task prompts are written for a
+  single sector. Given `"small modular reactors vs molten salt reactors"` the
+  pipeline ran without complaint and produced a briefing on the first half
+  only, silently dropping the comparison. It should either handle two sectors
+  or refuse the shape; right now it does neither.

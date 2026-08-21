@@ -1,0 +1,163 @@
+{
+  "topic": "enhanced geothermal systems",
+  "internal_claims": [
+    {
+      "claim": "Northbridge ran diligence on an enhanced geothermal systems developer (internal codename 'Thermalis') during its Series B raise; Thermalis uses directional drilling techniques adapted from oil & gas to make geothermal viable outside traditional volcanic/tectonic-boundary regions.",
+      "source": "internal_diligence_enhanced_geothermal.md",
+      "source_type": "internal",
+      "confidence": 0.9
+    },
+    {
+      "claim": "Northbridge passed on the Thermalis deal, but explicitly did NOT pass due to technical skepticism about EGS as an approach; the firm's technical advisor assessed the drilling technology itself as reasonably de-risked given its oil & gas heritage, and the memo notes the pass was thesis-specific to this one company, not a signal against enhanced geothermal broadly.",
+      "source": "internal_diligence_enhanced_geothermal.md",
+      "source_type": "internal",
+      "confidence": 0.9
+    },
+    {
+      "claim": "During the same Thermalis review cycle, Northbridge informally tracked two other earlier-stage (seed/Series A) EGS developers pursuing a similar directional-drilling approach, suggesting this may be converging as the dominant technical approach in the sub-segment rather than one company's differentiated bet; the firm did not run full diligence on either.",
+      "source": "internal_diligence_enhanced_geothermal.md",
+      "source_type": "internal",
+      "confidence": 0.75
+    },
+    {
+      "claim": "Multiple LPs have asked Northbridge about its exposure (or lack thereof) to 'firm, dispatchable clean power' as a category spanning both advanced nuclear and enhanced geothermal, framed as a hedge against intermittent renewables' grid integration challenges; the firm notes this cross-sub-segment 'dispatchability' framing from LPs is relatively new.",
+      "source": "internal_quarterly_energy_sector_scan.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Inbound deal flow tagged 'enhanced geothermal' was roughly flat quarter-over-quarter as of the most recent quarterly scan, but the average stage of inbound has shifted later (fewer seed-stage intros, more Series B+), which the firm reads as a possible sign the sub-segment is maturing past its earliest, most speculative phase.",
+      "source": "internal_quarterly_energy_sector_scan.md",
+      "source_type": "internal",
+      "confidence": 0.8
+    },
+    {
+      "claim": "The quarterly sector scan is explicitly caveated as directional and unverified, drawing on inbound deal flow, LP conversations, and informal market chatter rather than formal diligence, and is meant to flag patterns before any single sub-segment gets a formal diligence memo.",
+      "source": "internal_quarterly_energy_sector_scan.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "In a routine check-in with portfolio company Gridline Storage Systems (a grid-scale battery storage company, not itself a geothermal company), Gridline's CEO reported that utility customers in two recent customer conversations specifically named advanced nuclear or geothermal as an assumed firm-generation source to be modeled alongside storage, rather than treating storage as a standalone intermittency solution.",
+      "source": "internal_portfolio_checkin_gridline_storage.md",
+      "source_type": "internal",
+      "confidence": 0.7
+    },
+    {
+      "claim": "Northbridge treats this Gridline customer signal as a useful but non-systematic demand-side data point suggesting a 'storage plus firm generation' procurement pattern among utilities, which could be a tailwind for geothermal and advanced nuclear that doesn't show up in either sub-segment's own deal-flow data directly; the firm explicitly cautions this is one portfolio company's customer conversations, not a quantified market survey.",
+      "source": "internal_portfolio_checkin_gridline_storage.md",
+      "source_type": "internal",
+      "confidence": 0.65
+    }
+  ],
+  "external_claims": [
+    {
+      "claim": "Fervo Energy raised a $462 million Series E round announced December 10, 2025, led by B Capital, with new investors including AllianceBernstein and Atacama.",
+      "source": "https://fervoenergy.com/fervo-energy-raises-462-million-series-e-to-accelerate-geothermal-development-and-meet-surging-energy-demand-with-clean-firm-power/",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "The $462 million Series E brought Fervo Energy's total funding raised to date to $1.5 billion.",
+      "source": "https://energy.mit.edu/news/the-need-for-geothermal-funding-is-great-and-the-time-is-now-experts-say/",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "Fervo Energy completed an IPO on NASDAQ under ticker FRVO on May 13, 2026, raising $1.89 billion at an implied valuation of $7.39 billion.",
+      "source": "https://forgeglobal.com/fervo-energy_ipo/",
+      "source_type": "external",
+      "confidence": 0.7
+    },
+    {
+      "claim": "Enhanced Geothermal Systems (EGS) companies raised $106 million in equity funding across 3 rounds in the period from January through February 2026.",
+      "source": "https://tracxn.com/d/trending-business-models/startups-in-enhanced-geothermal-systems-egs/__YO2K0L6rkJ_lt00ATuNO5LENBk8Emq_142DAMUk_Qoc",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "Eavor, a closed-loop geothermal energy company, raised $64.9 million in June 2025.",
+      "source": "https://www.vcbacked.co/directory/industries/geothermal-energy",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "The U.S. Department of Energy announced a funding opportunity of up to $171.5 million for next-generation geothermal field tests, with Letters of Intent due in March.",
+      "source": "https://www.energy.gov/hgeo/geothermal/funding-notice-next-generation-geothermal-field-tests-and-geothermal-resource",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "In November 2025, the U.S. Department of Energy merged its geothermal office with its fossil energy office, creating a new Hydrocarbons and Geothermal Energy office.",
+      "source": "https://foleyhoag.com/news-and-insights/blogs/energy-and-climate-counsel/2026/march/new-daylight-for-geothermal-how-federal-support-and-bipartisan-permitting-reform-are-fueling-a-geot/",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "In January 2025, the Inflation Reduction Act's investment and production tax credits were expanded to cover geothermal power.",
+      "source": "https://globalenergymonitor.org/research/trump-administrations-policies-support-rapid-growth-geothermal-power-united-states-12-gw",
+      "source_type": "external",
+      "confidence": 0.7
+    },
+    {
+      "claim": "As of April 2025, 20 of the 24 wells required for what is expected to be the world's largest EGS development (500 MW capacity) had been completed.",
+      "source": "https://www.energypolicy.columbia.edu/publications/the-potential-contribution-of-enhanced-geothermal-systems-to-future-power-supply-roundtable-summary/",
+      "source_type": "external",
+      "confidence": 0.7
+    },
+    {
+      "claim": "Fervo Energy reported a 70% reduction in geothermal drilling time, with drilling costs across the first four horizontal wells at its Cape project falling from $9.4 million to $4.8 million per well.",
+      "source": "https://www.geothermal.org/our-impact/stories/fervo-energy-announces-70-reduction-geothermal-drilling-time",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "A 2025 Stanford geothermal drilling cost curve update found that cost reduction for vertical wells ranges from 12% to 24%, while for horizontal wells the estimated cost reduction is between 18% and 26%.",
+      "source": "https://pangea.stanford.edu/ERE/db/IGAstandard/record_detail.php?id",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "Fervo Energy announced a 31 MW power purchase agreement with Shell Energy on April 15, 2025, with Shell Energy set to use the power for its retail load customers beginning in 2026.",
+      "source": "https://fervoenergy.com/fervo-energy-announces-31-mw-power-purchase-agreement-with-shell-energy/",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "Google signed a 115 MW power purchase agreement with Fervo Energy to provide firm, carbon-free electricity to the California grid, described as a major utility-scale contract for EGS.",
+      "source": "https://enkiai.com/geothermal/fervo-enhanced-geothermal-google/",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "A 15-year power purchase agreement between Google and Baseload was signed for geothermal capacity, with deliveries to California's grid beginning in 2026.",
+      "source": "https://netzeroinsights.com/resources/agreements-geothermal-capacity/",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "A study assessing construction project performance found geothermal projects averaged 58.8% schedule overruns, compared with 64% for nuclear builds, indicating geothermal projects still face significant timeline risk.",
+      "source": "https://www.powermag.com/beyond-traditional-controls-managing-power-project-schedule-and-cost-overruns/",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "A Maryland state program to install geothermal energy systems in several housing complexes is facing delays amid concerns about cost effectiveness, as reported in July 2026.",
+      "source": "https://marylandmatters.org/2026/07/28/maryland-geothermal-energy-program-faces-delays-amid-cost-concerns/",
+      "source_type": "external",
+      "confidence": 0.7
+    },
+    {
+      "claim": "Delays in EGS project development have been attributed to slow permitting and transmission interconnection processes, including a scarcity of geothermal lease auctions relative to demand.",
+      "source": "https://www.energypolicy.columbia.edu/publications/the-potential-contribution-of-enhanced-geothermal-systems-to-future-power-supply-roundtable-summary/",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "An ITIF analysis published May 18, 2026 states a single EGS well costs between $5 million and $10 million to drill, noting per-well costs have improved from a range as high as $13 million down toward $5 million as drilling rates have improved.",
+      "source": "https://itif.org/publications/2026/05/18/advanced-geothermal-energy-widely-available-clean-maybe-cheap-enough/",
+      "source_type": "external",
+      "confidence": 0.5
+    }
+  ]
+}

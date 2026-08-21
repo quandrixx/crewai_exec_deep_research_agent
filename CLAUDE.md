@@ -91,8 +91,8 @@ it to match.
   Flow's fact-check gate passing on real output (42 citations verified). See
   its own section below.
 - **Report Crew - complete and verified against a live run.** See its own
-  section below. `sample_runs/report_small_modular_reactors.md` is a finished
-  briefing produced end-to-end from real research.
+  section below. `output/small_modular_reactors/report.md` is a finished briefing
+  produced end-to-end from real research.
 - `flows/deep_research_flow.py` is fully wired and **verified end-to-end**.
   A full `kickoff()` on "wave and tidal energy" ran research → analysis →
   fact-check → report in 271s: 16 external + 8 internal claims, gate passed
@@ -106,14 +106,16 @@ it to match.
   only real internal evidence belongs in `knowledge/internal_docs/`, since
   everything in that folder is retrievable by the internal KB tool and citable
   as a source.
-- `sample_runs/*.json` - real output from live runs: `research_*.json` are
-  `ResearchFindings`, `analysis_*.json` is a full `AnalysisResult`. Use these
-  as fixtures when building the Report Crew instead of paying for an upstream
-  run every iteration - `AnalysisResult.model_validate_json(...)` loads one
-  directly.
+- `output/<topic>/` - real output from live runs, and **checked into git**
+  It holds run artifacts only, one directory per topic - the generated flow
+  diagram lives in `diagrams/` (gitignored) precisely so `output/` stays one
+  kind of thing. There is no separate samples directory: a run writes straight
+  to its tracked home and re-running a topic overwrites it in place. Use these as fixtures instead of
+  paying for an upstream run every iteration -
+  `AnalysisResult.model_validate_json(path.read_text())` loads one directly.
 
 - `main.py` - the CLI entry point, verified end-to-end. See its own section.
-- `sample_runs/topics.json` - five demo topics, each noting which internal
+- `demo_topics.json` - five demo topics, each noting which internal
   document gives that run something to disagree with. A test asserts every
   referenced document actually exists, so a rename can't quietly turn a chosen
   demo into a bland one.
@@ -125,7 +127,7 @@ it to match.
 The prose-restatement fix noted as unverified last session is now **confirmed
 working** - a full CLI run on molten salt reactors produced a Where Capital Is
 Flowing section discussing stage, geography, and public-vs-private pattern with
-no figures restated against the table. (`sample_runs/report_wave_tidal_energy.md`
+no figures restated against the table. (`output/wave_and_tidal_energy/report.md`
 predates the fix and still shows the old problem: table reads $36M, prose reads
 EUR 32 million. Left as-is, as the artifact of that run.)
 
@@ -260,7 +262,7 @@ hardcoding word counts.
 crewai run                                  # default topic
 uv run kickoff "enhanced geothermal systems"
 uv run kickoff --list-topics
-uv run plot                                 # -> output/flow/crewai_flow.html
+uv run plot                                 # -> diagrams/crewai_flow.html
 ```
 
 `crewai run` resolves a flow project to the `kickoff` script in pyproject.toml
@@ -287,10 +289,10 @@ Three behaviors worth preserving:
     search the run still produces a briefing from internal sources, just a much
     weaker one, and whoever reads it deserves to know.
 
-`uv run plot` copies the whole generated bundle, not just the `.html` - CrewAI
-emits a page plus a ~110KB script holding the graph data plus a stylesheet, into
-a temp directory it then discards. Copying the page alone yields a blank diagram
-that looks like it worked.
+`uv run plot` copies the whole generated bundle into `diagrams/`, not just the
+`.html` - CrewAI emits a page plus a ~110KB script holding the graph data plus a
+stylesheet, into a temp directory it then discards. Copying the page alone
+yields a blank diagram that looks like it worked.
 
 ## Cost (`costs.py`)
 
@@ -504,7 +506,7 @@ CrewAI is ever upgraded.
 1. Read this file, then the documents in `knowledge/` (`style_guide.md` first -
    it defines the report the whole pipeline is building toward).
 2. Write the README next - it is the last piece of the submission.
-   Every stage can be developed against saved output in `sample_runs/` instead
+   Every stage can be developed against saved output in `output/` instead
    of paying for upstream runs - `ResearchFindings`, `AnalysisResult`, and
    `FinalReport` all load with `.model_validate_json(path.read_text())`.
 3. Run `load_crew()` on any new JSONC config before a live run - it catches

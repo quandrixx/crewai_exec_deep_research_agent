@@ -1,0 +1,329 @@
+{
+  "topic": "wave and tidal energy",
+  "executive_summary": "Wave and tidal energy is no longer uniformly pre-commercial. External evidence shows $140 million in private capital entering wave energy for a novel use case (floating AI data centers), commercial deployment in the U.S., and nearly $150 million in public R&D funding, all since Northbridge's informal prior view was formed. However, U.S. regulatory support collapsed in mid-2025 under the Trump administration, creating a bifurcated market where European projects advance while U.S. developers face permitting risk. The sector is investable now for Series A/B stage deals targeting offshore industrial customers rather than utility-scale generation, with timing risk tied directly to regulatory durability.",
+  "market_shifts": [
+    {
+      "description": "The first-ever U.S. wave energy project launched at the Port of Los Angeles in September 2025, marking commercial deployment in a jurisdiction that previously had no wave energy installations.",
+      "supporting_claim_indices": [
+        6
+      ]
+    },
+    {
+      "description": "Wave energy attracted a $140 million Series B round in May 2026 for a novel use case - floating wave-powered AI data centers - representing both the largest single funding event in the claim set and a departure from traditional grid-scale generation applications.",
+      "supporting_claim_indices": [
+        0
+      ]
+    },
+    {
+      "description": "The U.S. federal government opened $112.5 million in wave energy open-water testing funding in September 2024, with individual awards between $2.41 million and $25.313 million, signaling a step change in public R&D capital availability compared to prior periods.",
+      "supporting_claim_indices": [
+        8
+      ]
+    },
+    {
+      "description": "BOEM rescinded all Designated Wind Energy Areas on the U.S. Outer Continental Shelf (roughly 3.5 million acres) in July 2025 and issued a direct final rule in August 2025 rescinding sections of its renewable energy framework covering marine/offshore renewable energy, representing a regulatory contraction in the U.S. market under the Trump administration.",
+      "supporting_claim_indices": [
+        11,
+        12
+      ]
+    },
+    {
+      "description": "Wave energy developers are pivoting go-to-market strategies from utility offtake to behind-the-meter offshore industrial customers (e.g., oil & gas platforms, aquaculture, sensor networks) and exploring co-location with offshore wind infrastructure to share transmission assets, shifting the competitive positioning away from head-to-head competition with utility-scale generation.",
+      "supporting_claim_indices": [
+        17,
+        18,
+        19
+      ]
+    }
+  ],
+  "incumbents": [
+    {
+      "name": "Orbital Marine Power",
+      "entity_type": "incumbent",
+      "founded_year": null,
+      "funding_stage": "unknown",
+      "differentiation": "Operates the Orbital O2, a deployed 2 MW floating tidal stream generator with a 74-meter-long structure at EMEC, representing one of the few at-scale operating tidal turbines in the claim set.",
+      "supporting_claim_indices": [
+        4
+      ]
+    },
+    {
+      "name": "Eco Wave Power",
+      "entity_type": "incumbent",
+      "founded_year": null,
+      "funding_stage": "public",
+      "differentiation": "Publicly traded on Nasdaq (ticker: WAVE) and launched the first-ever U.S. wave energy project at the Port of Los Angeles in September 2025, with $6.85 million in cash and short-term deposits as of September 30, 2025.",
+      "supporting_claim_indices": [
+        6,
+        7
+      ]
+    }
+  ],
+  "new_entrants": [
+    {
+      "name": "Panthalassa",
+      "entity_type": "new_entrant",
+      "founded_year": null,
+      "funding_stage": "series_b",
+      "differentiation": "Oregon-based developer building floating wave-powered AI data centers rather than grid-scale generation, raising a $140 million Series B in May 2026 led by Peter Thiel - the largest single funding event in the claim set.",
+      "supporting_claim_indices": [
+        0
+      ]
+    },
+    {
+      "name": "CorPower Ocean",
+      "entity_type": "new_entrant",
+      "founded_year": null,
+      "funding_stage": "series_b",
+      "differentiation": "Secured EUR 32 million in Series B1 funding in October 2024 (described as the company's largest single investment to date) and was awarded up to \u20ac17.5 million in EIC Accelerator funding in February 2025 to scale up wave energy technology.",
+      "supporting_claim_indices": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "Minesto",
+      "entity_type": "new_entrant",
+      "founded_year": null,
+      "funding_stage": "unknown",
+      "differentiation": "Named as one of the active tidal energy startups in a field of 57 identified tidal energy generation system startups, though no specific technical or commercial differentiation is provided in the claims.",
+      "supporting_claim_indices": [
+        5
+      ]
+    },
+    {
+      "name": "SABELLA",
+      "entity_type": "new_entrant",
+      "founded_year": null,
+      "funding_stage": "unknown",
+      "differentiation": "Named as one of the active tidal energy startups in a field of 57 identified tidal energy generation system startups, though no specific technical or commercial differentiation is provided in the claims.",
+      "supporting_claim_indices": [
+        5
+      ]
+    },
+    {
+      "name": "Nova Innovation",
+      "entity_type": "new_entrant",
+      "founded_year": null,
+      "funding_stage": "unknown",
+      "differentiation": "Named as one of the active tidal energy startups in a field of 57 identified tidal energy generation system startups, though no specific technical or commercial differentiation is provided in the claims.",
+      "supporting_claim_indices": [
+        5
+      ]
+    },
+    {
+      "name": "Tocardo",
+      "entity_type": "new_entrant",
+      "founded_year": null,
+      "funding_stage": "unknown",
+      "differentiation": "Named as one of the active tidal energy startups in a field of 57 identified tidal energy generation system startups, though no specific technical or commercial differentiation is provided in the claims.",
+      "supporting_claim_indices": [
+        5
+      ]
+    }
+  ],
+  "funding_events": [
+    {
+      "company_name": "Panthalassa",
+      "round": "series_b",
+      "amount_usd": 140000000.0,
+      "date": "early May 2026",
+      "lead_investor": "Peter Thiel",
+      "source_claim_index": 0
+    },
+    {
+      "company_name": "CorPower Ocean",
+      "round": "series_b",
+      "amount_usd": 35840000.0,
+      "date": "October 16, 2024",
+      "lead_investor": null,
+      "source_claim_index": 2
+    },
+    {
+      "company_name": "Orbital Marine Power",
+      "round": "unknown",
+      "amount_usd": 8960000.0,
+      "date": "unknown",
+      "lead_investor": "PXN Ventures",
+      "source_claim_index": 3
+    }
+  ],
+  "tensions_or_conflicts": [
+    "Northbridge's informal prior view held that wave energy 'remains pre-commercial and too early for its stage focus' (claims 15, 16), but external evidence shows Panthalassa raised $140 million in Series B funding in May 2026 (claim 0), CorPower Ocean raised EUR 32 million in October 2024 (claim 2), and the first U.S. wave energy project launched commercially in September 2025 (claim 6) - all of which demonstrate commercial-stage activity and institutional capital entry at exactly the Series A/B stage Northbridge typically targets.",
+    "Internal scouting noted that wave/marine energy inbound deal flow remained 'minimal' and consistent with the view that the sector is 'one of the least mature sub-segments in advanced energy generation' (claim 20), yet external evidence shows the U.S. Department of Energy opened $112.5 million in wave energy open-water testing funding with individual awards up to $25.313 million (claim 8), and CorPower Ocean was awarded up to \u20ac17.5 million in EIC Accelerator funding (claim 1) - indicating public sector validation and co-investment at scale that should be driving more inbound deal flow than Northbridge is seeing.",
+    "Northbridge scouts identified offshore infrastructure co-location with wind as 'the first argument that meaningfully changed the firm's original thinking' on wave energy economics (claim 17), and noted a go-to-market pivot from utility offtake to behind-the-meter offshore industrial customers as 'worth watching' (claims 18, 19), but these strategic pivots - which internal sources flag as potentially sector-defining - have not yet translated into formal diligence or updated sector positioning despite being the precise thesis shifts that would justify revisiting a prior pass."
+  ],
+  "recommendations": [
+    {
+      "action": "source_deals",
+      "text": "Actively source Series A/B wave energy companies targeting behind-the-meter offshore industrial customers (oil & gas platforms, aquaculture, sensor networks) rather than utility-scale generation, focusing on companies with demonstrated open-water testing or co-location partnerships with offshore wind developers. The strategic pivot away from utility offtake (claims 18, 19) and the co-location economics case (claim 17) address the core commercial viability objections in Northbridge's prior view, and the $140 million Panthalassa round (claim 0) plus CorPower Ocean's EUR 32 million raise (claim 2) confirm institutional capital is entering at Northbridge's target stage. Main risk: U.S. regulatory rollback (claims 11, 12) could strand U.S.-focused companies if permitting frameworks remain uncertain, requiring geographic diversification or European market exposure in any deal.",
+      "supporting_claim_indices": [
+        0,
+        2,
+        17,
+        18,
+        19,
+        11,
+        12
+      ]
+    },
+    {
+      "action": "prioritize_diligence",
+      "text": "Run formal diligence on Panthalassa within the next quarter to assess whether the wave-powered AI data center model (claim 0) represents a defensible niche or a single-customer application that does not scale, given it is the largest funding event in the sector and represents a use case orthogonal to Northbridge's internal thesis around offshore industrial customers. The $140 million round led by Peter Thiel (claim 0) and the company's Oregon location put it within Northbridge's coverage geography and stage focus, but the firm has run zero formal diligence on wave energy to date (claim 15). Main risk: the business model may depend on AI infrastructure economics (data center power pricing, latency tolerance) rather than wave energy unit economics, making it a one-off rather than a repeatable sector entry point.",
+      "supporting_claim_indices": [
+        0,
+        15,
+        18
+      ]
+    },
+    {
+      "action": "monitor",
+      "text": "Monitor BOEM regulatory activity and any Interior Department reversals of the July-August 2025 offshore renewable energy framework rescissions (claims 11, 12) for two quarters before committing capital to U.S.-domiciled wave or tidal companies. The regulatory contraction rescinded 3.5 million acres of Designated Wind Energy Areas and rolled back marine renewable energy frameworks under the Trump administration, creating permitting risk that one Wikipedia entry explicitly flags as delaying at least one tidal developer's project (claim 14). European developers (CorPower Ocean, Orbital Marine Power) remain insulated from U.S. policy risk but fall outside Northbridge's geographic focus. Main risk: monitoring for regulatory clarity could mean missing the current Series B window if CorPower Ocean or similar European companies raise follow-on rounds in the next 12-18 months while U.S. policy remains uncertain.",
+      "supporting_claim_indices": [
+        11,
+        12,
+        14,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "action": "pass",
+      "text": "Pass on utility-scale wave and tidal generation companies targeting grid offtake or competing head-to-head with offshore wind for wholesale power markets. The internal scout notes that one wave energy founder pivoted away from utility offtake explicitly because 'utility procurement timelines were too slow relative to the company's burn rate' (claim 19), and projected levelized costs of \u20ac150-100/MWh for tidal by 2025-2030 and wave by 2030-2035 (claim 9) remain above current offshore wind benchmarks, meaning capital intensity and timeline risk make this a poor fit for Northbridge's stage and hold period. Main risk: passing on utility-scale misses any breakthrough in transmission-sharing economics, but the co-location thesis (claim 17) is still speculative and has not yet produced a commercial contract in the claim set.",
+      "supporting_claim_indices": [
+        19,
+        9,
+        17
+      ]
+    }
+  ],
+  "all_claims": [
+    {
+      "claim": "Wave energy startup Panthalassa (Oregon-based) raised a $140 million Series B round announced in early May 2026, led by Peter Thiel, to build floating wave-powered AI data centers.",
+      "source": "https://www.geekwire.com/2026/data-centers-at-sea-oregons-panthalassa-nets-140m-led-by-peter-thiel-for-wave-powered-ai/",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "CorPower Ocean was awarded up to \u20ac17.5 million in EIC Accelerator funding (announced February 17, 2025) to scale up its wave energy technology.",
+      "source": "https://www.oceanenergy-europe.eu/corpower-ocean-awarded-up-to-e17-5-million-in-eic-accelerator-funding-to-scale-up-wave-energy/",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "CorPower Ocean secured a EUR 32 million Series B1 funding round announced October 16, 2024, described as the largest single investment in the company's history to commercialize wave energy.",
+      "source": "https://innoenergy.com/news-resources/corpower-ocean-secures-eur-32m-series-b1-funding-to-commercialise-wave-energy/",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "Orbital Marine Power (Scottish floating tidal turbine developer, operator of the Orbital O2 2 MW turbine) secured a \u00a37 million investment from PXN Ventures.",
+      "source": "https://www.orbitalmarine.com/category/press-releases/",
+      "source_type": "external",
+      "confidence": 0.7
+    },
+    {
+      "claim": "The Orbital O2 tidal turbine deployed at EMEC is a floating tidal stream generator with a 74-meter-long structure and 2 MW capacity.",
+      "source": "https://tethys.pnnl.gov/project-sites/orbital-marine-power-o2-emec",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "Named tidal energy companies tracked as active startups in this space include Minesto, Orbital Marine Power, SABELLA, Nova Innovation, and Tocardo, among 57 tidal energy generation system startups identified.",
+      "source": "https://tracxn.com/d/trending-business-models/startups-in-tidal-energy-generation-system/__O8YYi3RPDbZyYK4cWO2XecIkBSyqvwHtVZmknPVl8-A/companies",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "Eco Wave Power (Nasdaq: WAVE) launched the first-ever U.S. wave energy project at the Port of Los Angeles, with the official opening ceremony held September 9, 2025.",
+      "source": "https://www.ecowavepower.com/eco-wave-power-hits-historic-milestone-launches-first-ever-u-s-wave-energy-project-at-port-of-los-angeles/",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "As of September 30, 2025, Eco Wave Power held $6.85 million in cash and short-term deposits.",
+      "source": "https://www.ecowavepower.com/eco-wave-power-reports-q3-results-historic-u-s-launch-and-global-milestones-achieved/",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "The U.S. Department of Energy's Water Power Technologies Office opened up to $112.5 million in funding (announced September 18, 2024) for wave energy open-water testing, with individual awards ranging between $2.41 million and $25.313 million.",
+      "source": "https://www.energy.gov/cmei/water/funding-notice-oceans-opportunity-us-wave-energy-open-water-testing",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "The Ocean Energy Systems (OES) international body projects a levelized cost of energy of \u20ac150-100/MWh for tidal energy by 2025-2030 and a similar \u20ac150-100/MWh range for wave energy by 2030-2035.",
+      "source": "https://www.ocean-energy-systems.org/oes-projects/levelised-cost-of-energy-assessment-for-wave-tidal-and-otec-at-an-international-level/",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "In 2025, one U.S. tidal energy project was expected to be selected to receive an additional $29 million to advance to next-phase development, per the Ocean Energy Systems country report on the United States.",
+      "source": "https://www.ocean-energy-systems.org/ocean-energy-in-the-world/united-states-of-america/",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "On August 5, 2025, the Bureau of Ocean Energy Management (BOEM) issued a direct final rule rescinding a section of its regulations outlining the renewable energy framework, which covers marine/offshore renewable energy including wave and tidal.",
+      "source": "https://www.boem.gov/renewable-energy/regulatory-framework-and-guidelines",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "BOEM rescinded all Designated Wind Energy Areas on the U.S. Outer Continental Shelf (roughly 3.5 million acres) on July 30, 2025, as part of a broader Interior Department overhaul of offshore renewable energy rules under the Trump administration.",
+      "source": "https://www.doi.gov/pressreleases/interior-launches-overhaul-offshore-wind-rules-prioritize-american-energy-security",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "A 2024 advisory report to the European Commission forecasts that ambitious policy action could scale Europe's tidal energy capacity up to 700 megawatts.",
+      "source": "https://e360.yale.edu/features/wave-tidal-energy",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "Wikipedia's entry on Orbital Marine Power notes that a change in priorities under the Trump administration may delay the company's floating tidal turbine project, reflecting a specific policy-linked risk to a named tidal energy developer.",
+      "source": "https://en.wikipedia.org/wiki/Orbital_Marine_Power",
+      "source_type": "external",
+      "confidence": 0.4
+    },
+    {
+      "claim": "Northbridge has not run formal diligence on any wave energy company to date; the firm's informal prior view was that wave energy remains pre-commercial and too early for its stage focus.",
+      "source": "internal_scouting_notes_wave_energy.md",
+      "source_type": "internal",
+      "confidence": 0.9
+    },
+    {
+      "claim": "This 'pre-commercial, too early' view is explicitly labeled as an informal prior rather than the conclusion of a formal deal review or diligence process, since no formal diligence has been conducted on the sector.",
+      "source": "internal_scouting_notes_wave_energy.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "At a recent industry summit, Northbridge scouts heard an argument that could change the near-term economics case for wave energy: some offshore wind developers are watching wave energy as a co-location technology that could share existing offshore substation and transmission infrastructure, removing one of wave energy's biggest cost disadvantages. This was noted as the first argument that meaningfully changed the firm's original thinking on the sub-segment.",
+      "source": "internal_scouting_notes_wave_energy.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Renewed market interest in wave energy appears to be driven by a narrower use case than grid-scale power generation - specifically powering offshore infrastructure directly (e.g., oil & gas platforms transitioning to lower-carbon auxiliary power, offshore aquaculture, ocean sensor networks) rather than competing head-to-head with offshore wind for utility-scale generation.",
+      "source": "internal_scouting_notes_wave_energy.md",
+      "source_type": "internal",
+      "confidence": 0.8
+    },
+    {
+      "claim": "One unnamed wave energy founder (point absorber design) described shifting go-to-market from utility offtake to behind-the-meter offshore industrial customers because utility procurement timelines were too slow relative to the company's burn rate - flagged by Northbridge as a go-to-market pivot worth watching across the sub-segment.",
+      "source": "internal_scouting_notes_wave_energy.md",
+      "source_type": "internal",
+      "confidence": 0.8
+    },
+    {
+      "claim": "As of the most recent quarterly sector scan, wave/marine energy inbound deal flow to Northbridge remained minimal (fewer than a handful of intros that quarter), which the firm noted as consistent with its internal view that wave/marine energy is one of the least mature sub-segments in advanced energy generation.",
+      "source": "internal_quarterly_energy_sector_scan.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    }
+  ]
+}

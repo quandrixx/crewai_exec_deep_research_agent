@@ -35,8 +35,12 @@ from crewai_exec_deep_research_agent.flows.deep_research_flow import DeepResearc
 
 
 DEFAULT_TOPIC = "small modular reactors"
+# Run artifacts, one directory per topic, tracked in git.
 OUTPUT_DIR = Path("output")
-TOPICS_FILE = Path("sample_runs/topics.json")
+# Generated and regenerable, so kept out of OUTPUT_DIR (which holds tracked
+# run artifacts) and out of git.
+DIAGRAM_DIR = Path("diagrams")
+TOPICS_FILE = Path("demo_topics.json")
 
 EXIT_OK = 0
 EXIT_ERROR = 1
@@ -252,7 +256,7 @@ def plot() -> None:
     _load_env()
     generated = Path(DeepResearchFlow().plot(filename="crewai_flow.html", show=False))
 
-    destination = OUTPUT_DIR / "flow"
+    destination = DIAGRAM_DIR
     destination.mkdir(parents=True, exist_ok=True)
     shutil.copytree(generated.parent, destination, dirs_exist_ok=True)
     print(f"Flow diagram written to {destination / generated.name}")

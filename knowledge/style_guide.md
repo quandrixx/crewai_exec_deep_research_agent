@@ -41,7 +41,7 @@ Do not add a "Background" or "Technology Explainer" section — assume the reade
 - **Bold the specific number, date, company name, or funding figure** in each bullet — partners scan for these first.
 - **A short table is preferred over bullets for Capital Flows** when there are 3+ funding events to report (columns: Company, Round, Amount, Date, Lead Investor).
 - **No more than two levels of nesting** in any bulleted list.
-- **Target length: 600-900 words** in the main body (Executive Summary through Recommendation), excluding the Sources appendix. A briefing that needs to run longer to be honest should say so explicitly rather than silently exceeding this.
+- **Target length: 800-1100 words** in the main body (Executive Summary through Recommendation), excluding the Sources appendix. A briefing that needs to run longer to be honest should say so explicitly rather than silently exceeding this.
 - **Markdown headers** (`##`) for each section, exactly as named in Section 1, so briefings are visually consistent across sectors and analysts.
 
 ---

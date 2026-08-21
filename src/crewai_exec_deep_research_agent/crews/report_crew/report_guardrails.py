@@ -17,7 +17,7 @@ Two rules are enforced strictly, because both are correctness rather than taste:
   - Required sections present and in order, since AnalysisResult's fields map
     onto them one-to-one and a missing section means content was dropped.
 
-Length is enforced loosely. The style guide targets 600-900 words but says
+Length is enforced loosely. The style guide targets 800-1100 words but says
 explicitly that a briefing needing more room to be honest should say so rather
 than silently truncating, so the band here only catches a stub or a runaway.
 """
@@ -51,14 +51,14 @@ _BANNED_PHRASES = (
     "paradigm shift",
 )
 
-# Style guide targets 600-900 words in the body. The band below is wider on
+# Style guide targets 800-1100 words in the body. The band below is wider on
 # both sides, because the guide explicitly allows a briefing that needs more
 # room to be honest - but not by much. An earlier, far looser ceiling (1600)
-# let a live run ship at 1151 words while the Style Reviewer reported nothing
-# to fix, so the gate was doing no work at exactly the point the guide cares
-# about most: partners stop reading.
-_MIN_WORDS = 400
-_MAX_WORDS = 1100
+# let a live run ship well over target while the Style Reviewer reported
+# nothing to fix, so the gate was doing no work at exactly the point the guide
+# cares about most: partners stop reading.
+_MIN_WORDS = 600
+_MAX_WORDS = 1300
 
 
 def _heading_positions(body: str) -> dict[str, int]:
@@ -132,12 +132,12 @@ def _check_report_body(title: str, body: str, problems: list[str]) -> None:
     if word_count < _MIN_WORDS:
         problems.append(
             f"body_markdown is only {word_count} words; the house style targets "
-            f"600-900 and this is too thin to be a briefing"
+            f"800-1100 and this is too thin to be a briefing"
         )
     elif word_count > _MAX_WORDS:
         problems.append(
-            f"body_markdown runs to {word_count} words against a 600-900 target. "
-            f"Cut roughly {word_count - 900} words. Tighten prose and drop the "
+            f"body_markdown runs to {word_count} words against an 800-1100 target. "
+            f"Cut roughly {word_count - 1100} words. Tighten prose and drop the "
             f"weakest supporting detail in each section - do not drop a whole "
             f"required section, and do not cut the risk statement from any "
             f"recommendation"

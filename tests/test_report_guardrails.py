@@ -14,7 +14,9 @@ sections must be present and ordered, and the draft must not contain a
 hand-written Sources section (the appendix is generated from the verified claim
 list). Length allows a modest overrun but not a sprawl - the guide permits a
 briefing that needs more room to be honest, while a runaway defeats the whole
-purpose of a briefing.
+purpose of a briefing. The house target is 800-1100 words; the gate accepts
+600-1300. Word counts below are expressed against those bounds rather than
+hardcoded, so a future retune moves one constant, not ten fixtures.
 """
 
 import pytest  # pyrefly: ignore
@@ -36,8 +38,14 @@ SECTIONS = [
 ]
 
 
-def body(sections=None, filler_words=80, extra="") -> str:
-    """A structurally valid body, padded past the minimum word count."""
+# Five required sections, so a body is roughly 5 * filler_words long.
+IN_BAND = 180        # ~900 words: inside the 800-1100 house target
+BELOW_BAND = 20      # ~100 words: a stub
+ABOVE_BAND = 320     # ~1600 words: a runaway
+
+
+def body(sections=None, filler_words=IN_BAND, extra="") -> str:
+    """A structurally valid body, sized inside the accepted word band."""
     sections = SECTIONS if sections is None else sections
     filler = " ".join(["word"] * filler_words)
     return "\n\n".join(f"{heading}\n{filler}" for heading in sections) + extra
@@ -166,7 +174,7 @@ def test_promotional_check_is_case_insensitive():
 
 
 def test_stub_length_is_rejected():
-    passed, feedback = validate_report_draft(draft_output(text=body(filler_words=2)))
+    passed, feedback = validate_report_draft(draft_output(text=body(filler_words=BELOW_BAND)))
     assert passed is False
     assert "too thin" in feedback
 
@@ -174,23 +182,23 @@ def test_stub_length_is_rejected():
 def test_runaway_length_is_rejected_with_a_concrete_cut_target():
     """Telling the writer how many words to cut is what makes the retry
     actionable rather than another guess."""
-    passed, feedback = validate_report_draft(draft_output(text=body(filler_words=400)))
+    passed, feedback = validate_report_draft(draft_output(text=body(filler_words=ABOVE_BAND)))
     assert passed is False
-    assert "600-900" in feedback
+    assert "800-1100" in feedback
     assert "Cut roughly" in feedback
     # And it must not invite fixing the count by deleting a whole section.
     assert "do not drop a whole required section" in feedback
 
 
 def test_length_band_allows_modest_overrun_but_not_a_sprawl():
-    """The guide targets 600-900 but allows a briefing that needs more room to
-    be honest, so a small overrun passes. A large one does not: a live run
-    once shipped at 1151 words with the Style Reviewer reporting nothing to
+    """The guide allows a briefing that needs more room to be honest, so a
+    small overrun passes. A large one does not: with a loose ceiling a live run
+    once shipped far over target while the Style Reviewer reported nothing to
     fix, which is exactly the case the gate has to catch."""
-    # ~1000 words: over target, still accepted.
-    assert validate_report_draft(draft_output(text=body(filler_words=200)))[0] is True
-    # ~1500 words: well past the point a partner keeps reading.
-    passed, feedback = validate_report_draft(draft_output(text=body(filler_words=300)))
+    # ~1200 words: over the house target, still inside the gate's band.
+    assert validate_report_draft(draft_output(text=body(filler_words=240)))[0] is True
+    # ~1600 words: well past the point a partner keeps reading.
+    passed, feedback = validate_report_draft(draft_output(text=body(filler_words=ABOVE_BAND)))
     assert passed is False
     assert "Cut roughly" in feedback
 

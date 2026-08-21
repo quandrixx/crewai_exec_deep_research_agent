@@ -47,6 +47,27 @@ class FundingStage(str, Enum):
 # Research Crew output
 # ---------------------------------------------------------------------------
 
+class ClaimList(BaseModel):
+    """Output of a single Research Crew task.
+
+    Exists only because CrewAI's output_pydantic requires a BaseModel, not a
+    bare list[SourcedClaim]. Each of the two parallel research tasks emits one
+    of these; the crew loader unpacks them into ResearchFindings below rather
+    than spending a third LLM task on what is just a list concatenation.
+
+    An empty claims list is valid and meaningful - it means the researcher
+    genuinely found nothing, which is a better result than padded findings.
+
+    'claims' is deliberately REQUIRED rather than defaulting to []. With a
+    default, a truncated or malformed agent response still validates into an
+    empty ClaimList, which makes "the model ran out of output tokens mid-JSON"
+    indistinguishable from "there was nothing to find" - observed live, and it
+    silently dropped 15 real sourced claims. Requiring the field turns that
+    case into a parse failure the task guardrail can catch and retry.
+    """
+    claims: list[SourcedClaim]
+
+
 class ResearchFindings(BaseModel):
     """Output of the Research Crew - raw gathered claims, no synthesis yet."""
     topic: str

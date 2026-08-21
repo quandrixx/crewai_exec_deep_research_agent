@@ -35,11 +35,25 @@ class EntityType(str, Enum):
 
 
 class FundingStage(str, Enum):
+    """Funding stages, sized for capital-intensive deep tech.
+
+    The later stages are not optional padding. Emerging energy companies raise
+    far more, and for far longer, than a typical software startup - a live run
+    on small modular reactors hit an X-energy Series D and a Fervo Energy IPO,
+    and an earlier version of this enum that stopped at series_b failed
+    validation on exactly that data. Project finance and debt are likewise
+    normal here, not exotic: reactors and geothermal wells get built with it.
+    """
     PRE_SEED = "pre_seed"
     SEED = "seed"
     SERIES_A = "series_a"
     SERIES_B = "series_b"
+    SERIES_C = "series_c"
+    SERIES_D = "series_d"
+    SERIES_E = "series_e"
     GROWTH = "growth"
+    DEBT = "debt"
+    PUBLIC = "public"
     UNKNOWN = "unknown"
 
 
@@ -128,6 +142,36 @@ class Recommendation(BaseModel):
     )
 
 
+class LandscapeAnalysis(BaseModel):
+    """Output of the Analysis Crew's first task - what the evidence says.
+
+    Split from InvestmentJudgment below rather than having one agent emit a
+    whole AnalysisResult, for the same reason ClaimList.claims is required:
+    a large nested payload is the shape that gets truncated mid-JSON. Two
+    smaller outputs each stay well inside the model's output budget.
+    """
+    market_shifts: list[MarketShift]
+    incumbents: list[CompanyProfile]
+    new_entrants: list[CompanyProfile]
+    funding_events: list[FundingEvent]
+
+
+class InvestmentJudgment(BaseModel):
+    """Output of the Analysis Crew's second task - what to do about it.
+
+    Deliberately produced by a different agent than LandscapeAnalysis, reading
+    the landscape as context. Organizing evidence and committing to a position
+    are different jobs, and the style guide is emphatic that a briefing which
+    only describes the landscape has failed at its actual purpose.
+    """
+    executive_summary: str
+    tensions_or_conflicts: list[str] = Field(
+        description="Empty list is valid and expected when internal/external "
+                     "sources genuinely agree - do not manufacture tension."
+    )
+    recommendations: list[Recommendation]
+
+
 class AnalysisResult(BaseModel):
     """Output of the Analysis Crew. Deliberately shaped to mirror the six
     body sections of style_guide.md one-to-one."""
@@ -168,6 +212,37 @@ class FactCheckResult(BaseModel):
 # ---------------------------------------------------------------------------
 # Report Crew output
 # ---------------------------------------------------------------------------
+
+class ReportDraft(BaseModel):
+    """Output of the Report Crew's first task - the formatted briefing.
+
+    Carries only what an LLM should be writing. The Sources appendix and the
+    funding table are built in Python from structured data (see report_crew.py):
+    they are the parts where an invented URL or a mistyped dollar figure would
+    do the most damage and where there is nothing for a model to add.
+    """
+    title: str = Field(
+        description="Framed as the investment question, not the topic - "
+                     "'Should Northbridge Increase Sourcing Activity in X?' "
+                     "rather than 'X Market Overview'."
+    )
+    body_markdown: str = Field(
+        description="The full briefing in markdown, Executive Summary through "
+                     "Investment Recommendation. No Sources section - that is "
+                     "appended deterministically."
+    )
+
+
+class ReviewedReport(BaseModel):
+    """Output of the Report Crew's second task - the same report after a style pass."""
+    title: str
+    body_markdown: str
+    revision_notes: list[str] = Field(
+        description="What the reviewer changed and why. An empty list is valid "
+                     "and means the draft already met the style guide - do not "
+                     "invent changes to look diligent."
+    )
+
 
 class FinalReport(BaseModel):
     title: str

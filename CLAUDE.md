@@ -47,8 +47,13 @@ it to match.
    fact-checking, deterministic formatting, and reliable routing possible.
 2. **Deterministic guardrails, not agentic ones, wherever possible.** The
    thing that decides whether a report is trustworthy should not be the same
-   kind of process (an LLM) that could hallucinate. The citation-check gate
-   and both Research Crew task guardrails are plain Python. Apply this
+   kind of process (an LLM) that could hallucinate. The citation-check gate and
+   every crew's task guardrails are plain Python. Note the deliberate split of
+   labor: a guardrail sees only the TaskOutput, so it checks what's decidable
+   from the output alone (structure, non-emptiness, non-negative indices), while
+   `citation_check_tool` runs in the Flow with the claim list in hand and
+   verifies the indices actually resolve. Guardrail failures are cheap (one task
+   retries); gate failures are expensive (the crew re-runs). Apply this
    instinct to new gates too.
 3. **Mocks are swappable behind stable interfaces.** `internal_kb_tool` and
    `web_search_tool` both stand in for real integrations (a real client's
@@ -71,12 +76,12 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 58 total):**
+**Built and verified (tests run and passing - 87 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
-  Its research step is wired to the real crew; analysis and report steps still
-  import crews that don't exist yet.
+  Research and analysis steps are wired to real crews; `generate_report` still
+  imports a Report Crew that doesn't exist yet.
 - `tools/citation_check_tool.py` + 12 tests - deterministic fact-check gate
 - `tools/internal_kb_tool.py` + 15 tests - keyword retrieval over mock docs
 - `tools/web_search_tool.py` + 10 tests - Serper.dev wrapper. Network calls are
@@ -84,6 +89,9 @@ it to match.
   the live API.
 - **Research Crew - complete and verified against a live run.** See its own
   section below.
+- **Analysis Crew - complete and verified against a live run**, including the
+  Flow's fact-check gate passing on real output (42 citations verified). See
+  its own section below.
 - `knowledge/internal_docs/*.md` - 5 mock internal documents covering all four
   demo technologies plus two cross-cutting docs
 - `knowledge/style_guide.md` + `knowledge/prior_exec_report_sample.md` - house
@@ -91,18 +99,18 @@ it to match.
   only real internal evidence belongs in `knowledge/internal_docs/`, since
   everything in that folder is retrievable by the internal KB tool and citable
   as a source.
-- `sample_runs/*.json` - real `ResearchFindings` output from live Research Crew
-  runs (enhanced geothermal, small modular reactors). Use these as fixtures for
-  building the Analysis Crew instead of paying for a research run every
-  iteration.
+- `sample_runs/*.json` - real output from live runs: `research_*.json` are
+  `ResearchFindings`, `analysis_*.json` is a full `AnalysisResult`. Use these
+  as fixtures when building the Report Crew instead of paying for an upstream
+  run every iteration - `AnalysisResult.model_validate_json(...)` loads one
+  directly.
 
 **Not started yet - this is where to resume:**
-- Analysis Crew (agents/tasks). Use JSONC for consistency with the Research
-  Crew; this was previously listed as an open question and is now settled.
-- Report Crew (Formatter + Style Reviewer agents)
-- Wiring the analysis and report crews into `flows/deep_research_flow.py`
-  (the research step is already wired; the other two still reference modules
-  that don't exist)
+- Report Crew (Formatter + Style Reviewer agents). Use JSONC, following the
+  Analysis Crew's shape.
+- Wiring the report crew into `flows/deep_research_flow.py`. Research and
+  analysis are wired; `generate_report` still imports a module that
+  doesn't exist.
 - `main.py` - still the untouched `crewai create` template. It defines a
   `ContentFlow` importing a nonexistent `content_crew`, and `pyproject.toml`'s
   scripts point at it, so `crewai run` does not work yet.
@@ -160,6 +168,34 @@ concatenation over already-validated `ClaimList` objects. An LLM would add
 cost and latency and a fresh chance to silently reword or drop claims. The
 barrier is explicitly told its output is a checkpoint marker that nothing
 downstream reads.
+
+## The Analysis Crew
+
+`crews/analysis_crew/`. Turns `ResearchFindings` into an `AnalysisResult`.
+Two sequential tasks - a Sector Analyst organizes the evidence, then an
+Investment Strategist reads that and commits to a position. Sequential, not
+parallel: the strategist genuinely depends on the analyst, so there's nothing
+to gain from async and no barrier task needed.
+
+**The claim-index contract - the most important thing in this crew.** Every
+citation in the finished report is an integer offset into
+`AnalysisResult.all_claims`, and the agents pick those integers by reading a
+numbered list rendered into their prompt. `analysis_crew.py` defines the
+ordering once in `_build_claim_index()` (external claims, then internal);
+`_format_claims()` renders that same list; the merge puts that same list into
+`all_claims`. If the rendering and `all_claims` ever drift apart, every
+recommendation silently cites the wrong evidence *while still passing the
+fact-check gate*, because the indices all still resolve. Change the ordering in
+`_build_claim_index()` alone.
+
+The agents never reproduce claims - only indices. Asking an LLM to echo 28
+claims verbatim is pure cost and risk: reworded text breaks every index, and a
+large payload is what got truncated in a live Research Crew run.
+
+**Both agents are toolless on purpose.** Every fact in the report must trace to
+a claim the Research Crew gathered. An analyst that could search the web would
+introduce evidence no citation index can point at. This has a surprising
+consequence for model choice - see known gap #3.
 
 ## CrewAI JSONC config - verified mechanics
 
@@ -221,24 +257,42 @@ CrewAI is ever upgraded.
    `ClaimList`, making "ran out of tokens mid-JSON" indistinguishable from
    "found nothing" - the failure silently swallowed real findings.
    `tests/test_research_guardrails.py` locks this in.
-3. **`internal_kb_tool.py`'s keyword-overlap retrieval returns loosely related
+3. **Toolless agents + `output_pydantic` + sonnet-5 = broken structured
+   output.** This one cost real debugging time. When an agent has NO tools,
+   CrewAI passes the task's `output_pydantic` to the model as a `response_model`
+   (`crew_agent_executor.py`: `None if self.original_tools else
+   self.response_model`). It then picks a strategy from a hardcoded allowlist of
+   Claude **4.5** names (`_supports_native_structured_outputs`). A 4.5 model gets
+   Anthropic's native `json_schema` format, enforced server-side. Anything else -
+   including `claude-sonnet-5` - falls back to a tool-based approach where the
+   model returns its fields nested under `"parameters"`, and Pydantic validation
+   fails with "Field required" for every top-level field.
+
+   Measured on the real 28-claim analysis workload: **sonnet-5 failed 3 runs out
+   of 3; sonnet-4-5 succeeded.** It does NOT reproduce on small prompts, so a
+   toy repro will mislead you. Hence the Analysis Crew's agents run
+   `claude-sonnet-4-5` while the Research Crew stays on `claude-sonnet-5` - the
+   research agents have tools, so they never take this path at all. Revisit when
+   CrewAI's allowlist learns about sonnet-5.
+
+4. **`internal_kb_tool.py`'s keyword-overlap retrieval returns loosely related
    chunks whenever there's *any* shared vocabulary**, even for queries the docs
    don't really answer. This is a known, accepted limitation - the internal
    researcher's task description explicitly instructs the agent to judge
    relevance itself rather than trusting the tool.
-4. **`citation_check_tool.py`'s weak-support heuristic is deliberately
+5. **`citation_check_tool.py`'s weak-support heuristic is deliberately
    conservative** (low overlap threshold) to avoid false-positiving on
    legitimate, well-paraphrased citations. It will miss some real problems.
    This tradeoff was made on purpose - don't "fix" it by raising the threshold
    without re-running the full test suite, since
    `test_paraphrased_but_related_citation_is_not_flagged_as_weak` exists
    specifically to catch that regression.
-5. **The external researcher over-produces.** Its task asks for 8-15 claims;
+6. **The external researcher over-produces.** Its task asks for 8-15 claims;
    live runs returned 31, then 20 after the instruction was tightened to "stop
    once you have that many". All were well-sourced, so this is a
    prompt-adherence gap rather than a correctness bug, but tighten it further if
    the Analysis Crew struggles with the volume.
-6. **Internal document filenames are part of the deliverable.** They're cited
+7. **Internal document filenames are part of the deliverable.** They're cited
    verbatim in the report's Sources appendix, so they follow a consistent
    `internal_*` convention and are spelled correctly. Three tests assert
    specific filenames; renaming a doc means updating
@@ -248,9 +302,9 @@ CrewAI is ever upgraded.
 
 1. Read this file, then the documents in `knowledge/` (`style_guide.md` first -
    it defines the report the whole pipeline is building toward).
-2. Build the Analysis Crew next, following the Research Crew's patterns above.
-   `sample_runs/research_enhanced_geothermal.json` is real `ResearchFindings`
-   output you can develop against without paying for research runs.
+2. Build the Report Crew next, following the Analysis Crew's patterns above.
+   `sample_runs/analysis_small_modular_reactors.json` is a real `AnalysisResult`
+   you can develop against without paying for upstream runs.
 3. Run `load_crew()` on any new JSONC config before a live run - it catches
    config errors for free.
 4. Run `pytest` after every change that touches existing tested code. The

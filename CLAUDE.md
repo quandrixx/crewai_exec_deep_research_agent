@@ -76,7 +76,7 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 206 total):**
+**Built and verified (tests run and passing - 213 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
@@ -466,6 +466,35 @@ CrewAI is ever upgraded.
    threshold - the deliberately conservative threshold and
    `test_paraphrased_but_related_citation_is_not_flagged_as_weak` are untouched.
 
+   **But loosening the aggregation with the threshold already at its floor of
+   one shared word left the heuristic doing almost nothing.** Measured over the
+   five saved runs: pairing an arbitrary claim with an arbitrary company
+   profile clears weak support **87% of the time**, because every claim in a run
+   is about one sector and therefore shares vocabulary with everything. At two
+   cited claims that is a ~1.7% chance of ever flagging. Both knobs had been
+   turned the same direction one at a time. The structural half of the gate is
+   unaffected and still does real work - but note `verified_count` (the "42
+   citations verified" figure) counts indices that resolved, not citations
+   checked for meaning.
+
+   The fix is `_check_company_is_named`: at least one cited claim must actually
+   name the company. The name stays *sufficient* for weak support and is now
+   also *necessary*, which is where the discrimination comes from. Which parts
+   of a name identify it is decided by document frequency across the run's own
+   claims (`_MAX_NAME_TOKEN_DOC_FREQUENCY`), not a stoplist - a stoplist would
+   need rewriting per sector, whereas df self-tunes and correctly keeps
+   'fervo'/'nuscale'/'bp' while discarding 'energy'/'power'/'smr'. Any name
+   token matching is enough, since claims say "the Orbital O2" rather than
+   "Orbital Marine Power"; a name with no distinctive token at all skips the
+   check rather than flagging, because a false positive here escalates a
+   correct briefing to a human. All 26 profiles across the five saved runs
+   pass, and `test_every_saved_run_still_passes_the_gate` pins that.
+
+   Minor consequence worth knowing: `_significant_words` drops tokens of three
+   characters or fewer, so for a company like **BP** the name contributes
+   nothing to weak support. `_check_company_is_named` uses a separate raw
+   tokenizer and does cover it.
+
 6. **Never ask a model to paste pre-rendered content "verbatim".** It will not.
    The funding table was originally passed into the prompt with instructions to
    reproduce it exactly; on a live run the model rewrote it from the underlying
@@ -483,9 +512,11 @@ CrewAI is ever upgraded.
    relevance itself rather than trusting the tool.
 8. **`citation_check_tool.py`'s weak-support heuristic is deliberately
    conservative** (low overlap threshold) to avoid false-positiving on
-   legitimate, well-paraphrased citations. It will miss some real problems.
-   This tradeoff was made on purpose - don't "fix" it by raising the threshold
-   without re-running the full test suite, since
+   legitimate, well-paraphrased citations. It will miss some real problems -
+   quantified in gap #5, it misses most of them, which is why company profiles
+   get the separate naming check. Recommendations and funding events still rest
+   on weak support alone; treat that as a known soft spot. Don't "fix" it by
+   raising the threshold without re-running the full test suite, since
    `test_paraphrased_but_related_citation_is_not_flagged_as_weak` exists
    specifically to catch that regression.
 9. **Quantities in a task must not contradict the coverage it demands.** The

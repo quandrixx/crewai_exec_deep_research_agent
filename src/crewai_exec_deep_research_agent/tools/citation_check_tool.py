@@ -16,7 +16,7 @@ claim reference:
      exactly the kind of specific, checkable detail worth verifying,
      since they're also the easiest thing for an LLM to quietly invent.
 
-Two failure classes are distinguished:
+Three failure classes are distinguished:
   - STRUCTURAL: the cited index doesn't exist at all. Always a hard fail.
   - WEAK_SUPPORT: the indices exist, but NONE of the cited claims share any
     words with the thing citing them - a cheap, conservative signal that the
@@ -29,6 +29,9 @@ Two failure classes are distinguished:
     Swap in a narrowly-scoped LLM call here later if the heuristic proves
     too noisy or too lax - keep any such call scoped to a single
     claim/citation pair, not a free re-analysis of the whole report.
+  - UNNAMED: a company profile whose cited claims never mention the company.
+    Company profiles get this extra check because WEAK_SUPPORT is close to
+    useless for them - see _check_company_is_named.
 """
 
 import re
@@ -47,6 +50,10 @@ _STOPWORDS = {
 # this is meant to catch egregious mismatches, not enforce paraphrase quality.
 _MIN_OVERLAP_WORDS = 1
 
+# A company-name token appearing in at least this share of a run's claims is
+# treated as sector vocabulary rather than as part of the company's identity.
+_MAX_NAME_TOKEN_DOC_FREQUENCY = 0.25
+
 
 def _significant_words(text: str) -> set[str]:
     words = re.findall(r"[a-z0-9]+", text.lower())
@@ -55,6 +62,78 @@ def _significant_words(text: str) -> set[str]:
 
 def _overlap_count(a: str, b: str) -> int:
     return len(_significant_words(a) & _significant_words(b))
+
+
+def _tokens(text: str) -> set[str]:
+    """Raw alphanumeric tokens - deliberately NOT _significant_words.
+
+    That helper drops anything three characters or shorter, which is right for
+    prose overlap and wrong for company names: it erases 'BP' entirely.
+    """
+    return set(re.findall(r"[a-z0-9]+", text.lower()))
+
+
+def _distinctive_name_tokens(name: str, claim_texts: list[str]) -> set[str]:
+    """The parts of a company name that actually identify it in THIS corpus.
+
+    Every claim in one run is about one sector, so a name's sector words -
+    'Energy', 'Power', 'Hydrogen', 'SMR' - appear all over the corpus and
+    identify nobody. Rather than hardcode a stoplist, which would have to be
+    rewritten for every sector this tool is ever pointed at, a token counts as
+    identifying only if it is rare across the run's own claims. Measured on the
+    five saved runs, this keeps 'fervo', 'nuscale', 'orbital', 'corpower',
+    'bp' and discards 'energy', 'power', 'hydrogen', 'smr', 'wave'.
+
+    Returns an empty set when nothing in the name is distinctive enough to
+    test - the caller treats that as "cannot judge", not as a failure.
+    """
+    if not claim_texts:
+        return set()
+    claim_tokens = [_tokens(text) for text in claim_texts]
+    limit = _MAX_NAME_TOKEN_DOC_FREQUENCY * len(claim_tokens)
+    return {
+        token
+        for token in _tokens(name)
+        if sum(token in tokens for tokens in claim_tokens) < limit
+    }
+
+
+def _check_company_is_named(
+    company_name: str,
+    cited_texts: list[str],
+    all_claim_texts: list[str],
+    label: str,
+    issues: list[CitationIssue],
+) -> None:
+    """Require at least one cited claim to actually name the company.
+
+    This is the check that does the real work on company profiles.
+    _check_weak_support is a vocabulary-overlap test, and inside a
+    single-sector corpus nearly every claim shares vocabulary with nearly every
+    entity: measured across the five saved runs, an arbitrary claim paired with
+    an arbitrary company profile clears that heuristic 87% of the time, so it
+    cannot tell a profile's own evidence from a competitor's. Naming the
+    company is the one thing a profile's evidence has to do, and unlike
+    vocabulary overlap it is a necessary condition rather than a sufficient
+    one.
+
+    Evaluated across the citation set, matching _check_weak_support: a profile
+    cites several claims covering different attributes and they need not all
+    name the company, but at least one must.
+    """
+    distinctive = _distinctive_name_tokens(company_name, all_claim_texts)
+    if not distinctive or not cited_texts:
+        return
+    if any(distinctive & _tokens(text) for text in cited_texts):
+        return
+    issues.append(CitationIssue(
+        claim_or_entity=company_name,
+        problem=(
+            f"{label} cites {len(cited_texts)} claim(s), none of which mention "
+            f"the company by name - the profile may rest on another company's "
+            f"evidence."
+        ),
+    ))
 
 
 def _validate_index(
@@ -118,6 +197,7 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
     issues: list[CitationIssue] = []
     verified = 0
     max_index = len(analysis.all_claims) - 1
+    all_claim_texts = [claim.claim for claim in analysis.all_claims]
 
     # -- 1. Recommendations --------------------------------------------
     for rec in analysis.recommendations:
@@ -150,9 +230,14 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
                 cited.append(analysis.all_claims[idx].claim)
         # Name included in the citing text on purpose: a claim that names the
         # company plainly supports its profile, even when the differentiation
-        # prose is about some other attribute entirely.
+        # prose is about some other attribute entirely. That makes the name
+        # SUFFICIENT here; _check_company_is_named makes it NECESSARY, which is
+        # where the actual discrimination comes from.
         _check_weak_support(
             f"{company.name} {company.differentiation}", cited, label, issues,
+        )
+        _check_company_is_named(
+            company.name, cited, all_claim_texts, label, issues,
         )
 
     # -- 3. Funding events -----------------------------------------------

@@ -7,6 +7,8 @@ fast, deterministic, and exhaustive about edge cases. Each test name states
 exactly which failure mode it's proving the gate catches.
 """
 
+import pathlib
+
 import pytest #pyrefly: ignore
 from crewai_exec_deep_research_agent.models import (
     AnalysisResult,
@@ -19,7 +21,11 @@ from crewai_exec_deep_research_agent.models import (
     Recommendation,
     RecommendationAction,
 )
-from crewai_exec_deep_research_agent.tools.citation_check_tool import check_citations
+from crewai_exec_deep_research_agent.tools.citation_check_tool import (
+    check_citations,
+    _distinctive_name_tokens,
+    _significant_words,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -53,6 +59,47 @@ def base_analysis(**overrides) -> AnalysisResult:
     )
     defaults.update(overrides)
     return AnalysisResult(**defaults)
+
+
+# A realistically-sized single-sector corpus. The name check filters name
+# tokens by how often they appear across the run's own claims, so a 3-claim
+# fixture cannot exercise it - with 16 claims, a token is distinctive when it
+# appears in fewer than 4 of them. Here 'power', 'wave' and 'marine' are
+# common enough to be sector vocabulary; 'corpower', 'minesto', 'eco',
+# 'orbital' and 'bp' are not.
+def sector_claims() -> list[SourcedClaim]:
+    return [
+        make_claim("CorPower Ocean closed a $36M Series B led by Northern Capital."),   # 0
+        make_claim("CorPower Ocean reported 20% lower installed cost per megawatt."),   # 1
+        make_claim("Minesto commissioned its Dragon 12 kite at the Faroe site."),       # 2
+        make_claim("Minesto raised a bridge round in early 2025."),                     # 3
+        make_claim("Eco Wave Power signed a grid connection agreement in Portugal."),   # 4
+        make_claim("Tocardo suspended tidal turbine deliveries pending recert."),       # 5
+        make_claim("The Orbital O2 turbine at EMEC ran for 18 continuous months."),     # 6
+        make_claim("BP wrote down its stake in a floating tidal developer."),           # 7
+        make_claim("Global wave power funding reached $310M across 14 rounds."),        # 8
+        make_claim("Two governments introduced marine power production tax credits."),  # 9
+        make_claim("Grid operators flagged queues as a wave power bottleneck."),        # 10
+        make_claim("Installed tidal power capacity in Europe grew 18% year on year."),  # 11
+        make_claim("Wave power levelized cost estimates fell 12% since 2023."),         # 12
+        make_claim("Marine power insurers raised premiums on early deployments."),      # 13
+        make_claim("Utility procurement for wave power is concentrated in Europe."),    # 14
+        make_claim("Marine power supply chains depend on a few cable vendors."),        # 15
+    ]
+
+
+def sector_analysis(**overrides) -> AnalysisResult:
+    overrides.setdefault("all_claims", sector_claims())
+    return base_analysis(**overrides)
+
+
+def profile(name: str, indices: list[int], differentiation: str) -> CompanyProfile:
+    return CompanyProfile(
+        name=name,
+        entity_type=EntityType.NEW_ENTRANT,
+        differentiation=differentiation,
+        supporting_claim_indices=indices,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -304,6 +351,118 @@ def test_company_profile_is_supported_by_a_claim_naming_the_company():
     )
     result = check_citations(analysis)
     assert result.passed is True, [i.problem for i in result.issues]
+
+
+# ---------------------------------------------------------------------------
+# A company profile must cite at least one claim that names the company
+# ---------------------------------------------------------------------------
+
+def test_profile_citing_only_another_companys_claims_is_flagged():
+    """The gap this check exists to close.
+
+    Vocabulary overlap cannot tell a profile's own evidence from a
+    competitor's, because inside one sector corpus almost everything overlaps
+    with almost everything. Here the citations are entirely about Minesto, and
+    the weak-support heuristic passes them on the shared word 'site' alone -
+    so the naming check has to be the thing that catches it.
+    """
+    analysis = sector_analysis(
+        new_entrants=[profile(
+            "CorPower Ocean", [2, 3],
+            "Operates a commercial-scale wave energy converter site.",
+        )],
+    )
+    result = check_citations(analysis)
+    assert result.passed is False
+    assert len(result.issues) == 1, [i.problem for i in result.issues]
+    assert "mention the company by name" in result.issues[0].problem
+
+
+def test_one_claim_naming_the_company_carries_the_whole_citation_set():
+    """Set-level, matching the weak-support aggregation: the other cited
+    claims support other parts of the profile and need not name it."""
+    analysis = sector_analysis(
+        new_entrants=[profile(
+            "CorPower Ocean", [0, 10],
+            "Backs its cost claims against grid interconnection constraints.",
+        )],
+    )
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+
+
+def test_sector_words_in_a_company_name_do_not_count_as_naming_it():
+    """'Wave' and 'Power' are what this whole run is about. If they counted,
+    the check would pass on any claim in the corpus and do no work."""
+    analysis = sector_analysis(
+        new_entrants=[profile(
+            "Eco Wave Power", [10, 12],
+            "Onshore wave energy conversion mounted to existing structures.",
+        )],
+    )
+    result = check_citations(analysis)
+    assert result.passed is False
+    assert "mention the company by name" in result.issues[0].problem
+
+
+def test_a_two_letter_company_name_is_still_matched():
+    """_significant_words drops tokens of three characters or fewer, which is
+    right for prose overlap and would erase 'BP' entirely - hence the separate
+    raw tokenizer."""
+    assert _significant_words("BP") == set()
+    analysis = sector_analysis(
+        incumbents=[profile(
+            "BP", [7],
+            "Wrote down its floating tidal stake after a strategy reset.",
+        )],
+    )
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+
+
+def test_a_claim_using_part_of_the_company_name_counts_as_naming_it():
+    """Claims say 'the Orbital O2', not the full registered company name.
+    Requiring every name token would flag correct output - as it did on the
+    saved wave and tidal run."""
+    analysis = sector_analysis(
+        incumbents=[profile(
+            "Orbital Marine Power", [6],
+            "Floating tidal platform with the longest continuous run to date.",
+        )],
+    )
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+
+
+def test_check_is_skipped_when_no_part_of_the_name_is_distinctive():
+    """A name made entirely of sector vocabulary cannot be tested for. The
+    conservative choice is to say nothing: a false positive here escalates a
+    correct briefing to a human, which is the expensive failure."""
+    assert _distinctive_name_tokens("Wave Power", [c.claim for c in sector_claims()]) == set()
+    analysis = sector_analysis(
+        new_entrants=[profile(
+            "Wave Power", [2, 3],
+            "Raised a bridge round ahead of a commercial kite deployment.",
+        )],
+    )
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+
+
+def test_every_saved_run_still_passes_the_gate():
+    """Guards the over-strict direction against real output rather than
+    invented fixtures. All 26 company profiles across the five saved runs
+    cite at least one claim naming them; if a future tightening breaks that,
+    it breaks here instead of on a live run."""
+    output_dir = pathlib.Path(__file__).resolve().parent.parent / "output"
+    saved = sorted(output_dir.glob("*/analysis.json"))
+    assert saved, "no saved runs found to check against"
+    for path in saved:
+        analysis = AnalysisResult.model_validate_json(path.read_text())
+        result = check_citations(analysis)
+        assert result.passed is True, (
+            f"{path.parent.name}: {[i.problem for i in result.issues]}"
+        )
 
 
 # ---------------------------------------------------------------------------

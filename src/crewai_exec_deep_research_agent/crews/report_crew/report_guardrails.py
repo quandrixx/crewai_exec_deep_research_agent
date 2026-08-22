@@ -57,8 +57,20 @@ _BANNED_PHRASES = (
 # let a live run ship well over target while the Style Reviewer reported
 # nothing to fix, so the gate was doing no work at exactly the point the guide
 # cares about most: partners stop reading.
+#
+# The ceiling carries a deliberate reserve, and this is easy to get wrong:
+# THIS GUARDRAIL DOES NOT SEE THE WHOLE DOCUMENT. It runs on the style
+# reviewer's TaskOutput, and _insert_funding_block() splices the funding block
+# in afterwards, so the shipped body is always longer than what is measured
+# here. The style guide counts that block (it excludes only the Sources
+# appendix), so the ceiling has to leave room for it. Live runs put the block
+# at 13-81 words, scaling at roughly 19 words per table row; 100 words of
+# reserve covers a five-row table, which keeps the shipped body under 1300.
+# Two reports shipped at 1344 and 1323 words before this reserve existed,
+# both having passed a 1300 check on prose alone.
 _MIN_WORDS = 600
-_MAX_WORDS = 1300
+_FUNDING_BLOCK_RESERVE = 100
+_MAX_WORDS = 1300 - _FUNDING_BLOCK_RESERVE
 
 
 def _heading_positions(body: str) -> dict[str, int]:

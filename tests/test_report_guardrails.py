@@ -23,6 +23,7 @@ import pytest  # pyrefly: ignore
 from crewai.tasks.task_output import TaskOutput
 
 from crewai_exec_deep_research_agent.crews.report_crew.report_guardrails import (
+    _MAX_WORDS,
     validate_report_draft,
     validate_reviewed_report,
 )
@@ -38,10 +39,15 @@ SECTIONS = [
 ]
 
 
-# Five required sections, so a body is roughly 5 * filler_words long.
+# Five required sections, so a body is roughly 5 * filler_words long. Sized
+# off the guardrail's own band so retuning the band cannot silently invalidate
+# these fixtures - the ceiling moved once already when it was given a reserve
+# for the funding block the guardrail never sees.
+_SECTION_COUNT = 5
 IN_BAND = 180        # ~900 words: inside the 800-1100 house target
 BELOW_BAND = 20      # ~100 words: a stub
-ABOVE_BAND = 320     # ~1600 words: a runaway
+ABOVE_BAND = (_MAX_WORDS // _SECTION_COUNT) + 60     # comfortably a runaway
+JUST_UNDER_CEILING = (_MAX_WORDS // _SECTION_COUNT) - 10
 
 
 def body(sections=None, filler_words=IN_BAND, extra="") -> str:
@@ -195,8 +201,10 @@ def test_length_band_allows_modest_overrun_but_not_a_sprawl():
     small overrun passes. A large one does not: with a loose ceiling a live run
     once shipped far over target while the Style Reviewer reported nothing to
     fix, which is exactly the case the gate has to catch."""
-    # ~1200 words: over the house target, still inside the gate's band.
-    assert validate_report_draft(draft_output(text=body(filler_words=240)))[0] is True
+    # Over the house target, still inside the gate's band.
+    assert validate_report_draft(
+        draft_output(text=body(filler_words=JUST_UNDER_CEILING))
+    )[0] is True
     # ~1600 words: well past the point a partner keeps reading.
     passed, feedback = validate_report_draft(draft_output(text=body(filler_words=ABOVE_BAND)))
     assert passed is False

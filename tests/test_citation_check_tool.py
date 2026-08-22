@@ -648,6 +648,83 @@ def test_a_tension_citing_claims_from_both_sides_counts_every_index():
 
 
 # ---------------------------------------------------------------------------
+# A recommendation naming a company must cite evidence about it
+# ---------------------------------------------------------------------------
+
+def recommend(text: str, indices: list[int], companies: list[str]) -> AnalysisResult:
+    """One recommendation, plus a valid profile for each company it mentions.
+
+    The profiles have to be independently valid or their own checks fire and
+    drown out what these tests are about, so each is anchored on a claim that
+    actually names it, with differentiation drawn from that same claim.
+    """
+    claims = sector_claims()
+    entrants = []
+    for name in companies:
+        tokens = _distinctive_name_tokens(name, [c.claim for c in claims])
+        index = next(i for i, c in enumerate(claims)
+                     if tokens & _significant_words(c.claim))
+        entrants.append(profile(name, [index], claims[index].claim))
+    return sector_analysis(
+        new_entrants=entrants,
+        recommendations=[Recommendation(
+            action=RecommendationAction.PRIORITIZE_DILIGENCE,
+            text=text,
+            supporting_claim_indices=indices,
+        )],
+    )
+
+
+def test_recommendation_naming_a_company_with_no_evidence_about_it_is_flagged():
+    """Recommendations are the weak case for vocabulary overlap - no name
+    field, no source-type split. When one does name a profiled company, that
+    name is something checkable."""
+    analysis = recommend(
+        "Run formal diligence on Minesto before the next committee.",
+        [0],  # a CorPower Ocean claim
+        ["Minesto"],
+    )
+    result = check_citations(analysis)
+    assert result.passed is False
+    assert any("names Minesto" in i.problem for i in result.issues)
+
+
+def test_recommendation_citing_evidence_about_the_company_it_names_passes():
+    analysis = recommend(
+        "Run formal diligence on Minesto before the next committee.",
+        [2],
+        ["Minesto"],
+    )
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+
+
+def test_one_named_company_with_evidence_carries_a_multi_company_recommendation():
+    """A real SMR recommendation named four developers and cited a claim for
+    one of them. Demanding evidence for every name flags correct output."""
+    analysis = recommend(
+        "Continue monitoring Minesto's Dragon kite programme and Tocardo.",
+        [2],  # evidence about Minesto only
+        ["Minesto", "Tocardo"],
+    )
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+
+
+def test_recommendation_naming_no_profiled_company_skips_the_check():
+    """'Source Series A/B wave energy companies' names nobody. Skipping beats
+    failing: a false positive here withholds a correct briefing."""
+    analysis = recommend(
+        "Actively source wave power companies while global funding stays "
+        "concentrated in a handful of rounds.",
+        [8],
+        ["Minesto"],
+    )
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+
+
+# ---------------------------------------------------------------------------
 # Market shifts are cited like everything else
 # ---------------------------------------------------------------------------
 

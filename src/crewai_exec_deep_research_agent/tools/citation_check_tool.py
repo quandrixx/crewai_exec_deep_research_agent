@@ -41,7 +41,9 @@ Three failure classes are distinguished:
     an 'internal' index pointing at an external claim, or vice versa. Always a
     hard fail: it is the difference between reporting a real disagreement and
     inventing one out of claims that never disagreed.
-  - UNNAMED: a company profile whose cited claims never mention the company.
+  - UNNAMED: a company profile whose cited claims never mention the company,
+    or a recommendation that names a profiled company and cites no evidence
+    about any company it names.
     Company profiles get this extra check because WEAK_SUPPORT is close to
     useless for them - see _check_company_is_named.
 """
@@ -179,6 +181,55 @@ def _check_company_is_named(
     ))
 
 
+def _check_named_companies_are_cited(
+    citing_text: str,
+    company_names: list[str],
+    cited_texts: list[str],
+    all_claim_texts: list[str],
+    label: str,
+    issues: list[CitationIssue],
+) -> None:
+    """A recommendation naming a company must cite evidence about that company.
+
+    The recommendation counterpart of _check_company_is_named. Recommendations
+    are the weak case for weak support - unlike a profile they have no name
+    field and unlike a tension they have no source-type split, so the only
+    check on them was vocabulary overlap, which an arbitrary claim from the
+    same run clears about half the time. But a recommendation usually does
+    name something: measured over the five saved runs, 11 of 19 name a company
+    profiled in the same analysis, and all 11 already cite a claim naming it.
+    That turns "recommend acting on a company you gathered no evidence about"
+    into a deterministic failure for well over half of them.
+
+    At-least-one aggregation across the named companies, matching
+    _check_weak_support and for the same reason. A real recommendation names
+    four SMR developers and cites a claim for one of them; demanding evidence
+    for every name flags it, and it is not wrong. Recommendations naming no
+    profiled company - "source Series A/B wave energy companies", "pass on
+    utility-scale generation" - skip the check rather than fail it.
+    """
+    if not cited_texts:
+        return
+    named = [
+        name for name in company_names
+        if _distinctive_name_tokens(name, all_claim_texts) & _tokens(citing_text)
+    ]
+    if not named:
+        return
+    for name in named:
+        tokens = _distinctive_name_tokens(name, all_claim_texts)
+        if any(tokens & _tokens(text) for text in cited_texts):
+            return
+    issues.append(CitationIssue(
+        claim_or_entity=citing_text,
+        problem=(
+            f"{label} names {', '.join(named)} but none of its "
+            f"{len(cited_texts)} cited claim(s) mention any of them - the "
+            f"recommendation may rest on evidence about a different company."
+        ),
+    ))
+
+
 def _validate_index(
     index: int,
     max_index: int,
@@ -278,6 +329,7 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
     max_index = len(analysis.all_claims) - 1
     all_claim_texts = [claim.claim for claim in analysis.all_claims]
     distinctive_terms = _distinctive_claim_terms(all_claim_texts)
+    company_names = [c.name for c in [*analysis.incumbents, *analysis.new_entrants]]
 
     # -- 1. Recommendations --------------------------------------------
     for rec in analysis.recommendations:
@@ -294,6 +346,10 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
                 cited.append(analysis.all_claims[idx].claim)
         _check_weak_support(
             rec.text, cited, "Recommendation", issues, distinctive_terms,
+        )
+        _check_named_companies_are_cited(
+            rec.text, company_names, cited, all_claim_texts,
+            "Recommendation", issues,
         )
 
     # -- 2. Company profiles (incumbents + new entrants) ---------------

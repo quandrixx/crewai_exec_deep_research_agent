@@ -12,12 +12,12 @@ uv run kickoff "enhanced geothermal systems"
 ```
 TOPIC: enhanced geothermal systems
   research   : 18 external + 8 internal claims
-  analysis   : 6 shifts, 4 companies, 3 funding events, 2 tensions, 4 recommendations
-  fact-check : PASSED (30 citations verified, 0 issues, 0 revision round(s))
-  cost       : $0.31 estimated
+  analysis   : 6 shifts, 4 companies, 3 funding events, 1 tensions, 4 recommendations
+  fact-check : PASSED (44 citations verified, 0 issues, 0 revision round(s))
+  cost       : $0.33 estimated
     research      $0.13  claude-sonnet-5  (43,668 in / 5,919 out, 7 requests, 11,718 cached)
-    analysis      $0.08  claude-sonnet-4-5  (13,099 in / 2,093 out, 2 requests)
-    report        $0.10  claude-sonnet-4-5  (12,463 in / 3,768 out, 2 requests)
+    analysis      $0.09  claude-sonnet-4-5  (14,760 in / 2,207 out, 2 requests)
+    report        $0.11  claude-sonnet-4-5  (12,736 in / 4,068 out, 2 requests)
 
   written:
     output/enhanced_geothermal_systems/research.json
@@ -28,7 +28,7 @@ TOPIC: enhanced geothermal systems
     output/enhanced_geothermal_systems/report.md
 
   Should Northbridge Increase Sourcing Activity in Enhanced Geothermal Systems?
-  1035 words, 20 sources, fact-check status: passed
+  1208 words, 20 sources, fact-check status: passed
 ```
 
 That is a verbatim run, not an illustration — `output/` is checked in, so the
@@ -36,7 +36,8 @@ run above is the one you are reading:
 [`output/enhanced_geothermal_systems/report.md`](output/enhanced_geothermal_systems/report.md),
 alongside briefings on
 [small modular reactors](output/small_modular_reactors/report.md),
-[molten salt reactors](output/molten_salt_reactors/report.md) and
+[molten salt reactors](output/molten_salt_reactors/report.md),
+[green hydrogen electrolyzers](output/green_hydrogen_electrolyzers/report.md) and
 [wave and tidal energy](output/wave_and_tidal_energy/report.md), each with the
 intermediate `research.json`, `analysis.json` and `cost.json` it was built
 from. Re-running a topic overwrites its directory in place.
@@ -54,11 +55,19 @@ opinions**, written down in old memos, and those opinions go stale. The most
 valuable thing this tool produces is the moment where the firm's own prior
 reasoning collides with current evidence — from a real run:
 
-> Northbridge passed **eighteen months ago** on regulatory-timeline risk,
-> citing unrealistic NRC licensing assumptions. Executive Order 14300
-> established binding **eighteen-month** deadlines, and **Developer X**
-> received favorable NRC pre-application engagement — directly addressing the
-> original pass thesis.
+> Northbridge passed on two SMR developers **eighteen months ago** primarily
+> due to regulatory-timeline risk, assuming the NRC licensing path would remain
+> slow given the design certification backlog. External evidence shows the NRC
+> approved **two SMR designs in a 12-month window** and rolled out fast-track
+> reforms in **May 2026** under presidential mandate. The regulatory pathway has
+> materially accelerated beyond what Northbridge assumed was realistic, reducing
+> the timeline risk that drove the original pass.
+
+The firm holding a stale position is only half of it. The section has to report
+*disagreement*, not any interesting difference — an earlier version of this
+pipeline filled it with items where external data plainly **confirmed** the
+internal signal, which is agreement wearing a conflict's clothes. Both halves
+of a tension are now typed and checked; see the fact-check gate below.
 
 That finding is only possible because the internal and external halves are
 researched **independently**, without either seeing the other. Otherwise you're
@@ -91,7 +100,7 @@ crewai run                                    # default topic
 uv run kickoff "enhanced geothermal systems"  # any topic
 uv run kickoff --list-topics                  # from demo_topics.json
 uv run plot                                   # flow diagram -> diagrams/
-uv run pytest                                 # 206 tests, no API calls
+uv run pytest                                 # 233 tests, no API calls
 ```
 
 Output lands in `output/<topic>/`: `research.json`, `analysis.json`,
@@ -157,16 +166,41 @@ deterministic formatting possible.
 
 ### The fact-check gate
 
-Every claim gathered gets an index. Every company profile, funding event, and
-recommendation must cite the indices of the claims supporting it. The gate is
+Every claim gathered gets an index. Every market shift, company profile,
+funding event, tension, and recommendation must cite the indices of the claims
+supporting it — every cited field in the schema, with no exceptions.
+The gate is
 [plain Python](src/crewai_exec_deep_research_agent/tools/citation_check_tool.py) —
 deliberately **not** an agent, because the thing deciding whether a report is
 trustworthy shouldn't be the same kind of process that could hallucinate.
 
-It checks that cited indices resolve to real claims, and flags citation sets
-where nothing shares vocabulary with the thing citing them. On failure the Flow
-feeds the specific problems back for one bounded revision; if that fails too, it
-**withholds the report** and escalates with the failed citations named.
+Four checks, in rising order of how much the structure buys:
+
+1. **Indices resolve.** A citation pointing at a claim that doesn't exist is a
+   hard fail. Cheap, and catches the worst case.
+2. **Something cited is actually related**, measured on terms that are *rare
+   within this run's own claims*. Counting any shared word at all made this a
+   topic detector rather than a relevance test: every claim in a run is about
+   one sector, so an arbitrary claim paired with an arbitrary entity cleared it
+   87% of the time.
+3. **Anything that names a company cites evidence about it.** Vocabulary
+   overlap cannot tell an entity's own evidence from a competitor's; naming is
+   the one thing that evidence has to do. Which parts of a name identify it is
+   decided by how rare they are in the corpus, so `fervo` and `nuscale` count
+   while `energy` and `power` don't — no per-sector stoplist to maintain. This
+   covers company profiles, funding events, and any recommendation that names a
+   profiled company; a recommendation naming nobody skips it rather than
+   failing.
+4. **A tension cites internal *and* external claims, of the types it says.**
+   "Where Sources Disagree" used to cross the crew boundary as free text, which
+   made it the one cited section the gate couldn't see at all. As a typed
+   `Tension` with the citations split by side, "internal sources say X" built
+   out of external claims becomes a hard fail — a check that is only possible
+   because the schema separates the two halves.
+
+On failure the Flow feeds the specific problems back for one bounded revision;
+if that fails too, it **withholds the report** and escalates with the failed
+citations named.
 
 ### What is deliberately not done by an LLM
 
@@ -220,9 +254,9 @@ discounts.
 | Stage | Model | Rate (in/out per MTok) | Typical |
 | --- | --- | --- | --- |
 | research | `claude-sonnet-5` | $2 / $10 | $0.13 |
-| analysis | `claude-sonnet-4-5` | $3 / $15 | $0.08 |
-| report | `claude-sonnet-4-5` | $3 / $15 | $0.10 |
-| **total** | | | **~$0.31** |
+| analysis | `claude-sonnet-4-5` | $3 / $15 | $0.09 |
+| report | `claude-sonnet-4-5` | $3 / $15 | $0.11 |
+| **total** | | | **~$0.33** |
 
 **Research dominates, and the reason is structural.** An agent loop resends its
 entire accumulated conversation on every iteration, so a stage making N tool
@@ -230,7 +264,9 @@ calls pays input tokens proportional to N², not N. Everything about cost here
 follows from that.
 
 It started at **$0.49**, and two fixes took it to $0.31 — research input tokens
-fell 116k → 34k:
+fell 116k → 34k. (It has since drifted up to ~$0.33: the analysis and report
+prompts grew when "Where Sources Disagree" was given a checkable structure.
+Research, the expensive stage, is untouched.)
 
 - **The search instruction contradicted itself.** It asked for "4-6 SEPARATE,
   NARROW searches" and then required six numbered angles of coverage. Six
@@ -250,7 +286,7 @@ fell 116k → 34k:
 **Run-to-run variance is retries.** A run that trips a guardrail or fails the
 fact-check costs more, and the accounting shows exactly where: one observed run
 took three requests in the report stage instead of two — a single style-rule
-bounce — and that stage cost $0.19 instead of $0.10.
+bounce — and that stage cost $0.19 instead of its usual ~$0.11.
 
 Two known inefficiencies, both left in deliberately and documented in
 [`CLAUDE.md`](CLAUDE.md):
@@ -268,7 +304,7 @@ Two known inefficiencies, both left in deliberately and documented in
 ## Testing
 
 ```bash
-uv run pytest        # 206 tests, ~5s, no API calls
+uv run pytest        # 233 tests, ~5s, no API calls
 ```
 
 Everything deterministic is tested for real: citation checking, retrieval
@@ -287,6 +323,9 @@ says so in its docstring. A few examples:
 - JSON salvage must unwrap a fenced payload but must *never* repair a truncated
   one — a test pins each direction, because "fixing" truncation is how the
   first bug on this list happened.
+- The five checked-in runs are themselves a fixture: one test replays the gate
+  over every saved `analysis.json`, so a tightening that would have escalated a
+  briefing that really shipped fails in CI rather than on a live run.
 
 ---
 
@@ -328,9 +367,18 @@ different model than the research agents.
   passages whenever vocabulary overlaps, so the internal researcher is
   explicitly instructed to judge relevance itself. A real deployment would put
   a vector store behind the same tool interface.
-- **The weak-support heuristic is conservative by design** and will miss subtle
-  mis-citations. Raising its threshold trades false negatives for false
-  positives, and a false positive withholds a good report.
+- **The weak-support heuristic is conservative by design** and still misses
+  subtle mis-citations. Recommendations are the weak case: no name field like a
+  profile, no source-type split like a tension. Roughly half of them do name a
+  profiled company and get held to citing evidence about it, but the rest rest
+  on vocabulary overlap alone, which an arbitrary claim from the same run
+  clears about half the time. Tightening further trades false negatives for
+  false positives, and a false positive withholds a good report.
+- **The report length guardrail doesn't measure the whole document.** It runs on
+  the style reviewer's output, and the verified funding block is spliced in
+  afterwards, so the shipped body is longer than what was checked. The ceiling
+  now reserves 100 words for that, but it's a reserve, not a measurement — a
+  briefing with many funding rounds could still exceed it.
 - **The external researcher over-produces**, returning ~20 claims where the task
   asks for 8–15. All are well-sourced; it's a prompt-adherence gap.
 - **One revision round, then escalation.** Bounded deliberately — a pipeline

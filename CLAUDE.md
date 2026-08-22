@@ -76,7 +76,7 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 225 total):**
+**Built and verified (tests run and passing - 233 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
@@ -120,9 +120,13 @@ it to match.
   referenced document actually exists, so a rename can't quietly turn a chosen
   demo into a bland one.
 
-**Not started yet - this is where to resume:**
-- `README.md` - still the `{{crew_name}}` template. This is the last piece of
-  the submission.
+**Where to resume:**
+- `README.md` is written and current as of the tension/fact-check work. The one
+  thing outstanding is that the report-length prompt tightening
+  (`_FUNDING_BLOCK_RESERVE` plus the section-budget instructions in the report
+  crew's two tasks) is **unverified** - it has not been run live. Expect the
+  guardrail to bounce drafts on topics whose prose already sits near the
+  ceiling; molten salt and wave/tidal both would.
 
 The prose-restatement fix noted as unverified last session is now **confirmed
 working** - a full CLI run on molten salt reactors produced a Where Capital Is
@@ -570,12 +574,25 @@ CrewAI is ever upgraded.
 8. **`citation_check_tool.py`'s weak-support heuristic is deliberately
    conservative** (low overlap threshold) to avoid false-positiving on
    legitimate, well-paraphrased citations. It will miss some real problems -
-   quantified in gap #5, which also describes the two fixes that cut the
-   false-pass rate from 74% to 29% overall. **Recommendations remain the soft
-   spot at 47%** - they have no name to anchor on, so the naming check does not
-   apply to them, and their prose is long enough to share two distinctive terms
-   with about half the corpus. Don't "fix" it by raising thresholds without
-   re-running the full test suite, since
+   quantified in gap #5, which also describes the fixes that cut the false-pass
+   rate from 74% to 29% overall. **Recommendations are the weakest case** - no
+   name field like a profile, no source-type split like a tension - but 11 of
+   19 across the saved runs name a company profiled in the same analysis, and
+   `_check_named_companies_are_cited` holds those to citing evidence about one
+   of the companies they name. At-least-one aggregation, because a real
+   recommendation named four SMR developers while citing a claim for one.
+   The 8 that name nobody still rest on weak support alone.
+
+   **The obvious next step is deliberately NOT taken.** Raising
+   `_MAX_REQUIRED_TERMS` to 3 or 4 for recommendations would cut their
+   false-pass rate to 36% or 27%, and the tightest real recommendation now
+   shares 6 distinctive terms with its best cited claim, which looks like ample
+   margin. It is not trustworthy margin: recommendations grew long during the
+   tension work, and the report-length prompt tightening asks for 2-3 sentences
+   each, which will shrink exactly the term counts that margin is measured
+   from. Re-measure after a live run on the tightened prompts, then decide.
+
+   Don't "fix" the threshold without re-running the full test suite, since
    `test_paraphrased_but_related_citation_is_not_flagged_as_weak` exists
    specifically to catch that regression.
 9. **Quantities in a task must not contradict the coverage it demands.** The
@@ -598,11 +615,15 @@ CrewAI is ever upgraded.
    TaskOutput; the options are lowering `_MAX_WORDS` to leave table headroom or
    re-checking length in `ReportCrew.run` after the splice.
 
-11. **`MarketShift.supporting_claim_indices` is still not verified.** With
-   tensions covered, this is the last cited field the fact-check gate does not
-   check - `check_citations` covers recommendations, company profiles, funding
-   events and tensions only. `analysis_guardrails.py` checks the indices are
-   non-negative, but nothing confirms they resolve.
+11. **Every cited field is now verified by the gate.** `check_citations` covers
+   recommendations, company profiles, funding events, tensions and market
+   shifts. Market shifts were the last gap and got the general treatment -
+   indices resolve, plus weak support - since nothing about a shift is specific
+   the way a company has a name or a tension has two sides. All 27 shifts across
+   the five saved runs passed on the first try, so this closed a coverage hole
+   without changing any output. If a new cited field is added to `models.py`,
+   add it here too; the gate is the only thing standing between a plausible
+   index and a fabricated citation.
 
 12. **Internal document filenames are part of the deliverable.** They're cited
    verbatim in the report's Sources appendix, so they follow a consistent

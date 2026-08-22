@@ -123,10 +123,11 @@ it to match.
 **Where to resume:**
 - `README.md` is written and current; its headline run block is a verbatim
   `uv run kickoff "enhanced geothermal systems"` from 2026-08-21.
-- **The report-length prompt tightening failed and needs another attempt.**
-  `_FUNDING_BLOCK_RESERVE` works - that run shipped 1256 words with prose at
-  1177 against the 1200 ceiling, inside the 1300 hard limit and with no
-  guardrail bounce. The prompt half did not; see gap #10.
+- All five demo topics were re-run end to end on 2026-08-21 against the current
+  code, so `output/` is a coherent set: every gate passed first time, no
+  revisions, no escalations. Total spend $1.83.
+- The length work is **mostly** landed - four of five reports now sit inside the
+  800-1100 target. See gap #10 for the remaining ~100 words of slack.
 
 The prose-restatement fix noted as unverified last session is now **confirmed
 working** - a full CLI run on molten salt reactors produced a Where Capital Is
@@ -618,17 +619,28 @@ CrewAI is ever upgraded.
    still exceed it. Verified live: a full EGS run shipped 1256 words, prose
    1177, no bounce.
 
-   **The prose is still too long, and one attempt to fix that already failed.**
-   The report prompts were given a section budget: 2-3 sentences per
-   recommendation, and no more than about a third of the body for that section.
-   The live run returned **four** sentences in all four recommendations (95-108
-   words each), and the proportional rule was satisfied at 33% by the OTHER
-   sections growing - Capital Flows +28, Competitive Landscape +29, while
-   Recommendations moved 412 -> 410. **A proportional budget is circular**: it
-   can always be met by inflating the denominator. Next attempt should give the
-   section an absolute word budget, and should note that "2-3 sentences"
-   conflicts with the action + reasoning + risk + specificity the same task
-   demands - gap #9's pattern once more.
+   **The prose half mostly worked - but do not judge it from one run.** Read on
+   one topic (enhanced geothermal, 1256 words) the prompt tightening looked like
+   a flat failure. Across all five it clearly worked: shipped lengths are 805,
+   933, 1016, 1075 and 1256, so four of five are inside the 800-1100 target
+   against one of five before. Per-recommendation length fell to 59-101 words
+   everywhere except geothermal, which still runs 95-108.
+
+   Two caveats worth keeping:
+   - **The guardrail, not the prompt, is doing the enforcing.** SMR and
+     wave/tidal each bounced two drafts before landing at 1075 and 933.
+     Geothermal never bounced - its prose was 1177, under the 1200 ceiling -
+     and shipped over target. The band is ~100 words looser than the house
+     target, which is the remaining slack.
+   - **"2-3 sentences per recommendation" is still not obeyed** - live runs
+     return 3-4. Word counts came down anyway. Treat the sentence count as
+     advisory phrasing that moved length indirectly, not as an instruction the
+     model follows; gap #9's pattern again, since the same task demands action
+     + reasoning + risk + specificity.
+
+   The proportional half of that instruction ("no more than about a third of the
+   body") is worthless and should be dropped if this is touched again: it is
+   circular, and can always be met by inflating the denominator.
 
 11. **Every cited field is now verified by the gate.** `check_citations` covers
    recommendations, company profiles, funding events, tensions and market

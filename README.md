@@ -6,42 +6,46 @@ documents in parallel, reconciles what they say, verifies every citation, and
 produces an investment-committee-ready briefing.
 
 ```bash
-uv run kickoff "enhanced geothermal systems"
+uv run kickoff "small modular reactors"
 ```
 
 ```
-TOPIC: enhanced geothermal systems
-  research   : 15 external + 9 internal claims
-  analysis   : 6 shifts, 4 companies, 4 funding events, 1 tensions, 4 recommendations
-  fact-check : PASSED (43 citations verified, 0 issues, 0 revision round(s))
-  cost       : $0.33 estimated
-    research      $0.13  claude-sonnet-5  (42,809 in / 6,166 out, 7 requests, 11,718 cached)
-    analysis      $0.09  claude-sonnet-4-5  (14,680 in / 2,271 out, 2 requests)
-    report        $0.11  claude-sonnet-4-5  (12,923 in / 3,885 out, 2 requests)
+TOPIC: small modular reactors
+  research   : 18 external + 8 internal claims
+  analysis   : 6 shifts, 7 companies, 3 funding events, 2 tensions, 4 recommendations
+  fact-check : PASSED (55 citations verified, 0 issues, 0 revision round(s))
+  cost       : $0.38 estimated
+    research      $0.12  claude-sonnet-5  (40,925 in / 5,841 out, 7 requests, 11,670 cached)
+    analysis      $0.09  claude-sonnet-4-5  (14,745 in / 2,522 out, 2 requests)
+    report        $0.16  claude-sonnet-4-5  (21,486 in / 5,609 out, 3 requests)
 
   written:
-    output/enhanced_geothermal_systems/research.json
-    output/enhanced_geothermal_systems/analysis.json
-    output/enhanced_geothermal_systems/fact_check.json
-    output/enhanced_geothermal_systems/cost.json
-    output/enhanced_geothermal_systems/report.json
-    output/enhanced_geothermal_systems/report.md
+    output/small_modular_reactors/research.json
+    output/small_modular_reactors/analysis.json
+    output/small_modular_reactors/fact_check.json
+    output/small_modular_reactors/cost.json
+    output/small_modular_reactors/report.json
+    output/small_modular_reactors/report.md
 
-  Should Northbridge Increase Sourcing Activity in Enhanced Geothermal Systems?
-  1256 words, 17 sources, fact-check status: passed
+  Should Northbridge Increase Sourcing Activity in Small Modular Reactors?
+  1075 words, 20 sources, fact-check status: passed
 ```
 
 That is one `uv run kickoff` invocation copied out of the terminal, not an
 illustration — `output/` is checked in, so the run above is the one you are
 reading:
-[`output/enhanced_geothermal_systems/report.md`](output/enhanced_geothermal_systems/report.md),
+[`output/small_modular_reactors/report.md`](output/small_modular_reactors/report.md),
 alongside briefings on
-[small modular reactors](output/small_modular_reactors/report.md),
+[enhanced geothermal systems](output/enhanced_geothermal_systems/report.md),
 [molten salt reactors](output/molten_salt_reactors/report.md),
 [green hydrogen electrolyzers](output/green_hydrogen_electrolyzers/report.md) and
 [wave and tidal energy](output/wave_and_tidal_energy/report.md), each with the
 intermediate `research.json`, `analysis.json` and `cost.json` it was built
 from. Re-running a topic overwrites its directory in place.
+
+The three-request report stage above is a style guardrail rejecting a draft and
+making the agent redo it — visible in the accounting, and the reason this run
+costs $0.38 rather than the $0.31 a clean one does.
 
 ---
 
@@ -56,19 +60,26 @@ opinions**, written down in old memos, and those opinions go stale. The most
 valuable thing this tool produces is the moment where the firm's own prior
 reasoning collides with current evidence — from a real run:
 
-> Northbridge passed on two SMR developers **eighteen months ago** primarily
-> due to regulatory-timeline risk, assuming the NRC licensing path would remain
-> slow given the design certification backlog. External evidence shows the NRC
-> approved **two SMR designs in a 12-month window** and rolled out fast-track
-> reforms in **May 2026** under presidential mandate. The regulatory pathway has
-> materially accelerated beyond what Northbridge assumed was realistic, reducing
-> the timeline risk that drove the original pass.
+> Northbridge's inbound deal flow and LP inquiries suggest rising interest
+> driven by corporate data-center offtake agreements. However, external analysis
+> indicates that under agreements like **Meta's nuclear power deal**, power is
+> sold to the regional market rather than delivered as dedicated on-site supply,
+> and a **July 2026 Bulletin of the Atomic Scientists** analysis argues that
+> nuclear power and SMRs will be unable to meet data center electricity needs
+> within the next several years, characterizing hyperscaler commitments as PR
+> hype. The offtake narrative driving LP interest may rest on a misunderstanding
+> of deal structures and technical feasibility.
 
-The firm holding a stale position is only half of it. The section has to report
-*disagreement*, not any interesting difference — an earlier version of this
-pipeline filled it with items where external data plainly **confirmed** the
-internal signal, which is agreement wearing a conflict's clothes. Both halves
-of a tension are now typed and checked; see the fact-check gate below.
+That is the section earning its place: the firm's own LPs are asking about a
+thesis that outside analysis says is built on a misreading of the deals.
+
+Getting there took work, because the easy failure is subtle. An earlier version
+of this pipeline filled the section with items where external data plainly
+**confirmed** the internal signal — agreement wearing a conflict's clothes. A
+tension is now a typed object citing internal *and* external claims, and the
+fact-check gate verifies each cited claim really is of the type it was filed
+under, so a "disagreement" cannot be assembled from claims that never
+disagreed.
 
 That finding is only possible because the internal and external halves are
 researched **independently**, without either seeing the other. Otherwise you're
@@ -284,10 +295,23 @@ Research, the expensive stage, is untouched.)
   not repair truncated JSON, because inventing structure to make a parse
   succeed is how you silently lose real findings.
 
-**Run-to-run variance is retries.** A run that trips a guardrail or fails the
-fact-check costs more, and the accounting shows exactly where: one observed run
-took three requests in the report stage instead of two — a single style-rule
-bounce — and that stage cost $0.19 instead of its usual ~$0.11.
+**Run-to-run variance is retries**, and the accounting shows exactly where.
+Across the five checked-in runs the total ranges $0.31 to $0.49:
+
+| Run | research | analysis | report | total |
+| --- | --- | --- | --- | --- |
+| green hydrogen | $0.14 / 8 req | $0.08 | $0.09 / 2 req | **$0.31** |
+| molten salt | $0.13 / 8 req | $0.08 | $0.11 / 2 req | **$0.32** |
+| enhanced geothermal | $0.13 / 7 req | $0.09 | $0.11 / 2 req | **$0.33** |
+| small modular reactors | $0.12 / 7 req | $0.09 | $0.16 / 3 req | **$0.38** |
+| wave and tidal | $0.26 / 14 req | $0.08 | $0.15 / 3 req | **$0.49** |
+
+A third request in the report stage is a style-rule bounce — the guardrail
+rejecting a draft and making the agent redo it, which is the length gate doing
+its job and costing ~$0.05 to do it. The wave and tidal outlier is the same
+effect one stage earlier and twice as expensive: 14 research requests against
+the usual 7-8, on the sector with the thinnest external coverage, where the
+researcher searched harder for material that isn't there.
 
 Two known inefficiencies, both left in deliberately and documented in
 [`CLAUDE.md`](CLAUDE.md):
@@ -375,17 +399,14 @@ different model than the research agents.
   on vocabulary overlap alone, which an arbitrary claim from the same run
   clears about half the time. Tightening further trades false negatives for
   false positives, and a false positive withholds a good report.
-- **Briefings run long.** The house target is 800-1100 words; recent runs ship
-  1180-1350. Two separate causes, one fixed and one not. The guardrail runs on
+- **The length ceiling is looser than the house target.** The guardrail runs on
   the style reviewer's output and the verified funding block is spliced in
-  *afterwards*, so the shipped body is longer than what was checked — the
-  ceiling now reserves 100 words for that, which keeps briefings under the hard
-  limit but is a reserve, not a measurement. Underneath that, the prose itself
-  has grown, and a round of prompt tightening did not move it: asked for 2-3
-  sentences per recommendation, a live run returned four every time, and a
-  "no more than a third of the body" instruction was satisfied by the *other*
-  sections growing instead. The next attempt should give the recommendation
-  section an absolute word budget rather than a proportional one.
+  *afterwards*, so it reserves 100 words for a block it cannot see. That leaves
+  a 1200-word prose ceiling against a 1100-word target, and a draft landing in
+  between ships over target without ever bouncing — which is what the enhanced
+  geothermal run does at 1256 words. The other four land inside the target, two
+  of them only because the guardrail bounced their first draft. The enforcement
+  works; the band could be ~100 words tighter.
 - **The external researcher over-produces**, returning ~20 claims where the task
   asks for 8–15. All are well-sourced; it's a prompt-adherence gap.
 - **One revision round, then escalation.** Bounded deliberately — a pipeline

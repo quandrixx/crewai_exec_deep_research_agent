@@ -76,7 +76,7 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 213 total):**
+**Built and verified (tests run and passing - 218 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
@@ -477,23 +477,46 @@ CrewAI is ever upgraded.
    citations verified" figure) counts indices that resolved, not citations
    checked for meaning.
 
-   The fix is `_check_company_is_named`: at least one cited claim must actually
-   name the company. The name stays *sufficient* for weak support and is now
-   also *necessary*, which is where the discrimination comes from. Which parts
-   of a name identify it is decided by document frequency across the run's own
-   claims (`_MAX_NAME_TOKEN_DOC_FREQUENCY`), not a stoplist - a stoplist would
-   need rewriting per sector, whereas df self-tunes and correctly keeps
-   'fervo'/'nuscale'/'bp' while discarding 'energy'/'power'/'smr'. Any name
-   token matching is enough, since claims say "the Orbital O2" rather than
-   "Orbital Marine Power"; a name with no distinctive token at all skips the
-   check rather than flagging, because a false positive here escalates a
-   correct briefing to a human. All 26 profiles across the five saved runs
-   pass, and `test_every_saved_run_still_passes_the_gate` pins that.
+   **Two fixes, both resting on the same idea: a term is evidence only if it is
+   rare within the run's own claims.** `_MAX_TERM_DOC_FREQUENCY` (0.25) is the
+   cutoff, deliberately df-based rather than a stoplist - a stoplist would need
+   rewriting for every sector this is pointed at, whereas df self-tunes and
+   correctly keeps 'fervo'/'nuscale'/'corpower'/'bp' while discarding
+   'energy'/'power'/'smr'/'wave'.
 
-   Minor consequence worth knowing: `_significant_words` drops tokens of three
-   characters or fewer, so for a company like **BP** the name contributes
-   nothing to weak support. `_check_company_is_named` uses a separate raw
-   tokenizer and does cover it.
+   1. **`_check_company_is_named`** - at least one cited claim must actually
+      name the company. The name stays *sufficient* for weak support and is now
+      also *necessary*, which is where the discrimination comes from. Any name
+      token matching is enough, since claims say "the Orbital O2" rather than
+      "Orbital Marine Power". Funding events get this check too; it is the only
+      real check they have.
+   2. **`_check_weak_support` counts only distinctive terms**, and requires
+      `min(2, len(usable))` of them. The cap scales because a funding event's
+      citing text is structured fields - a stage enum and a raw float no claim
+      ever spells that way - so it genuinely has less signal than a prose
+      recommendation. A flat bar of two flagged correct X-energy and Fervo
+      events; a flat bar of one lets nearly everything through.
+
+   Measured false-pass rate (an arbitrary claim from the same run accepted as
+   support), before → after: company profiles **87% → 22%**, recommendations
+   **88% → 47%**, funding events **27% → 16%**. All five saved runs still pass
+   with identical `verified_count`, and
+   `test_every_saved_run_still_passes_the_gate` pins that.
+
+   **Why the cap is 2 and not 3.** Raising it takes recommendations to 35%, and
+   no saved run fails - but the margin is gone: the Eavor profile in
+   `enhanced_geothermal_systems` shares exactly 3 distinctive terms with its
+   best cited claim, so a single reworded word would escalate a correct
+   briefing. The tightest real recommendation sits at 4. If you retune, measure
+   margin rather than pass/fail.
+
+   Two consequences worth knowing:
+   - `_significant_words` drops tokens of three characters or fewer, so for a
+     company like **BP** the name contributes nothing to weak support.
+     `_check_company_is_named` uses a separate raw tokenizer and does cover it.
+   - Below roughly four claims, no term can clear the frequency bar, so
+     `_check_weak_support` falls back to the old unfiltered overlap. That keeps
+     small-corpus behaviour lenient rather than flagging everything.
 
 6. **Never ask a model to paste pre-rendered content "verbatim".** It will not.
    The funding table was originally passed into the prompt with instructions to
@@ -513,10 +536,12 @@ CrewAI is ever upgraded.
 8. **`citation_check_tool.py`'s weak-support heuristic is deliberately
    conservative** (low overlap threshold) to avoid false-positiving on
    legitimate, well-paraphrased citations. It will miss some real problems -
-   quantified in gap #5, it misses most of them, which is why company profiles
-   get the separate naming check. Recommendations and funding events still rest
-   on weak support alone; treat that as a known soft spot. Don't "fix" it by
-   raising the threshold without re-running the full test suite, since
+   quantified in gap #5, which also describes the two fixes that cut the
+   false-pass rate from 74% to 29% overall. **Recommendations remain the soft
+   spot at 47%** - they have no name to anchor on, so the naming check does not
+   apply to them, and their prose is long enough to share two distinctive terms
+   with about half the corpus. Don't "fix" it by raising thresholds without
+   re-running the full test suite, since
    `test_paraphrased_but_related_citation_is_not_flagged_as_weak` exists
    specifically to catch that regression.
 9. **Quantities in a task must not contradict the coverage it demands.** The

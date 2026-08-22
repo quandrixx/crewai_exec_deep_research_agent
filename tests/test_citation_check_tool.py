@@ -23,7 +23,9 @@ from crewai_exec_deep_research_agent.models import (
 )
 from crewai_exec_deep_research_agent.tools.citation_check_tool import (
     check_citations,
+    _distinctive_claim_terms,
     _distinctive_name_tokens,
+    _overlap_count,
     _significant_words,
 )
 
@@ -358,18 +360,19 @@ def test_company_profile_is_supported_by_a_claim_naming_the_company():
 # ---------------------------------------------------------------------------
 
 def test_profile_citing_only_another_companys_claims_is_flagged():
-    """The gap this check exists to close.
+    """The gap this check exists to close, in the case weak support cannot see.
 
-    Vocabulary overlap cannot tell a profile's own evidence from a
-    competitor's, because inside one sector corpus almost everything overlaps
-    with almost everything. Here the citations are entirely about Minesto, and
-    the weak-support heuristic passes them on the shared word 'site' alone -
-    so the naming check has to be the thing that catches it.
+    The profile is attributed to CorPower Ocean but its differentiation is
+    lifted from Minesto's evidence, so it shares three distinctive terms
+    ('dragon', 'kite', 'faroe') with the cited claim - comfortably enough to
+    satisfy weak support, which only ever asks whether the text and the claim
+    are about the same thing. They are. They are just not about the same
+    COMPANY, and only the naming check can tell.
     """
     analysis = sector_analysis(
         new_entrants=[profile(
-            "CorPower Ocean", [2, 3],
-            "Operates a commercial-scale wave energy converter site.",
+            "CorPower Ocean", [2],
+            "Runs a Dragon-class kite tuned for Faroe sea conditions.",
         )],
     )
     result = check_citations(analysis)
@@ -402,7 +405,7 @@ def test_sector_words_in_a_company_name_do_not_count_as_naming_it():
     )
     result = check_citations(analysis)
     assert result.passed is False
-    assert "mention the company by name" in result.issues[0].problem
+    assert any("mention the company by name" in i.problem for i in result.issues)
 
 
 def test_a_two_letter_company_name_is_still_matched():
@@ -463,6 +466,93 @@ def test_every_saved_run_still_passes_the_gate():
         assert result.passed is True, (
             f"{path.parent.name}: {[i.problem for i in result.issues]}"
         )
+
+
+# ---------------------------------------------------------------------------
+# Weak support counts only terms that are distinctive within the run
+# ---------------------------------------------------------------------------
+
+def test_sector_vocabulary_alone_no_longer_counts_as_support():
+    """The core of the df weighting. Every claim in a run is about one sector,
+    so 'wave' and 'power' are shared by most of the corpus and evidence
+    nothing. This citation used to pass on those two words alone."""
+    claim = sector_claims()[10].claim
+    text = "Source deals in wave power generation at utility scale."
+    assert _overlap_count(text, claim) >= 1, "precondition: it does share words"
+
+    analysis = sector_analysis(
+        recommendations=[Recommendation(
+            action=RecommendationAction.SOURCE_DEALS,
+            text=text,
+            supporting_claim_indices=[10],
+        )],
+    )
+    result = check_citations(analysis)
+    assert result.passed is False
+    assert "shared terminology" in result.issues[0].problem
+
+
+def test_one_distinctive_term_is_not_enough_when_the_text_offers_several():
+    """'minesto', 'dragon' and 'kite' are all distinctive here, so the bar is
+    two. The bridge-round claim shares only the company name; the kite claim
+    shares all three."""
+    def recommend(index: int) -> AnalysisResult:
+        return sector_analysis(recommendations=[Recommendation(
+            action=RecommendationAction.PRIORITIZE_DILIGENCE,
+            text="Prioritize diligence on Minesto given the Dragon kite results.",
+            supporting_claim_indices=[index],
+        )])
+
+    assert check_citations(recommend(3)).passed is False
+    assert check_citations(recommend(2)).passed is True
+
+
+def test_an_entity_with_only_one_distinctive_term_is_held_to_one():
+    """The bar scales to the signal available. A funding event's citing text is
+    structured fields - a stage enum and a raw float that no claim ever spells
+    that way - so 'minesto' is all it really has. Holding it to two flagged
+    correct events on the saved runs (X-energy, Fervo)."""
+    analysis = sector_analysis(
+        funding_events=[FundingEvent(
+            company_name="Minesto",
+            round=FundingStage.UNKNOWN,
+            amount_usd=1020000000.0,
+            date="2025-01",
+            source_claim_index=3,
+        )],
+    )
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+
+
+def test_funding_event_pointing_at_another_companys_claim_is_flagged():
+    """Funding events get the naming check too - the same reasoning as company
+    profiles, and the only real check they have."""
+    analysis = sector_analysis(
+        funding_events=[FundingEvent(
+            company_name="Tocardo",
+            round=FundingStage.UNKNOWN,
+            date="2025-01",
+            source_claim_index=3,  # a Minesto claim
+        )],
+    )
+    result = check_citations(analysis)
+    assert result.passed is False
+    assert any("mention the company by name" in i.problem for i in result.issues)
+
+
+def test_a_corpus_too_small_to_rank_terms_falls_back_to_plain_overlap():
+    """With three claims no term can clear the frequency bar, so there is
+    nothing to weight by. Falling back to the unfiltered check keeps the gate
+    lenient rather than flagging everything - a false positive escalates a
+    correct briefing to a human."""
+    assert _distinctive_claim_terms([c.claim for c in base_claims()]) == set()
+    analysis = base_analysis(recommendations=[Recommendation(
+        action=RecommendationAction.SOURCE_DEALS,
+        text="Actively source Series A deals in non-PGM catalyst startups.",
+        supporting_claim_indices=[1],
+    )])
+    assert check_citations(analysis).passed is True
 
 
 # ---------------------------------------------------------------------------

@@ -50,9 +50,16 @@ _STOPWORDS = {
 # this is meant to catch egregious mismatches, not enforce paraphrase quality.
 _MIN_OVERLAP_WORDS = 1
 
-# A company-name token appearing in at least this share of a run's claims is
-# treated as sector vocabulary rather than as part of the company's identity.
-_MAX_NAME_TOKEN_DOC_FREQUENCY = 0.25
+# A term appearing in at least this share of a run's claims is treated as
+# sector vocabulary - shared by everything, so evidence of nothing. Used both
+# for company-name identity and for prose overlap; they are different
+# tokenizers asking the same question, so they share one threshold.
+_MAX_TERM_DOC_FREQUENCY = 0.25
+
+# How many distinctive terms a citing entity and a claim must share before the
+# link is believed. Capped, not fixed: an entity with only one distinctive term
+# to offer is held to one. See _check_weak_support.
+_MAX_REQUIRED_TERMS = 2
 
 
 def _significant_words(text: str) -> set[str]:
@@ -90,12 +97,31 @@ def _distinctive_name_tokens(name: str, claim_texts: list[str]) -> set[str]:
     if not claim_texts:
         return set()
     claim_tokens = [_tokens(text) for text in claim_texts]
-    limit = _MAX_NAME_TOKEN_DOC_FREQUENCY * len(claim_tokens)
+    limit = _MAX_TERM_DOC_FREQUENCY * len(claim_tokens)
     return {
         token
         for token in _tokens(name)
         if sum(token in tokens for tokens in claim_tokens) < limit
     }
+
+
+def _distinctive_claim_terms(claim_texts: list[str]) -> set[str]:
+    """Terms rare enough across THIS run's claims to be evidence of a link.
+
+    The corpus-frequency counterpart of _distinctive_name_tokens, over prose
+    rather than names. A term absent from every claim is excluded by
+    construction: it can never be part of an overlap, so counting it as signal
+    an entity possesses would only raise the bar with nothing behind it - which
+    is exactly what a raw funding figure like '1020000000' would otherwise do.
+    """
+    if not claim_texts:
+        return set()
+    limit = _MAX_TERM_DOC_FREQUENCY * len(claim_texts)
+    counts: dict[str, int] = {}
+    for text in claim_texts:
+        for word in _significant_words(text):
+            counts[word] = counts.get(word, 0) + 1
+    return {word for word, count in counts.items() if count < limit}
 
 
 def _check_company_is_named(
@@ -161,34 +187,70 @@ def _check_weak_support(
     claim_texts: list[str],
     label: str,
     issues: list[CitationIssue],
+    distinctive_terms: set[str],
+    max_required: int = _MAX_REQUIRED_TERMS,
 ) -> None:
-    """Flag an entity only when NONE of its cited claims relate to it.
+    """Flag an entity when none of its cited claims plausibly relate to it.
+
+    Two things make this more than a word-overlap test.
+
+    **Only distinctive terms count.** Every claim in a run is about one sector,
+    so 'energy', 'power' and 'reactor' are shared by nearly everything and
+    prove nothing. Counting any shared word at all, an arbitrary claim paired
+    with an arbitrary entity cleared this check 74% of the time across the five
+    saved runs - it was a topic detector, not a relevance test. Restricting to
+    terms rare within the run's own claims is what gives overlap meaning.
+
+    **The bar scales with the signal available.** Requiring two shared
+    distinctive terms roughly halves the false-pass rate again, but it is only
+    fair to an entity that HAS two to offer. A funding event's citing text is a
+    few structured fields, so it is held to whatever it has. Hence
+    min(max_required, len(usable)) rather than a fixed threshold - measured, a
+    fixed bar of two flags correct funding events while a bar of one lets
+    everything through.
 
     Evaluated across the whole citation set, not per claim. An entity usually
     cites several claims that each support a different part of it - a company
     profile might cite one claim for the funding round and another for the
-    technical differentiation - so demanding that EVERY cited claim share
-    vocabulary with the citing text flags correct output constantly. A live
-    end-to-end run escalated to human review for exactly this: a CorPower Ocean
-    profile whose differentiation described cost reductions, citing a
-    perfectly good claim about its Series B.
+    technical differentiation - so demanding that EVERY cited claim relate to
+    the citing text flags correct output constantly. A live end-to-end run
+    escalated to human review for exactly this: a CorPower Ocean profile whose
+    differentiation described cost reductions, citing a perfectly good claim
+    about its Series B.
 
     A citation set where nothing relates to the citing text is still the
     egregious case this heuristic was written to catch, and it is still caught.
     """
     if not claim_texts:
         return
-    if any(
-        _overlap_count(citing_text, claim_text) >= _MIN_OVERLAP_WORDS
-        for claim_text in claim_texts
-    ):
+
+    usable = _significant_words(citing_text) & distinctive_terms
+    if usable:
+        required = min(max_required, len(usable))
+        related = any(
+            len(usable & _significant_words(claim_text)) >= required
+            for claim_text in claim_texts
+        )
+    else:
+        # Nothing distinctive to test with - either a very small corpus, or an
+        # entity described entirely in sector vocabulary. Fall back to the
+        # unfiltered bar rather than flag: a false positive here escalates a
+        # correct briefing to a human, which is the expensive failure.
+        required = _MIN_OVERLAP_WORDS
+        related = any(
+            _overlap_count(citing_text, claim_text) >= _MIN_OVERLAP_WORDS
+            for claim_text in claim_texts
+        )
+
+    if related:
         return
     issues.append(CitationIssue(
         claim_or_entity=citing_text,
         problem=(
-            f"{label} cites {len(claim_texts)} claim(s), none with any shared "
-            f"terminology (e.g. '{claim_texts[0][:80]}...') - possible "
-            f"spurious citation."
+            f"{label} cites {len(claim_texts)} claim(s), none with enough "
+            f"shared terminology - needs {required} distinctive term(s) in "
+            f"common (e.g. '{claim_texts[0][:80]}...') - possible spurious "
+            f"citation."
         ),
     ))
 
@@ -198,6 +260,7 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
     verified = 0
     max_index = len(analysis.all_claims) - 1
     all_claim_texts = [claim.claim for claim in analysis.all_claims]
+    distinctive_terms = _distinctive_claim_terms(all_claim_texts)
 
     # -- 1. Recommendations --------------------------------------------
     for rec in analysis.recommendations:
@@ -212,7 +275,9 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
             if _validate_index(idx, max_index, "Recommendation", rec.text, issues):
                 verified += 1
                 cited.append(analysis.all_claims[idx].claim)
-        _check_weak_support(rec.text, cited, "Recommendation", issues)
+        _check_weak_support(
+            rec.text, cited, "Recommendation", issues, distinctive_terms,
+        )
 
     # -- 2. Company profiles (incumbents + new entrants) ---------------
     for company in [*analysis.incumbents, *analysis.new_entrants]:
@@ -235,6 +300,7 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
         # where the actual discrimination comes from.
         _check_weak_support(
             f"{company.name} {company.differentiation}", cited, label, issues,
+            distinctive_terms,
         )
         _check_company_is_named(
             company.name, cited, all_claim_texts, label, issues,
@@ -251,9 +317,19 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
                 f"{event.amount_usd or ''} {event.lead_investor or ''}"
             )
             # Single index by construction, so this is the one place the check
-            # is genuinely per-claim.
+            # is genuinely per-claim. Held to one shared term: the citing text
+            # is structured fields, and neither a raw float nor a stage enum
+            # appears in prose the way a claim writes it ('$1.02 billion',
+            # not '1020000000.0').
+            cited_claim = analysis.all_claims[idx].claim
             _check_weak_support(
-                event_text, [analysis.all_claims[idx].claim], label, issues
+                event_text, [cited_claim], label, issues, distinctive_terms,
+                max_required=1,
+            )
+            # The meaningful check for a funding event, same as for a profile:
+            # the claim behind it has to be about this company.
+            _check_company_is_named(
+                event.company_name, [cited_claim], all_claim_texts, label, issues,
             )
 
     return FactCheckResult(

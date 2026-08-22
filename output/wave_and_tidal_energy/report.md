@@ -2,73 +2,65 @@
 
 ## Executive Summary
 
-Wave and tidal energy has crossed from pilot-scale to operational deployment in the United States, but the regulatory floor just fell out. The Bureau of Ocean Energy Management rescinded the offshore renewable energy framework in **August 2025** and eliminated **3.5 million acres** of designated areas in **July 2025**, creating genuine regulatory risk for any company planning U.S. offshore deployment. The sector remains pre-commercial for grid-scale generation, but a go-to-market pivot toward behind-the-meter offshore industrial customers and possible co-location with offshore wind infrastructure changes the near-term economics case enough to warrant active monitoring. Pass on direct investment now given regulatory uncertainty and stage mismatch, but source introductions in **12-18 months** if the regulatory environment stabilizes.
+Wave and tidal energy remains pre-commercial for Northbridge's stage focus, but two inflection points merit active monitoring: offshore wind co-location economics that could remove wave energy's transmission cost disadvantage, and a go-to-market shift toward behind-the-meter offshore industrial customers that bypasses utility procurement timelines. Recommend monitoring for two quarters while these positioning shifts clarify, with primary risk that neither commercial model gains traction before developer cash runs out. The sector is not investable today, but the strategic repositioning away from grid-scale generation is the first change to the near-term economics case the firm has heard that warrants continued attention.
 
 ## What's Changing
 
-- The first-ever U.S. wave energy project launched at the **Port of Los Angeles** in **September 2025**, marking a shift from pilot-scale to operational deployment in the United States.
-- The U.S. Department of Energy opened up to **$112.5 million** in funding for wave energy open-water testing in **September 2024**, with individual awards ranging from **$2.41 million** to **$25.313 million** - a specific commitment to advance testing infrastructure.
-- The Bureau of Ocean Energy Management rescinded its renewable energy framework regulations on **August 5, 2025**, and eliminated all Designated Wind Energy Areas (roughly **3.5 million acres**) on **July 30, 2025**, under the Trump administration - removing regulatory structure that previously covered marine/offshore renewable energy including wave and tidal.
-- Wave energy companies are pivoting go-to-market from utility offtake to **behind-the-meter offshore industrial customers** (oil & gas platforms, offshore aquaculture, ocean sensor networks) because utility procurement timelines are too slow relative to burn rates.
-- Wave energy developers are being watched by offshore wind developers as a potential **co-location technology** that could share existing offshore substation and transmission infrastructure, removing a major cost disadvantage.
+- The first U.S. onshore wave energy project launched at the **Port of Los Angeles** on **September 9, 2025**, marking commercial entry into the U.S. market.
+- U.S. federal permitting reform for marine energy advanced through Congress in **mid-2026**, with legislation targeting streamlined licensing pathways and removing regulatory barriers for routine maintenance.
+- Go-to-market strategy is shifting from utility-scale grid power to **behind-the-meter offshore industrial applications**, with at least one developer pivoting because utility procurement timelines were too slow relative to burn rate.
+- Wave energy is being reconsidered as a **co-location technology with offshore wind farms** to share existing offshore substation and transmission infrastructure — a shift that could remove wave energy's transmission cost disadvantage.
+- **Ireland's ORESS** offshore renewable energy support scheme expired by the **end of 2025**, requiring design of a successor support scheme for 2026 with expanded role for the Maritime Area Regulatory Authority.
+- **Shell** completed a wave energy pilot with **Eco Wave Power** from **2024** through **March 2026** at the Port of Los Angeles, representing direct corporate engagement from a fossil fuel incumbent.
 
 ## Competitive Landscape: Leaders & New Entrants
 
-**Incumbents / how they're innovating:**
-
-- **Eco Wave Power** — Publicly traded (**Nasdaq: WAVE**), operating the first-ever U.S. wave energy project at the Port of Los Angeles as of **September 2025**, with **$6.85 million** in cash and short-term deposits as of **Q3 2025**.
-- **Orbital Marine Power** — Scottish developer operating the **Orbital O2**, a deployed floating tidal stream generator with a **74-meter** structure and **2 MW** capacity at EMEC, secured **£7 million** from **PXN Ventures**.
+**Incumbents / how they're innovating:** No established incumbents identified — the sector lacks the scaled players with legacy generation portfolios that characterize mature energy segments.
 
 **New entrants worth watching:**
 
-- **Panthalassa** (Series B, **2026**) — Oregon-based wave energy startup building floating wave-powered AI data centers rather than competing for grid-scale power generation, raised **$140 million** Series B led by **Peter Thiel** in **May 2026**.
-- **CorPower Ocean** (Series B, **2024**) — Secured **EUR 32 million** Series B1 in **October 2024** (described as the largest single investment in the company's history) and awarded up to **€17.5 million** in EIC Accelerator funding in **February 2025** to scale up wave energy technology.
+- **Eco Wave Power** (public, Nasdaq: WAVE) — operates onshore wave energy installations, deployed the only wave energy project in the United States, and partnered with Shell for commercial pilot testing through March 2026.
+- **CorPower Ocean** — selected to lead the **€30 million** Horizon Europe-backed POWER-Farm project to validate wave farm technology in UK waters, and claims integrating wave energy into hybrid systems reduces installed capacity needs by **20%** and lowers LCOE from **€81/MWh** to **€74/MWh**.
+- **Orbital Marine Power** — Scotland-based tidal turbine developer advancing international commercial tidal stream projects and expanding its existing turbine fleet.
+- **ZOEX Power** (seed) — the UK's only female-founded wave energy company, based in Aberdeen.
 
 ## Where Capital Is Flowing
 
-| Company | Round | Amount | Date | Lead Investor |
-| --- | --- | --- | --- | --- |
-| **Panthalassa** | Series B | **$140M** | early May 2026 | Peter Thiel |
-| **CorPower Ocean** | Series B | **$38M** | October 16, 2024 | — |
-| **CorPower Ocean** | Growth | **$21M** | February 17, 2025 | — |
-| **Orbital Marine Power** | Growth | **$9M** | unknown | PXN Ventures |
+- **Orbital Marine Power** — Unknown, **$9M** (2025-12-09)
+- **ZOEX Power** — Seed, **$716,000** (2025-05)
 
-- Over **$200 million** raised across three substantial rounds between **October 2024** and **May 2026**: **CorPower Ocean's** **EUR 32 million** Series B1 (**October 2024**), **CorPower's** **€17.5 million** EIC Accelerator award (**February 2025**), and **Panthalassa's** **$140 million** Series B led by **Peter Thiel** (**May 2026**).
-- Funding spans seed-stage to growth-stage, suggesting the sector is not bottlenecked at a single stage.
-- A high-profile investor (**Peter Thiel**) led the largest round, signaling conviction from outside traditional climate-focused funds.
-- Funding is concentrated in European developers with EIC backing and U.S. companies pursuing non-traditional applications (AI data centers rather than grid-scale power).
-- No U.S.-focused utility-scale developer has raised a comparable growth round, consistent with the regulatory uncertainty created by BOEM's **August 2025** rescission rather than a lack of technical progress.
+Seed and early-stage rounds only, with no growth-stage capital deployed — consistent with a sector still in technology de-risking rather than commercial scaling. The absence of late-stage rounds signals that investors view deployment risk as unresolved, which aligns with the sector's **$0.20/kWh to $0.85/kWh** cost structure that remains **3x to 28x** more expensive than mature renewables at **$0.03/kWh to $0.12/kWh**. The Shell pilot with Eco Wave Power through March 2026 represents the most significant corporate engagement to date, but corporate venture arms and strategic investors are otherwise absent.
 
 ## Where Sources Disagree
 
-Northbridge's internal view holds that wave energy remains pre-commercial and too early for the firm's stage focus, based on informal scouting rather than formal diligence. External evidence shows three substantial funding rounds totaling over **$200 million** between **October 2024** and **May 2026** - **CorPower Ocean's** **EUR 32 million** Series B1 (**October 2024**), **CorPower's** **€17.5 million** EIC Accelerator award (**February 2025**), and **Panthalassa's** **$140 million** Series B led by **Peter Thiel** (**May 2026**) - plus the first operational U.S. wave energy project launched in **September 2025**. A partner would have to believe that wave energy has moved past the pre-commercial stage Northbridge assumed, at least for specific applications, and that the firm's informal assessment may no longer match the capital formation and deployment activity in the sector.
-
-Northbridge's internal scouting noted minimal inbound deal flow (fewer than a handful of intros in the most recent quarter) as consistent with the firm's view that wave/marine energy is one of the least mature sub-segments in advanced energy generation. External evidence shows **$140 million** raised by **Panthalassa** in **May 2026** led by **Peter Thiel**, **EUR 32 million** raised by **CorPower Ocean** in **October 2024**, and at least **57** identified tidal energy generation system startups tracked as active. A partner would have to believe that low deal flow to Northbridge reflects the firm's network position or reputation in this sub-segment rather than an absence of fundable companies, since substantial capital is moving and dozens of active startups exist even if they are not reaching Northbridge.
+Northbridge's internal view going into a recent industry summit was that wave energy remained pre-commercial and too early for the firm's stage focus. External evidence shows the first U.S. commercial wave energy project launched in **September 2025**, Shell completed a multi-year pilot through **March 2026**, and three European developers secured **£7M**, **£531K**, and **€30M** respectively for commercial-scale advancement and fleet expansion. The regulatory infrastructure being built out in **mid-2026** — U.S. federal permitting reform specifically targeting marine energy licensing and Ireland designing a successor offshore renewable support scheme — typically precedes rather than follows maturity, suggesting low deal flow may reflect regulatory bottlenecks clearing rather than fundamental immaturity.
 
 ## Investment Recommendation
 
-1. **Pass on direct wave or tidal energy investment for the next 12-18 months** due to regulatory risk that cannot be priced. The Bureau of Ocean Energy Management rescinded the offshore renewable energy framework on **August 5, 2025** and eliminated all Designated Wind Energy Areas (**3.5 million acres**) on **July 30, 2025** under the Trump administration, removing the regulatory structure that previously covered marine/offshore renewable energy. Any company planning U.S. offshore deployment now faces genuine uncertainty about permitting, leasing, and environmental review processes, and the timeline for regulatory clarity is unknowable. This risk outweighs the sector's recent funding momentum and operational milestones.
+1. **Monitor wave energy co-location with offshore wind for two quarters** to assess whether shared transmission infrastructure economics materialize in bankable project structures. Northbridge's scouting notes flag offshore co-location as the first argument that meaningfully changes the near-term economics case. Primary risk is that the co-location thesis remains theoretical and no offshore wind developer commits capital to joint deployments.
 
-2. **Monitor wave energy go-to-market pivots toward behind-the-meter offshore industrial customers** (oil & gas platforms, offshore aquaculture, ocean sensor networks) rather than utility-scale generation, and track offshore wind developers evaluating wave energy as co-location infrastructure. One wave energy founder described shifting from utility offtake to behind-the-meter customers because utility procurement timelines were too slow relative to burn rate, and offshore wind developers are watching wave energy as a way to share existing substation and transmission infrastructure. These represent a narrower, nearer-term use case than grid-scale power and could change the sector's economics without requiring the regulatory clarity that U.S. utility-scale deployment now lacks. The risk is that the pivot proves too narrow to support venture-scale returns, but the signal is worth tracking for **2-3 quarters**.
+2. **Monitor go-to-market pivots toward behind-the-meter offshore industrial customers** (oil & gas platforms, offshore aquaculture, ocean sensor networks) for two quarters to see whether developers successfully close contracts and demonstrate revenue. A wave energy founder told Northbridge scouts they shifted from utility offtake because utility procurement timelines were too slow relative to burn rate. Primary risk is that the addressable market for these niche applications proves too small to support venture-scale outcomes.
 
-3. **Begin sourcing introductions to wave and tidal energy companies in 12-18 months** if U.S. offshore renewable energy regulations stabilize or if European developers with U.S. expansion plans demonstrate commercial traction. The sector has moved past the pre-commercial stage Northbridge assumed - **Panthalassa** raised **$140 million** led by **Peter Thiel** in **May 2026**, **CorPower Ocean** raised **EUR 32 million** in **October 2024** plus **€17.5 million** in EIC funding in **February 2025**, and the first U.S. wave energy project launched operationally in **September 2025**. The firm's minimal inbound deal flow appears to reflect network position rather than an absence of fundable companies, since at least **57** tidal energy startups are tracked as active and substantial capital is moving. The risk is that regulatory uncertainty in the U.S. persists longer than **18 months** or that the behind-the-meter pivot fails to generate venture-scale returns, but the sector now warrants active network-building even if direct investment remains premature.
+3. **Source an intro to the unnamed point-absorber wave energy company pursuing behind-the-meter offshore industrial customers** once they are willing to go on record, to understand their customer pipeline depth and unit economics compared to diesel gensets or subsea cables. Primary risk is that the company's pivot reflects desperation rather than product-market fit and their industrial pipeline is shallow.
+
+4. **Pass on grid-scale wave and tidal energy opportunities for the current fund cycle**, because current costs of **$0.20/kWh to $0.85/kWh** remain **3x to 28x** more expensive than mature renewables, and a **May 2026** analysis argues the central unsolved commercial challenge is ongoing maintenance costs rather than energy conversion itself. The firm has not run formal diligence on any wave energy company to date, and deal flow remains minimal. Primary risk is that Northbridge misses early-mover advantage if maintenance costs drop faster than the reference class forecast suggests.
 
 ## Sources
 
-- https://e360.yale.edu/features/wave-tidal-energy
-- https://en.wikipedia.org/wiki/Orbital_Marine_Power
-- https://innoenergy.com/news-resources/corpower-ocean-secures-eur-32m-series-b1-funding-to-commercialise-wave-energy/
-- https://tethys.pnnl.gov/project-sites/orbital-marine-power-o2-emec
-- https://tracxn.com/d/trending-business-models/startups-in-tidal-energy-generation-system/__O8YYi3RPDbZyYK4cWO2XecIkBSyqvwHtVZmknPVl8-A/companies
-- https://www.boem.gov/renewable-energy/regulatory-framework-and-guidelines
-- https://www.doi.gov/pressreleases/interior-launches-overhaul-offshore-wind-rules-prioritize-american-energy-security
-- https://www.ecowavepower.com/eco-wave-power-hits-historic-milestone-launches-first-ever-u-s-wave-energy-project-at-port-of-los-angeles/
+- https://barragan.house.gov/2025/09/17/eco-wave-power-eco-wave-power-hits-historic-milestone-launches-first-ever-u-s-wave-energy-project-at-port-of-los-angeles/
+- https://cleantechnica.com/2026/05/13/wave-energys-hardest-problem-is-not-the-waves-it-is-maintenance/
+- https://corpowerocean.com/247-clean-energy-wave-power/
+- https://corpowerocean.com/wave-energy-converter-deployment/
+- https://hydro.org/wp-content/uploads/2025/05/Hydropower-Licensing-Reform-Factsheet-2025.pdf
+- https://mhkdr.openei.org/files/660/Marine%20Energy%20Cost%20Performance%20FINAL%20Report_May27.2025%20%28002%29.pdf
 - https://www.ecowavepower.com/eco-wave-power-reports-q3-results-historic-u-s-launch-and-global-milestones-achieved/
-- https://www.energy.gov/cmei/water/funding-notice-oceans-opportunity-us-wave-energy-open-water-testing
-- https://www.geekwire.com/2026/data-centers-at-sea-oregons-panthalassa-nets-140m-led-by-peter-thiel-for-wave-powered-ai/
-- https://www.ocean-energy-systems.org/ocean-energy-in-the-world/united-states-of-america/
-- https://www.ocean-energy-systems.org/oes-projects/levelised-cost-of-energy-assessment-for-wave-tidal-and-otec-at-an-international-level/
-- https://www.oceanenergy-europe.eu/corpower-ocean-awarded-up-to-e17-5-million-in-eic-accelerator-funding-to-scale-up-wave-energy/
-- https://www.orbitalmarine.com/category/press-releases/
+- https://www.ecowavepower.com/eco-wave-power-submits-final-project-completion-report-to-shell-international-exploration-and-production-inc-successfully-concluding-port-of-los-angeles-pilot-program/
+- https://www.facebook.com/electricaltechnology.info/posts/shell-and-eco-wave-power-complete-americas-first-onshore-wave-energy-pilot-openi/1347658407539306/
+- https://www.linkedin.com/posts/national-hydropower-association_a-big-day-for-hydropower-in-congress-the-activity-7470513926166970368-muH2
+- https://www.offshore-energy.biz/wave-and-tidal-energy-to-reach-1-85b-by-2032-commercial-deployment-by-2031-report-finds/
+- https://www.orbitalmarine.com/orbital-secures-7m-investment/
+- https://www.sciencedirect.com/science/article/pii/S2211467X26001707
+- https://www.sec.gov/Archives/edgar/data/1846715/000121390026026659/ea028130001ex99-1.htm
+- https://www.waterpowermagazine.com/news/zoex-secures-531000-to-advance-wave-energy-technology/
 - internal_quarterly_energy_sector_scan.md
 - internal_scouting_notes_wave_energy.md

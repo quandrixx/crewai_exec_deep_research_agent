@@ -2,25 +2,19 @@
   "topic": "small modular reactors",
   "internal_claims": [
     {
-      "claim": "Northbridge took a first pass at advanced nuclear eighteen months ago (from a current date of 2026-08-21) and passed on two SMR developers at the time, primarily due to regulatory-timeline risk: both companies were assuming a faster NRC licensing path than Northbridge believed realistic given the design certification backlog at the time.",
+      "claim": "Northbridge took a first pass at advanced nuclear (SMR sub-segment) roughly eighteen months ago and passed on two SMR developers, primarily due to regulatory-timeline risk: both companies assumed a faster NRC licensing path than the firm believed was realistic given the design certification backlog at the time.",
       "source": "internal_thesis_advanced_nuclear.md",
       "source_type": "internal",
       "confidence": 0.9
     },
     {
-      "claim": "One of the two SMR developers Northbridge passed on (internally referred to as \"Developer X\" pending public disclosure) has since received a favorable pre-application engagement outcome with the NRC, which is a meaningfully positive signal relative to Northbridge's original licensing-risk thesis; the deal team has flagged this as worth revisiting, though Northbridge has not yet re-engaged directly.",
+      "claim": "One of the two SMR developers Northbridge passed on (internally referred to as 'Developer X' pending public disclosure) has since received a favorable pre-application engagement outcome with the NRC, which is a meaningfully positive signal relative to the firm's original licensing-risk thesis; the deal team has flagged this as worth revisiting, though Northbridge has not yet re-engaged with Developer X directly.",
       "source": "internal_thesis_advanced_nuclear.md",
       "source_type": "internal",
       "confidence": 0.9
     },
     {
-      "claim": "Northbridge treats molten salt reactor (MSR) developers as a distinct sub-thesis from light-water SMR designs, due to a different regulatory pathway and added fuel-cycle/materials-corrosion technical risk; its technical advisor's informal view is that MSR designs are technically compelling (better passive safety, higher thermal efficiency) but likely 5+ years further from commercial demonstration than single-loop SMR designs.",
-      "source": "internal_thesis_advanced_nuclear.md",
-      "source_type": "internal",
-      "confidence": 0.85
-    },
-    {
-      "claim": "An open question the firm has flagged for its next review is whether the Developer X NRC signal, combined with rising LP demand-side interest, justifies re-opening diligence on the SMR sub-segment specifically, even though MSR timeline concerns remain largely unchanged.",
+      "claim": "Northbridge's open question as of the most recent review is whether the Developer X NRC signal, combined with LP demand-side interest, justifies re-opening diligence specifically on the SMR sub-segment, even though the firm's timeline concerns about molten salt reactors (MSR) remain largely unchanged.",
       "source": "internal_thesis_advanced_nuclear.md",
       "source_type": "internal",
       "confidence": 0.85
@@ -32,150 +26,138 @@
       "confidence": 0.9
     },
     {
-      "claim": "Inbound deal flow tagged \"advanced nuclear\" (combining SMR and MSR) was up noticeably quarter-over-quarter per Northbridge's sourcing team, an increase attributed largely to the corporate data-center offtake narrative rather than to changes in the underlying technology landscape.",
+      "claim": "Inbound deal flow tagged 'advanced nuclear' (combining SMR and MSR) was up noticeably quarter-over-quarter per Northbridge's sourcing team, an increase attributed largely to the corporate data-center offtake narrative rather than a change in the underlying technology landscape.",
       "source": "internal_quarterly_energy_sector_scan.md",
       "source_type": "internal",
       "confidence": 0.85
     },
     {
-      "claim": "Multiple LPs have framed interest in advanced nuclear and enhanced geothermal jointly as \"firm, dispatchable clean power\" - a hedge against intermittent renewables' grid integration challenges - and this dispatchability framing across sub-segments (rather than treating each technology as a separate bet) is relatively new in how LPs talk to Northbridge about this space.",
-      "source": "internal_quarterly_energy_sector_scan.md",
-      "source_type": "internal",
-      "confidence": 0.8
-    },
-    {
-      "claim": "Northbridge's own inbound deal-flow patterns (including for advanced nuclear) are flagged internally as a lagging, self-selected signal reflecting who chooses to pitch the firm rather than the full external market, and should be checked against external published data before being treated as representative of the sector.",
+      "claim": "Multiple LPs have asked Northbridge about its exposure (or lack thereof) to 'firm, dispatchable clean power' as a category spanning both advanced nuclear and enhanced geothermal, framed as a hedge against intermittent renewables' grid integration challenges \u2014 a framing the firm considers relatively new and worth carrying into future sector briefings.",
       "source": "internal_quarterly_energy_sector_scan.md",
       "source_type": "internal",
       "confidence": 0.85
     },
     {
-      "claim": "A portfolio check-in with Gridline Storage Systems (an existing grid-scale battery storage portfolio company, not itself an advanced nuclear company) found its CEO reporting that utility customers increasingly want storage deployments modeled alongside an assumed firm-generation source - with advanced nuclear specifically named in two recent customer conversations - suggesting a demand-side tailwind for advanced nuclear that doesn't show up in that sub-segment's own deal-flow data.",
+      "claim": "Northbridge's quarterly sector scan explicitly cautions that its own inbound deal-flow patterns (including the advanced nuclear uptick) are a lagging, self-selected signal reflecting who chooses to pitch the firm, not the full external market, and should be checked against external published data before being treated as representative.",
+      "source": "internal_quarterly_energy_sector_scan.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Gridline Storage Systems (an existing Northbridge portfolio company in grid-scale battery storage, not an SMR company) reported that utility customers are increasingly asking it to model storage deployments alongside an assumed firm-generation source \u2014 advanced nuclear or geothermal were specifically named in two recent customer conversations \u2014 rather than treating storage as a standalone intermittency solution; Northbridge treats this as a directional demand-side cross-check for advanced nuclear, not a quantified market signal.",
       "source": "internal_portfolio_checkin_gridline_storage.md",
       "source_type": "internal",
-      "confidence": 0.8
+      "confidence": 0.75
     }
   ],
   "external_claims": [
     {
-      "claim": "X-energy completed an upsized $700 million Series C-1 funding round in February 2025, adding approximately $200 million to an initial $500 million close.",
+      "claim": "Global venture capital investment in nuclear energy startups exceeded $4.5 billion across 81 companies as of late July 2026, putting the year on pace for a record.",
+      "source": "https://www.axios.com/2026/07/28/nuclear-energy-venture-capital",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "X-energy completed an upsized $700 million Series C-1 funding round in February 2025, adding roughly $200 million to an initial $500 million close.",
       "source": "https://www.powermag.com/advanced-nuclear-developers-raise-new-capital-as-2025-investment-hits-record-levels-and-demonstrations-near/",
       "source_type": "external",
       "confidence": 0.85
     },
     {
-      "claim": "Global venture capital investment in nuclear energy startups exceeded $4.5 billion across 81 companies in 2026 year-to-date as of late July 2026.",
-      "source": "https://www.axios.com/2026/07/28/nuclear-energy-venture-capital",
-      "source_type": "external",
-      "confidence": 0.7
-    },
-    {
-      "claim": "X-energy priced an upsized IPO at $23 per share on April 23, 2026, raising approximately $1.02 billion in gross proceeds, at a valuation reported around $10.1 billion.",
-      "source": "https://tech-insider.org/x-energy-ipo-1-billion-amazon-smr-data-center-2026/",
-      "source_type": "external",
-      "confidence": 0.6
-    },
-    {
-      "claim": "Kairos Power had 533 employees as of June 30, 2026.",
-      "source": "https://tracxn.com/d/companies/kairos-power/__r2Tvc07rODN0L0H7wf7AedTa80pikXrwFaAbcXtpH5A",
-      "source_type": "external",
-      "confidence": 0.6
-    },
-    {
-      "claim": "The U.S. nuclear energy sector overall had seen $1.78 billion in funding in 2026 year-to-date as of the July 2026 update.",
-      "source": "https://tracxn.com/d/companies/kairos-power/__r2Tvc07rODN0L0H7wf7AedTa80pikXrwFaAbcXtpH5A",
-      "source_type": "external",
-      "confidence": 0.6
-    },
-    {
-      "claim": "Kairos Power's valuation was not publicly disclosed as of 2025, with third-party estimates ranging from $400 million to $650 million based on comparable size and funding.",
-      "source": "https://www.ipo.club/blog/smr-report-june-2025",
-      "source_type": "external",
-      "confidence": 0.4
-    },
-    {
-      "claim": "The NRC approved NuScale Power's uprated 77-megawatt-electric small modular reactor design in May 2025, making it the second SMR design approved by the NRC.",
-      "source": "https://www.energy.gov/ne/articles/nrc-approves-nuscale-powers-uprated-small-modular-reactor-design",
+      "claim": "Valar Atomics closed a $1 billion Series B funding round announced August 3, 2026, led by Sequoia Capital with participation from Valor Equity Partners and others.",
+      "source": "https://www.valaratomics.com/docs/Announcing-our-1B-Series-B-Led-By-Sequoia",
       "source_type": "external",
       "confidence": 0.9
     },
     {
-      "claim": "In May 2026, the NRC rolled out reforms to fast-track three major regulations to accelerate small reactor licensing, in compliance with a May 2025 executive order from President Trump mandating faster NRC approvals.",
-      "source": "https://www.reuters.com/business/energy/nrc-rolls-out-reforms-accelerate-small-reactor-licensing--reeii-2026-05-26/",
+      "claim": "Valar Atomics' $1 billion Series B round valued the company at $6 billion, including the new capital invested.",
+      "source": "https://finance.yahoo.com/energy/articles/sequoia-leads-1-billion-funding-150000709.html",
       "source_type": "external",
       "confidence": 0.85
     },
     {
-      "claim": "In March 2025, the U.S. Department of Energy reissued a $900 million Gen III+ small modular reactor solicitation intended to help commercialize Gen III+ SMRs.",
-      "source": "https://www.energy.gov/ne/generation-iii-small-modular-reactor-program",
+      "claim": "Valar Atomics signed a development deal with Nvidia in June 2026, prior to closing its $1 billion Series B in August 2026.",
+      "source": "https://techcrunch.com/2026/08/03/sequoias-shaun-maguire-leads-1b-round-for-nuclear-startup-valar-atomics/",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "Valar Atomics also lined up a $200 million credit facility in connection with its August 2026 funding round.",
+      "source": "https://finance.yahoo.com/energy/articles/sequoia-leads-1-billion-funding-150000709.html",
+      "source_type": "external",
+      "confidence": 0.75
+    },
+    {
+      "claim": "Three SMR developers listed in New York \u2014 Oklo, NuScale, and Nano Nuclear \u2014 collectively raised more than $700 million through share sales and other financing as of February 19, 2025.",
+      "source": "https://www.ft.com/content/2d84198e-7eeb-4154-bbf2-9a469b0cc700?syn-25a6b1a6=1",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "The U.S. Department of Energy named 10 companies to fast-track advanced reactor and SMR development, with a goal of achieving criticality by July 4, 2026.",
+      "source": "https://www.energytech.com/infrastructure/article/55309652/doe-names-10-companies-to-fast-track-small-modular-reactors-by-2026",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "In May 2025, a presidential executive order was issued ordering reform of the Nuclear Regulatory Commission, citing the NRC's failure to license new reactors despite technological advances.",
+      "source": "https://www.whitehouse.gov/presidential-actions/2025/05/ordering-the-reform-of-the-nuclear-regulatory-commission/",
       "source_type": "external",
       "confidence": 0.85
     },
     {
-      "claim": "Oklo's NRC Principal Design Criteria Topical Report for its Aurora Powerhouse in Idaho was approved on May 6, 2026.",
-      "source": "https://oklo.com/newsroom/news-details/2026/Oklos-NRC-Principal-Design-Criteria-Topical-Report-Approved-for-Aurora-Powerhouse-in-Idaho/default.aspx",
+      "claim": "The 2024 ADVANCE Act directs the NRC to modernize and expedite its licensing process for advanced reactors, including microreactors.",
+      "source": "https://www.morganlewis.com/blogs/upandatom/2025/04/licensing-microreactors-the-small-guy-might-be-the-most-nimble",
       "source_type": "external",
-      "confidence": 0.85
+      "confidence": 0.8
     },
     {
-      "claim": "Rolls-Royce SMR was selected as the UK government's preferred small modular reactor technology partner in June 2025, with \u00a32.6 billion allocated in the 2025 Spending Review.",
-      "source": "https://www.gov.uk/government/news/great-british-energy-nuclear-and-rolls-royce-smr-sign-contract",
+      "claim": "The International Energy Agency estimated in 2025 that SMR overnight construction costs in the EU are around $10,000 per kW, compared to about $6,600 per kW for other nuclear technologies.",
+      "source": "https://www.globsec.org/what-we-do/commentaries/faster-cheaper-smarter-promise-and-pitfalls-small-modular-reactors",
       "source_type": "external",
-      "confidence": 0.85
-    },
-    {
-      "claim": "On April 13, 2026, Rolls-Royce SMR signed a landmark contract with Great British Energy \u2013 Nuclear (GBE-N) to build the UK's first small modular reactor fleet, with Wylfa selected to host the first units.",
-      "source": "https://www.rolls-royce-smr.com/press/rolls-royce-smr-secures-contractual-certainty-to-build-europes-first-smr-fleet",
-      "source_type": "external",
-      "confidence": 0.85
+      "confidence": 0.7
     },
     {
       "claim": "Google and Kairos Power signed what is reported to be the first corporate agreement to develop a fleet of small modular reactors in the United States.",
       "source": "https://introl.com/blog/nuclear-power-ai-data-centers-microsoft-google-amazon-2025",
       "source_type": "external",
-      "confidence": 0.7
+      "confidence": 0.75
     },
     {
-      "claim": "Meta signed a nuclear power agreement in January 2026 with Oklo for offtake from future advanced microreactors as part of a broader set of 6.6 GW of firm power agreements.",
+      "claim": "Oklo signed an agreement in January 2026 for offtake from its future advanced microreactors, intended to provide scalable on-site power for data centers.",
       "source": "https://enkiai.com/data-center/meta-nuclear-firm-power/",
       "source_type": "external",
-      "confidence": 0.5
+      "confidence": 0.65
     },
     {
-      "claim": "A Carnegie Endowment analysis published June 2, 2026 notes that under Meta's nuclear agreement, Meta is not directly buying electricity for its data centers\u2014power continues to be sold and delivered to the regional grid market rather than dedicated on-site.",
+      "claim": "Under Meta's nuclear power agreement described in mid-2026 analysis, Meta is not directly buying electricity for its data centers \u2014 power continues to be sold and delivered to the regional market rather than dedicated on-site supply.",
       "source": "https://carnegieendowment.org/research/2026/06/beyond-the-hype-assessing-hyperscaler-nuclear-commitments-against-us-energy-realities",
       "source_type": "external",
       "confidence": 0.7
     },
     {
-      "claim": "A July 20, 2026 Bulletin of the Atomic Scientists article argues that nuclear power and small modular reactors will be unable to meet data center electricity needs, especially in the near term, pushing back on hyperscaler PR narratives.",
+      "claim": "A July 2026 Bulletin of the Atomic Scientists analysis argues that nuclear power and SMRs will be unable to meet data center electricity needs, especially within the next several years, pushing back on hyperscaler PR framing.",
       "source": "https://thebulletin.org/2026/07/data-centers-powered-by-next-gen-nuclear-dont-fall-for-big-techs-pr-hype/",
       "source_type": "external",
-      "confidence": 0.6
+      "confidence": 0.65
     },
     {
-      "claim": "NuScale cancelled its first-of-a-kind small modular reactor project (the UAMPS Carbon Free Power Project) in November 2023 as costs surged and utility members grew wary of the escalating budget beyond the original 2026 operational target.",
+      "claim": "NuScale cancelled its first-of-a-kind SMR project with the Utah Associated Municipal Power Systems (UAMPS) in November 2023 after substantial cost overruns and delays pushed the project past its original 2026 planned operational date.",
       "source": "https://www.eenews.net/articles/nuscale-cancels-first-of-a-kind-nuclear-project-as-costs-surge/",
       "source_type": "external",
       "confidence": 0.85
     },
     {
-      "claim": "NuScale's projected SMR electricity costs rose 124% to $130 per megawatt-hour from an original estimate of $58 per megawatt-hour, according to earlier cost estimate reporting.",
-      "source": "https://www.reddit.com/r/Futurology/comments/1408sxu/smrs_touted_by_some_as_a_savior_for_the_nuclear/",
-      "source_type": "external",
-      "confidence": 0.4
-    },
-    {
-      "claim": "A 2023 cost estimate for NuScale's small modular reactor put capital costs at about $20,139 per kilowatt, comparable to the cost overrun-plagued Vogtle large reactor project.",
-      "source": "https://ieefa.org/resources/eye-popping-new-cost-estimates-released-nuscale-small-modular-reactor",
-      "source_type": "external",
-      "confidence": 0.75
-    },
-    {
-      "claim": "An April 2025 ITIF report states that initially, SMRs will likely cost as much per kilowatt as large reactors, or perhaps more, though SMR companies have progressed toward eventual cost reductions through modular manufacturing.",
-      "source": "https://itif.org/publications/2025/04/14/small-modular-reactors-a-realist-approach-to-the-future-of-nuclear-power/",
+      "claim": "Holtec International's SMR-300 units at its Michigan site are now expected to be commissioned by 2030, described in coverage as roughly a decade of delay for modular reactor projects.",
+      "source": "https://discussion.fool.com/t/modular-nuclear-reactors-delayed-for-a-decade/98914",
       "source_type": "external",
       "confidence": 0.6
+    },
+    {
+      "claim": "Canada's first SMR project (four-unit build) has a total projected cost of CAD 20.9 billion (approximately USD 15.1 billion), according to a May 2025 report.",
+      "source": "https://world-nuclear-news.org/articles/what-is-the-budget-for-canadas-first-smr-project",
+      "source_type": "external",
+      "confidence": 0.75
     }
   ]
 }

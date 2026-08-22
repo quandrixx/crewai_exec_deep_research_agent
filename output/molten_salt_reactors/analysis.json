@@ -1,86 +1,82 @@
 {
   "topic": "molten salt reactors",
-  "executive_summary": "Molten salt reactors are investable now at the growth stage, with timing driven by regulatory pathway validation and corporate offtake commitments that did not exist when the firm last reviewed advanced nuclear. The NRC's first construction permit for a liquid-fueled reactor in September 2024 and Google's commercial offtake agreement with Kairos Power materially change the risk profile from the firm's prior assessment that MSR designs carry 5+ years longer time-to-demonstration than light-water SMRs. The main risk remains technical execution on materials corrosion and fuel cycle challenges that still lack full-scale validation, but capital availability and customer commitment are no longer blocking questions.",
+  "executive_summary": "Molten salt reactors are investable now at the growth stage, despite Northbridge's prior view that MSR designs run 5+ years behind light-water SMRs. The regulatory timeline risk that drove the firm's 18-month-old SMR pass has narrowed materially: Terrestrial Energy received the first US safety design approval for an MSR in May 2026, and Executive Order 14300 mandates an 18-month NRC decision window. Capital is moving - $353M into MSR developers in four months of 2026, utility offtake agreements signed, and LPs asking about nuclear exposure. The thesis is source deals in developers approaching demonstration, with the risk that construction-phase cost overruns and materials-corrosion issues prove out the technical concerns the firm's advisor flagged.",
   "market_shifts": [
     {
-      "description": "The U.S. Nuclear Regulatory Commission issued its first construction permit for a liquid-fueled advanced reactor (Abilene Christian University's Molten Salt Research Reactor) on September 16, 2024, representing a breakthrough in the regulatory pathway that had previously been untested for molten salt designs.",
+      "description": "Terrestrial Energy received NRC approval of its IMSR Principal Design Criteria in September 2025 and a Safety Evaluation Report around May 12, 2026, representing the first US government safety design approval for a molten salt reactor as of July 2026.",
       "supporting_claim_indices": [
-        7
+        3,
+        4
       ]
     },
     {
-      "description": "Major technology companies established commercial offtake agreements for molten salt reactor power in 2025-2026, with Google committing to purchase power from Kairos Power reactors for data centers and Riot Platforms signing an agreement with Terrestrial Energy for co-located data center power.",
-      "supporting_claim_indices": [
-        10,
-        11
-      ]
-    },
-    {
-      "description": "The U.S. Department of Energy committed $303 million in milestone-based funding to Kairos Power's Hermes advanced reactor project in February 2026, marking a significant federal commitment to molten salt reactor demonstration.",
+      "description": "Executive Order 14300, signed in May 2025, directs the NRC to reach a final decision on an application to construct and operate a new reactor of any type within 18 months, accelerating the regulatory timeline compared to historical NRC processes.",
       "supporting_claim_indices": [
         5
       ]
     },
     {
-      "description": "Molten salt reactor companies raised $353 million in equity funding across 3 rounds between January and April 2026, with broader nuclear energy startup investment on pace to exceed 2025's record $6.2 billion by reaching over $4.5 billion year-to-date as of July 2026.",
-      "supporting_claim_indices": [
-        12,
-        13
-      ]
-    },
-    {
-      "description": "Multiple molten salt reactor developers announced university campus siting agreements in 2025-2026, with Terrestrial Energy planning deployment at Texas A&M-RELLIS campus (announced February 2025) alongside ACU's licensed MSRR project.",
-      "supporting_claim_indices": [
-        7,
-        9
-      ]
-    }
-  ],
-  "incumbents": [],
-  "new_entrants": [
-    {
-      "name": "Kairos Power",
-      "entity_type": "new_entrant",
-      "founded_year": null,
-      "funding_stage": "growth",
-      "differentiation": "Secured $303 million in milestone-based DOE funding for the Hermes advanced reactor project and established a commercial offtake agreement with Google targeting a 500 MW fleet by 2035, while generating $10.5 million in revenue in 2024.",
-      "supporting_claim_indices": [
-        5,
-        6,
-        11
-      ]
-    },
-    {
-      "name": "Terrestrial Energy",
-      "entity_type": "new_entrant",
-      "founded_year": null,
-      "funding_stage": "unknown",
-      "differentiation": "Developing the Integral Molten Salt Reactor (IMSR) with campus deployments planned at Texas A&M-RELLIS and co-located data center applications through an agreement with bitcoin mining company Riot Platforms.",
-      "supporting_claim_indices": [
-        9,
-        10
-      ]
-    },
-    {
-      "name": "TerraPower",
-      "entity_type": "new_entrant",
-      "founded_year": null,
-      "funding_stage": "growth",
-      "differentiation": "Raised $650 million in June 2025 with Nvidia's NVentures participating to advance its Natrium sodium-cooled fast reactor project in Wyoming, which integrates a molten salt-based energy storage system distinct from pure molten salt reactor designs.",
+      "description": "Molten salt reactor companies raised $353M in equity funding across 3 rounds in the first four months of 2026, while global nuclear energy startup venture investment totaled over $4.5 billion across 81 companies so far in 2026, on pace to exceed 2025's record of $6.2 billion.",
       "supporting_claim_indices": [
         0,
         1
       ]
     },
     {
+      "description": "The Tennessee Valley Authority agreed to buy up to 50 megawatts of electricity from Kairos Power's advanced molten-salt-cooled reactor, Hermes-2, representing a utility offtake agreement for MSR technology.",
+      "supporting_claim_indices": [
+        8
+      ]
+    },
+    {
+      "description": "The State of Texas allocated $120 million to support Natura Resources' MSR-1 project as of October 2025, representing state-level public funding for a specific MSR development project.",
+      "supporting_claim_indices": [
+        7
+      ]
+    }
+  ],
+  "incumbents": [],
+  "new_entrants": [
+    {
+      "name": "Terrestrial Energy",
+      "entity_type": "new_entrant",
+      "founded_year": null,
+      "funding_stage": "growth",
+      "differentiation": "First molten salt reactor developer to receive NRC Safety Evaluation Report approval of Principal Design Criteria (May 2026) and holds $289.9 million in cash and investments as of March 31, 2026.",
+      "supporting_claim_indices": [
+        3,
+        4,
+        6
+      ]
+    },
+    {
+      "name": "Natura Resources",
+      "entity_type": "new_entrant",
+      "founded_year": null,
+      "funding_stage": "unknown",
+      "differentiation": "Secured $120 million in equity capital and $120 million in State of Texas allocation for its MSR-1 project as of October 2025.",
+      "supporting_claim_indices": [
+        7
+      ]
+    },
+    {
+      "name": "Kairos Power",
+      "entity_type": "new_entrant",
+      "founded_year": null,
+      "funding_stage": "unknown",
+      "differentiation": "Secured a utility offtake agreement with TVA to sell up to 50 megawatts from its Hermes-2 molten-salt-cooled reactor.",
+      "supporting_claim_indices": [
+        8
+      ]
+    },
+    {
       "name": "Thorizon",
       "entity_type": "new_entrant",
       "founded_year": null,
-      "funding_stage": "series_a",
-      "differentiation": "Franco-Dutch developer raised \u20ac20 million in March 2025 led by Dutch National Promotional Institution Invest-NL, bringing total capital to \u20ac42.5 million for thorium-based molten salt reactor development.",
+      "funding_stage": "unknown",
+      "differentiation": "Dutch startup advancing the Thorizon One pilot reactor, raised \u20ac20 million ($21.7 million) in March 2025 led by Invest-NL.",
       "supporting_claim_indices": [
-        2,
-        3
+        2
       ]
     },
     {
@@ -88,26 +84,18 @@
       "entity_type": "new_entrant",
       "founded_year": null,
       "funding_stage": "unknown",
-      "differentiation": "Awarded \u20ac2.5 million in grant funding from the EIC Accelerator in July 2025 specifically for thorium molten salt reactor technology development and prototype validation.",
+      "differentiation": "Received \u20ac2.5 million ($2.9 million) in EU grant funding in July 2025 specifically for continued technological development and prototype validation of its thorium molten salt reactor.",
       "supporting_claim_indices": [
-        4
+        9
       ]
     }
   ],
   "funding_events": [
     {
-      "company_name": "TerraPower",
-      "round": "growth",
-      "amount_usd": 650000000.0,
-      "date": "2025-06",
-      "lead_investor": null,
-      "source_claim_index": 0
-    },
-    {
       "company_name": "Thorizon",
-      "round": "series_a",
-      "amount_usd": 23000000.0,
-      "date": "2025-03",
+      "round": "unknown",
+      "amount_usd": 21700000.0,
+      "date": "March 2025",
       "lead_investor": "Invest-NL",
       "source_claim_index": 2
     },
@@ -115,31 +103,31 @@
       "company_name": "Copenhagen Atomics",
       "round": "unknown",
       "amount_usd": 2900000.0,
-      "date": "2025-07-02",
+      "date": "July 4, 2025",
       "lead_investor": null,
-      "source_claim_index": 4
+      "source_claim_index": 9
     }
   ],
   "tensions_or_conflicts": [
     {
-      "statement": "The firm's technical advisor assessed MSR designs as carrying meaningfully longer time-to-commercial-demonstration than single-loop SMR designs, likely 5+ years further out. External evidence now shows the NRC issued its first construction permit for a liquid-fueled advanced reactor in September 2024, the DOE committed $303 million to Kairos Power's demonstration project in February 2026, and Google established a commercial offtake agreement targeting 500 MW of Kairos reactors by 2035. A reader would have to believe the regulatory and commercial timeline risk has compressed substantially from the firm's prior view, with demonstration milestones now funded and customers committed rather than purely speculative.",
+      "statement": "Northbridge's technical advisor estimated MSR designs run 5+ years further out than single-loop SMR designs in time-to-commercial-demonstration. External evidence shows Terrestrial Energy received NRC Safety Evaluation Report approval of its IMSR Principal Design Criteria in May 2026 and holds $289.9M in cash, while Executive Order 14300 directs the NRC to decide on reactor applications within 18 months - a regulatory acceleration and capital position that compress the timeline materially from the advisor's estimate. A reader would have to believe MSR commercial demonstration is closer than the 5+ year delta the firm has been working from.",
       "internal_claim_indices": [
         17
       ],
       "external_claim_indices": [
-        7,
+        3,
+        4,
         5,
-        6,
-        11
+        6
       ]
     },
     {
-      "statement": "The firm's most recent quarterly scan attributes increased advanced nuclear deal flow to the corporate data-center offtake narrative rather than to any change in the underlying MSR/SMR technology landscape. External evidence shows the NRC issued the first construction permit for a liquid-fueled reactor in September 2024, representing a regulatory breakthrough that had been untested for molten salt designs, and the DOE committed $303 million to Kairos Power in February 2026, both of which are technology-pathway changes rather than purely narrative-driven events. A reader would have to believe the increase in deal flow reflects genuine technical and regulatory progress, not just offtake story momentum.",
+      "statement": "Northbridge passed on two light-water SMR developers 18 months ago primarily due to regulatory-timeline risk, judging their assumed NRC licensing path unrealistic given design certification backlog at the time. External evidence shows Executive Order 14300 now mandates an 18-month NRC decision window and Terrestrial Energy received the first US government safety design approval for a molten salt reactor in July 2026, representing a faster regulatory path than the firm believed realistic when it made the SMR pass decision. A reader would have to believe the regulatory timeline risk that drove the original pass has narrowed, contradicting the reservation the firm acted on.",
       "internal_claim_indices": [
         19
       ],
       "external_claim_indices": [
-        7,
+        3,
         5
       ]
     }
@@ -147,166 +135,177 @@
   "recommendations": [
     {
       "action": "source_deals",
-      "text": "Source Series B and later-stage deals in molten salt reactor developers with regulatory milestones already achieved or DOE demonstration funding secured, focusing on companies with construction permits or equivalent NRC engagement. The NRC construction permit issued to ACU in September 2024 and the $303 million DOE commitment to Kairos Power in February 2026 validate that the regulatory pathway is no longer hypothetical, which was the blocking risk in the firm's prior SMR passes. The main risk is technical execution on materials corrosion and fuel cycle challenges at scale, but companies past the regulatory-pathway-exists question are now investable at growth stage. Target check size $15-25 million in companies demonstrating both regulatory progress and commercial offtake visibility.",
+      "text": "Source deals actively in MSR developers that have passed Principal Design Criteria approval and hold runway to demonstration, targeting growth-stage rounds in companies positioned like Terrestrial Energy. The regulatory timeline risk that drove the firm's SMR pass 18 months ago has narrowed: Executive Order 14300 mandates 18-month NRC decisions and Terrestrial received the first US safety design approval for an MSR in May 2026. Utility offtake agreements are signed and LP interest is live. The main risk is construction-phase cost overruns and materials-corrosion issues during scale-up - Terrestrial's own disclosures flag contractor performance and delay risk, and a 2022 technical analysis argues unresolved corrosion problems from the 1960s Oak Ridge experiment remain live today. Capital should go into developers approaching demonstration with regulatory approval in hand, not earlier-stage technology bets.",
       "supporting_claim_indices": [
-        7,
-        5,
-        6,
-        10,
-        11
-      ]
-    },
-    {
-      "action": "monitor",
-      "text": "Monitor Thorizon and Copenhagen Atomics for regulatory progress in European jurisdictions and prototype validation milestones over the next two quarters, but do not actively source these deals yet. Both companies raised capital in early 2025 for thorium-based MSR designs, which carry additional fuel cycle regulatory complexity beyond the uranium-based designs that secured the first U.S. construction permit. The risk is that thorium fuel cycles face a longer and less certain regulatory path than uranium MSR designs, and neither company has demonstrated the offtake or demonstration-scale funding that de-risks U.S.-based developers. Track whether either secures construction authorization or equivalent European regulatory clearance before re-evaluating.",
-      "supporting_claim_indices": [
-        2,
         3,
         4,
-        7
+        5,
+        6,
+        8,
+        13,
+        14,
+        20
       ]
     },
     {
       "action": "prioritize_diligence",
-      "text": "Prioritize technical diligence on materials corrosion, fuel cycle chemistry, and passive safety validation across MSR designs if a sourced deal reaches term sheet stage, given that these remain the unresolved technical problems flagged in external skeptical analyses and were the basis for the firm's prior 5+ year time-to-demonstration view. The Carnegie Endowment analysis from June 2026 and the 2021 Conversation article both question whether hyperscaler commitments can be met given technical execution risk, and the firm's internal technical advisor specifically identified materials corrosion as a differentiating risk. The risk is that offtake agreements and DOE funding create momentum that obscures whether the core technical problems are solved or merely deferred to demonstration phase. Scope diligence to include third-party materials science review and fuel cycle modeling before committing capital.",
+      "text": "Run full technical and commercial diligence on Terrestrial Energy specifically, given its NRC approval milestone, $289.9M cash position as of March 2026, and regulatory head start. Northbridge's MSR view to date is explicitly informal advisor call notes, not a formal diligence process, and the firm has not run full diligence on an MSR developer. The risk is that materials-corrosion and fuel-cycle technical issues the advisor flagged prove real during construction and the cost structure lands closer to the $3,792/kW overnight capital estimate than the optimistic $70M delivered cost projection, making the economics uncompetitive even with the regulatory tailwind.",
       "supporting_claim_indices": [
-        14,
+        4,
+        6,
+        10,
+        12,
+        13,
         15,
-        17,
-        5,
-        11
+        16,
+        18
       ]
     },
     {
-      "action": "pass",
-      "text": "Pass on TerraPower's Natrium project specifically, as the design integrates a molten salt-based energy storage system with a sodium-cooled fast reactor rather than operating as a pure molten salt reactor, which places it outside the MSR sub-thesis the firm has separated for distinct evaluation. TerraPower raised $650 million in June 2025 with strong investor participation, but the technical risk profile and regulatory pathway differ from liquid-fueled MSR designs, and the firm should not conflate sodium-cooled fast reactor investment with MSR investment. The risk is misallocating diligence resources to a design that does not map to the regulatory and technical milestones validated for MSR specifically.",
+      "action": "monitor",
+      "text": "Monitor Kairos Power, Natura Resources, and European MSR developers (Thorizon, Copenhagen Atomics) for two quarters to see whether their regulatory and demonstration timelines compress in line with Terrestrial's progress, or whether Terrestrial's NRC approval represents a one-off outlier rather than a sector-wide acceleration. The risk is that monitoring for clarity costs the firm entry pricing into a fast-moving market - MSR equity funding hit $353M in four months of 2026 and venture investment across nuclear startups is on pace to exceed 2025's $6.2B record, so waiting two quarters may mean later-stage entry at higher valuations.",
       "supporting_claim_indices": [
         0,
         1,
-        16
+        2,
+        7,
+        8,
+        9
       ]
     }
   ],
   "all_claims": [
     {
-      "claim": "TerraPower closed a $650 million fundraise in June 2025, with Nvidia's NVentures among the investors backing the round.",
-      "source": "https://www.businesswire.com/news/home/20250618150590/en/TerraPower-Announces-%24650-Million-Fundraise",
-      "source_type": "external",
-      "confidence": 0.9
-    },
-    {
-      "claim": "TerraPower's $650 million round (closed June 2025) is intended to advance its sodium-cooled fast reactor project (Natrium) in Wyoming, a design that integrates a molten salt-based energy storage system.",
-      "source": "https://netzeroinsights.com/resources/nuclear-fission-investment-surges-2025/",
+      "claim": "Molten salt reactor companies raised $353M in equity funding across 3 rounds in 2026 through April 2026",
+      "source": "https://tracxn.com/d/trending-business-models/startups-in-molten-salt-reactors/__oA8k0vgpKIKP1_Hav9cH3OqQfAMGcwOria_sVnvNNJ4",
       "source_type": "external",
       "confidence": 0.7
     },
     {
-      "claim": "Thorizon, a Franco-Dutch molten salt reactor developer, raised \u20ac20 million in a round announced March 2025, led by Dutch National Promotional Institution Invest-NL with participation from Positron Ventures, PDENH, and Impuls Zeeland.",
-      "source": "https://www.world-nuclear-news.org/articles/new-funding-to-advance-thorizon-molten-salt-reactor-development",
-      "source_type": "external",
-      "confidence": 0.9
-    },
-    {
-      "claim": "Thorizon's March 2025 \u20ac20 million round brought its total capital raised to \u20ac42.5 million, including \u20ac16 million led by Invest-NL and \u20ac4 million from other participants.",
-      "source": "https://www.nucnet.org/news/franco-dutch-startup-thorizon-gets-eur20-million-in-new-funding-for-molten-salt-reactor-project-3-5-2025",
-      "source_type": "external",
-      "confidence": 0.85
-    },
-    {
-      "claim": "Copenhagen Atomics was awarded \u20ac2.5 million (about $2.9 million) in grant funding from the EIC Accelerator, announced July 2, 2025, to support technological development and prototype validation of its thorium molten salt reactor technology.",
-      "source": "https://copenhagenatomics.com/news/copenhagen-atomics-awarded-funding-by-eic-accelerator/",
-      "source_type": "external",
-      "confidence": 0.9
-    },
-    {
-      "claim": "The U.S. Department of Energy committed $303 million to Kairos Power's Hermes advanced reactor project under a milestone-based funding deal, reported February 27, 2026.",
-      "source": "https://carboncredits.com/does-303m-bet-on-kairos-power-signals-americas-advanced-nuclear-push/",
-      "source_type": "external",
-      "confidence": 0.85
-    },
-    {
-      "claim": "Kairos Power generated $10.5 million in revenue in 2024 and Google has stated a target of a 500 MW fleet of Kairos reactors by 2035 under their agreement.",
-      "source": "https://www.upmarket.co/private-markets/pre-ipo/kairos-power/",
-      "source_type": "external",
-      "confidence": 0.6
-    },
-    {
-      "claim": "The U.S. Nuclear Regulatory Commission issued a construction permit to Abilene Christian University for its Molten Salt Research Reactor (MSRR) on September 16, 2024, marking the first NRC construction permit for a liquid-fueled advanced reactor and only the second construction permit issued for any advanced reactor.",
-      "source": "https://www.world-nuclear-news.org/articles/construction-permit-granted-for-molten-salt-research-reactor",
-      "source_type": "external",
-      "confidence": 0.9
-    },
-    {
-      "claim": "ACU and its partner Natura Resources planned to submit an operating license application for the Molten Salt Research Reactor (MSR-1) to the NRC, with the NEXT Lab website (as of 2026) indicating this submission would occur by year-end.",
-      "source": "https://acu.edu/research/next-lab/",
-      "source_type": "external",
-      "confidence": 0.6
-    },
-    {
-      "claim": "Terrestrial Energy and the Texas A&M University System announced plans in February 2025 to site an Integral Molten Salt Reactor (IMSR) plant at the Texas A&M-RELLIS campus.",
-      "source": "https://en.wikipedia.org/wiki/Integral_Molten_Salt_Reactor",
-      "source_type": "external",
-      "confidence": 0.75
-    },
-    {
-      "claim": "Terrestrial Energy signed an agreement with data center and bitcoin mining company Riot Platforms, reported May 4, 2026, to develop a data center with a co-located molten salt reactor.",
-      "source": "https://www.nucnet.org/news/terrestrial-energy-signs-agreement-on-molten-salt-reactors-for-data-centres-5-4-2026",
-      "source_type": "external",
-      "confidence": 0.85
-    },
-    {
-      "claim": "In 2025, Google committed to purchasing power under an offtake arrangement tied to Kairos Power building, owning, and operating molten-salt-cooled reactors for data center power supply, as part of plans for three 600 MW nuclear projects.",
-      "source": "https://neutronbytes.com/2025/05/07/google-plans-three-600-mw-nuclear-projects-for-data-centers/",
-      "source_type": "external",
-      "confidence": 0.7
-    },
-    {
-      "claim": "Global venture investment in nuclear energy startups (a category including molten salt reactor developers) exceeded $4.5 billion across 81 companies in the year-to-date period reported by Axios on July 28, 2026, putting 2026 on pace to exceed 2025's record haul of $6.2 billion.",
+      "claim": "Global nuclear energy startup venture investment totaled over $4.5 billion across 81 companies so far in 2026, putting the year on pace to exceed 2025's record of $6.2 billion",
       "source": "https://www.axios.com/2026/07/28/nuclear-energy-venture-capital",
       "source_type": "external",
       "confidence": 0.8
     },
     {
-      "claim": "Molten Salt Reactor companies specifically raised $353 million in equity funding across 3 rounds between January and April 2026, according to Tracxn's market tracking.",
-      "source": "https://tracxn.com/d/trending-business-models/startups-in-molten-salt-reactors/__oA8k0vgpKIKP1_Hav9cH3OqQfAMGcwOria_sVnvNNJ4",
+      "claim": "Dutch molten salt reactor startup Thorizon raised \u20ac20 million ($21.7 million) in March 2025, led by Invest-NL, to advance its Thorizon One pilot reactor",
+      "source": "https://www.nucnet.org/news/franco-dutch-startup-thorizon-gets-eur20-million-in-new-funding-for-molten-salt-reactor-project-3-5-2025",
       "source_type": "external",
-      "confidence": 0.6
+      "confidence": 0.9
     },
     {
-      "claim": "A Carnegie Endowment analysis published June 2, 2026, titled 'Beyond the Hype,' argues that hyperscaler nuclear commitments (including advanced/molten-salt reactor deals) should be assessed skeptically against actual U.S. energy realities, implying commitments may outpace deliverable capacity.",
+      "claim": "A US government safety design approval for a molten salt reactor was granted, reported by World Nuclear News on July 22, 2026, tied to an executive order signed by President Trump in May 2025",
+      "source": "https://www.world-nuclear-news.org/articles/molten-salt-reactor-gets-us-safety-design-approval",
+      "source_type": "external",
+      "confidence": 0.8
+    },
+    {
+      "claim": "The NRC issued a Safety Evaluation Report approving Terrestrial Energy's IMSR Principal Design Criteria, announced around May 12, 2026, following an earlier September 2025 approval of the Principal Design Criteria Topical Report",
+      "source": "https://ir.terrestrialenergy.com/node/7851/pdf",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "Executive Order 14300 directs the NRC to reach a final decision on an application to construct and operate a new reactor of any type within 18 months",
+      "source": "https://www.regulations.gov/document/NRC-2025-0379-0011",
+      "source_type": "external",
+      "confidence": 0.7
+    },
+    {
+      "claim": "Terrestrial Energy reported $289.9 million in cash and investments as of March 31, 2026, in its Q1 2026 results",
+      "source": "https://ir.terrestrialenergy.com/news-releases/news-release-details/terrestrial-energy-reports-first-quarter-2026-results",
+      "source_type": "external",
+      "confidence": 0.9
+    },
+    {
+      "claim": "The State of Texas allocated $120 million to support Natura Resources' MSR-1 project, and Natura Resources had secured $120 million in equity capital as of October 2025",
+      "source": "https://www.naturaresources.com/natura-resources-advancing-nation-s-first-gen-iv-nuclear-reactor",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "The Tennessee Valley Authority (TVA) agreed to buy up to 50 megawatts of electricity from Kairos Power's advanced molten-salt-cooled reactor, Hermes-2",
       "source": "https://carnegieendowment.org/research/2026/06/beyond-the-hype-assessing-hyperscaler-nuclear-commitments-against-us-energy-realities",
       "source_type": "external",
-      "confidence": 0.6
+      "confidence": 0.8
     },
     {
-      "claim": "A 2021 analysis in The Conversation argued molten salt reactors face difficult unresolved technical problems (such as materials corrosion) and are unlikely to be successfully deployed anytime soon, a skepticism still cited in later discussions of the sector.",
-      "source": "https://theconversation.com/nuclear-power-why-molten-salt-reactors-are-problematic-and-canada-investing-in-them-is-a-waste-167019",
+      "claim": "Copenhagen Atomics received \u20ac2.5 million ($2.9 million) in EU grant funding, reported July 4, 2025, to support continued technological development and prototype validation of its thorium molten salt reactor",
+      "source": "https://www.nucnet.org/news/copenhagen-atomics-receives-millions-in-eu-funding-for-thorium-molten-salt-reactors-7-4-2025",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Seaborg's 250 MW-thermal (100 MWe) Compact Molten Salt Reactor (CMSR) is projected to have a US$70 million delivered cost as of 2025",
+      "source": "https://www.facebook.com/groups/mfk.nu/posts/10164999652240628/",
+      "source_type": "external",
+      "confidence": 0.4
+    },
+    {
+      "claim": "Idaho National Laboratory (INL) projects future advanced reactor costs, including designs tested there, could decrease to between $0.09/kWh and $0.33/kWh after demonstration, licensing and deployment experience",
+      "source": "https://neutronbytes.com/2025/03/16/inl-is-microreactor-central-for-testing-designs-fuels/",
       "source_type": "external",
       "confidence": 0.5
     },
     {
-      "claim": "Northbridge has historically treated molten salt reactor (MSR) developers as a distinct sub-thesis from light-water SMR designs, given the different regulatory pathway and the added fuel-cycle and materials-corrosion technical risk MSR designs carry.",
+      "claim": "A techno-economic analysis estimated the overnight capital cost of a 291 MWe Integral Molten Salt Reactor plant at $3,792/kW",
+      "source": "https://www.osti.gov/servlets/purl/2423972",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "Terrestrial Energy's own risk disclosures explicitly flag potential delays, cost overruns and contractor performance issues as risks to IMSR plant development, manufacturing and construction, as stated in its Q4 2025 (4Q25) earnings presentation dated March 30, 2026",
+      "source": "https://ir.terrestrialenergy.com/static-files/c096f299-fd8d-4f56-aeff-4fc3ad6ff237",
+      "source_type": "external",
+      "confidence": 0.85
+    },
+    {
+      "claim": "A 2022 Bulletin of the Atomic Scientists analysis argues molten salt reactors, based on a 1960s Oak Ridge National Lab experiment, faced significant technical trouble then and the article contends similar issues remain unresolved today",
+      "source": "https://thebulletin.org/2022/06/molten-salt-reactors-were-trouble-in-the-1960s-and-they-remain-trouble-today/",
+      "source_type": "external",
+      "confidence": 0.6
+    },
+    {
+      "claim": "Northbridge has historically treated molten salt reactor (MSR) developers as a distinct sub-thesis from light-water SMR designs, due to a different regulatory pathway and added fuel-cycle and materials-corrosion technical risk that MSR designs carry.",
       "source": "internal_thesis_advanced_nuclear.md",
       "source_type": "internal",
       "confidence": 0.9
     },
     {
-      "claim": "The firm's technical advisor's informal view (call notes, not a formal diligence report) was that MSR designs are technically compelling on paper - better passive safety characteristics and higher thermal efficiency - but carry meaningfully longer time-to-commercial-demonstration than single-loop SMR designs, likely 5+ years further out.",
+      "claim": "Northbridge's technical advisor (informal call notes, not a formal diligence report) assessed MSR designs as technically compelling on paper \u2014 citing better passive safety characteristics and higher thermal efficiency than single-loop SMR designs.",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "The same technical advisor view held that MSR designs carry meaningfully longer time-to-commercial-demonstration than single-loop SMR designs, estimated at 5+ years further out.",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "This MSR assessment is explicitly noted as informal (advisor call notes) rather than a formal diligence report, meaning Northbridge has not run a full diligence process specifically on an MSR developer.",
+      "source": "internal_thesis_advanced_nuclear.md",
+      "source_type": "internal",
+      "confidence": 0.85
+    },
+    {
+      "claim": "Separately from the MSR-specific view, Northbridge took a first pass at advanced nuclear roughly eighteen months ago and passed on two SMR (light-water, not MSR) developers, primarily due to regulatory-timeline risk \u2014 both companies assumed a faster NRC licensing path than the firm believed realistic given the design certification backlog at the time.",
       "source": "internal_thesis_advanced_nuclear.md",
       "source_type": "internal",
       "confidence": 0.8
     },
     {
-      "claim": "The firm's prior pass on two SMR developers roughly eighteen months ago, on regulatory-timeline/NRC design-certification-backlog risk, was specific to light-water SMR designs; the same internal document explicitly separates MSR out as a distinct sub-thesis, so this pass rationale should not be read as the firm's conclusion on MSR specifically.",
+      "claim": "Two of Northbridge's largest LPs have asked about the firm's advanced nuclear exposure in recent quarterly update calls, citing rising corporate interest in nuclear-powered data center offtake agreements; this demand-side signal postdates and did not factor into the original SMR pass decision.",
       "source": "internal_thesis_advanced_nuclear.md",
       "source_type": "internal",
       "confidence": 0.75
     },
     {
-      "claim": "In the most recent quarterly scan, inbound deal flow tagged 'advanced nuclear' (SMR and MSR combined) was up noticeably quarter-over-quarter, which the sourcing team attributes largely to the corporate data-center offtake narrative rather than to any change in the underlying MSR/SMR technology landscape.",
+      "claim": "In the firm's quarterly cross-sector scan, inbound deal flow tagged 'advanced nuclear' (SMR and MSR combined) was up noticeably quarter-over-quarter, attributed by the sourcing team largely to the corporate data-center offtake narrative rather than to underlying technology changes \u2014 this is directional/informal market chatter, not a verified finding.",
       "source": "internal_quarterly_energy_sector_scan.md",
       "source_type": "internal",
-      "confidence": 0.8
+      "confidence": 0.7
     }
   ]
 }

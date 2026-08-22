@@ -2,72 +2,67 @@
 
 ## Executive Summary
 
-Enhanced geothermal is investable now at Series B and later, driven by demonstrated cost reduction (Fervo cut drilling costs from **$9.4M to $4.8M per well**), validated utility demand (**115 MW Google PPA**, **31 MW Shell agreement**), and a maturing funding environment (Fervo IPO at **$7.4B valuation**, deal flow shifting from seed to Series B+). The sub-segment has crossed from speculative to deployment-stage, with regulatory support in place and technical risk substantially de-risked through oil & gas drilling heritage. Primary risk is execution timeline - geothermal projects still average **58.8% schedule overruns** and permitting remains slow.
+Enhanced geothermal systems are investable now at Series B and later stages. Three major developers have closed significant late-stage rounds in the past eight months, drilling economics improved by **70%** in a commercial deployment, and demand signals from both utilities and LPs frame geothermal as firm dispatchable power rather than intermittent renewable. The sector has moved past early-stage technical speculation. Northbridge should source Series B deals in the next two quarters, with the main risk being permitting timelines that stretch 5-10 years and could delay revenue even after technical milestones are met.
 
 ## What's Changing
 
-- **Fervo Energy achieved a 70% reduction in geothermal drilling time**, with drilling costs across the first four horizontal wells at its Cape project falling from **$9.4 million to $4.8 million per well**, demonstrating a specific cost reduction trajectory beyond general industry trends.
-- In **January 2025**, the Inflation Reduction Act's investment and production tax credits were expanded to cover geothermal power, creating a new tax incentive structure for the sector.
-- In **November 2025**, the U.S. Department of Energy merged its geothermal office with its fossil energy office, creating a new Hydrocarbons and Geothermal Energy office, representing an institutional reorganization that pairs geothermal with oil & gas rather than renewable energy.
-- As of **April 2025**, **20 of the 24 wells** required for what is expected to be the world's largest EGS development (**500 MW capacity**) had been completed, representing progress toward a utility-scale deployment milestone not previously achieved in enhanced geothermal.
-- Multiple LPs have asked Northbridge about its exposure to 'firm, dispatchable clean power' as a category spanning both advanced nuclear and enhanced geothermal, framed as a hedge against intermittent renewables' grid integration challenges — the firm notes this cross-sub-segment 'dispatchability' framing from LPs is relatively new.
-- Inbound deal flow tagged 'enhanced geothermal' to Northbridge was roughly flat quarter-over-quarter, but the average stage of inbound has shifted later (fewer seed-stage intros, more Series B+), which the firm reads as a possible sign the sub-segment is maturing past its earliest, most speculative phase.
+- **Fervo Energy** achieved a **70% reduction** in geothermal drilling time, with drilling costs across the first four horizontal wells at its Cape project falling from **$9.4 million to $4.8 million** per well, demonstrating a step-change in drilling economics rather than incremental improvement.
+- The U.S. Department of Energy merged its geothermal office with its fossil energy office in **November 2025**, creating a new Hydrocarbons and Geothermal Energy office, representing a structural shift in federal administrative alignment for the sector.
+- Three major EGS developers closed significant late-stage funding rounds between **December 2025 and July 2026** (**Fervo's $462M Series E**, **Sage's $97M Series B**, and **Quaise's $134M Series B** first close), marking a concentration of large capital deployment in a short window.
+- Inbound deal flow tagged 'enhanced geothermal' to Northbridge shifted toward later stages (fewer seed-stage intros, more Series B+) on a quarter-over-quarter basis, suggesting the sub-segment is maturing past its earliest speculative phase.
+- Multiple LPs began framing inquiries around 'firm, dispatchable clean power' as a cross-sub-segment category spanning advanced nuclear and enhanced geothermal, representing a new investor framing that groups geothermal with dispatchable generation rather than renewable intermittent sources.
+- Utility customers in at least two recent conversations with **Gridline Storage Systems** specifically named advanced nuclear or geothermal as assumed firm-generation sources for storage modeling, rather than treating storage as standalone intermittency mitigation, indicating a demand-side shift in how utilities conceptualize geothermal's grid role.
 
 ## Competitive Landscape: Leaders & New Entrants
 
-**Incumbents / how they're innovating:**
-
-**Fervo Energy** achieved a **70% reduction in geothermal drilling time** with drilling costs falling from **$9.4 million to $4.8 million per well**, secured major utility-scale power purchase agreements including a **115 MW contract with Google** and a **31 MW agreement with Shell Energy**, and completed an IPO on NASDAQ raising **$1.89 billion** at a **$7.39 billion valuation** after raising a **$462 million Series E**.
+**Incumbents / how they're innovating:** **Ormat Technologies** announced a geothermal portfolio power purchase agreement of up to **150 MW** to support **Google's** data center operations through NV Energy in **February 2026**, demonstrating active execution on large-scale utility partnerships with major tech customers.
 
 **New entrants worth watching:**
-
-- **Eavor** — uses a closed-loop geothermal energy system, distinguishing it from open-loop or traditional EGS approaches.
-- **Baseload** — secured a **15-year power purchase agreement with Google** for geothermal capacity, with deliveries to California's grid beginning in **2026**.
-- **Thermalis** (Series B) — uses directional drilling techniques adapted from oil & gas to make geothermal viable outside traditional volcanic/tectonic-boundary regions, representing a geographic expansion approach; Northbridge's technical advisor assessed the drilling technology itself as reasonably de-risked given its oil & gas heritage.
+- **Fervo Energy** (Series E, **2025**) — achieved a **70% reduction** in geothermal drilling time with per-well costs falling from **$9.4 million to $4.8 million** across its first four horizontal wells at the Cape project, and raised over **$1.5 billion** in total funding as of mid-2026, positioning as the most capital-intensive player in the EGS cohort.
+- **Sage Geosystems** (Series B, **2026**) — deploying what it specifically terms 'Pressure Geothermal' technology, a distinct approach from the directional-drilling methods used by other EGS developers, as evidenced by the technology being named in its Series B announcement.
+- **Quaise Energy** (Series B, **2026**) — building what it describes as the world's first superhot geothermal power plant, targeting a temperature regime not pursued by other profiled EGS developers, and has closed **$230 million** in total funding to date as of **July 2026**.
 
 ## Where Capital Is Flowing
 
 | Company | Round | Amount | Date | Lead Investor |
 | --- | --- | --- | --- | --- |
-| **Fervo Energy** | Series E | **$462M** | 2025-12-10 | B Capital |
-| **Fervo Energy** | Public | **$1.89B** | 2026-05-13 | — |
-| **Eavor** | Unknown | **$65M** | 2025-06 | — |
+| **Fervo Energy** | Series E | **$462M** | 2025-12 | — |
+| **Sage Geosystems** | Series B | **$97M** | 2026-01-21 | — |
+| **Quaise Energy** | Series B | **$134M** | 2026-07-07 | — |
+| **Quaise Energy** | Series A | **$21M** | 2024-03 | Prelude Ventures and Safar Partners |
 
-**Fervo's** trajectory from **$462M Series E** (December 2025) to **$1.89B IPO** six months later at a **$7.4B valuation** signals investor conviction in commercial viability, not just technology promise. **Eavor's $65M raise** (mid-2025) shows capital flowing to differentiated technical approaches (closed-loop versus traditional EGS), but the absence of multiple large Series B or C rounds outside Fervo suggests the market is still concentrated around a single proven execution path rather than multiple validated approaches competing at scale. Growth-stage capital is active, but selectively — the shift in Northbridge's inbound deal flow from seed to Series B+ reflects investor focus on companies past the drilling cost and utility demand milestones Fervo has demonstrated.
+All three major rounds closed within a six-month window between **December 2025 and July 2026**, concentrated enough to read as either a narrow funding opportunity or investor herding rather than sustained sector-wide maturation. Capital is active at late stages (**Series B** and **Series E**), with no seed-stage rounds among the profiled companies — consistent with Northbridge's internal observation that inbound deal flow shifted away from early-stage introductions. The absence of growth-stage climate funds or strategic investors named as leads in the available data leaves it unclear whether late-stage capital is coming primarily from generalist growth investors or sector-specific sources, though **Prelude Ventures** and **Safar Partners** led **Quaise's Series A** in **2024**, indicating deep-tech seed funds were active at earlier stages.
 
 ## Where Sources Disagree
 
-Northbridge's internal sector scan reads the shift in inbound deal flow from seed-stage to Series B+ as a signal that enhanced geothermal is maturing past its earliest speculative phase, suggesting the sub-segment is becoming less risky and more investable. External evidence points the opposite direction: geothermal projects average **58.8% schedule overruns** (worse than most power generation except nuclear), Maryland's state geothermal program faces delays amid cost concerns as recently as **July 2026**, and EGS project development continues to suffer from slow permitting and transmission interconnection processes. A reader would have to believe the sub-segment remains execution-risky despite appearing more mature by funding stage.
+Northbridge's internal deal flow analysis interpreted the shift toward later-stage inbound introductions as evidence the EGS sub-segment is maturing past its earliest speculative phase. External evidence shows three major capital deployments (**Fervo $462M**, **Sage $97M**, **Quaise $134M**) all closed between **December 2025 and July 2026**, concentrated in a narrow six-month window rather than distributed across multiple years. The maturation signal is weaker than the internal interpretation suggested — the capital concentration could equally reflect a short-term funding window or investor herding rather than sustained sector-wide maturation, and the internal claim's reliance on self-selected inbound flow makes it a lagging indicator that may not capture the actual market structure.
 
 ## Investment Recommendation
 
-1. **Actively source Series B and later EGS deals** where the company has demonstrated per-well cost reduction below **$6 million** and secured at least one utility-scale PPA, prioritizing companies using directional drilling techniques adapted from oil & gas. Fervo's trajectory from **$462M Series E to $7.4B IPO** in six months, combined with validated utility demand (**Google 115 MW**, **Shell 31 MW**) and drilling cost cuts from **$9.4M to $4.8M per well**, shows the sub-segment has reached commercial viability at scale. The main risk is execution timeline — geothermal projects still average **58.8% schedule overruns** and permitting remains slow, so deals must be underwritten assuming **18-24 month delays** from initial projections.
+1. **Proactively source Series B and later-stage EGS deals in the next two quarters**, focusing on developers with demonstrated drilling cost reductions or differentiated technical approaches like **Sage's** pressure geothermal or **Quaise's** superhot regime. **Fervo's 70% drilling time reduction** and **$4.8M per-well cost** represent a step-change in economics, and three major late-stage rounds closed within six months signals capital availability at scale. The risk is permitting timelines of 5-10 years that delay revenue realization even after technical milestones are met, meaning capital efficiency through the pre-revenue period becomes the binding constraint rather than technology alone.
 
-2. **Run full diligence on the two earlier-stage (seed/Series A) EGS developers** Northbridge informally tracked during the Thermalis review, both pursuing directional-drilling approaches similar to Thermalis and Fervo. The firm's technical advisor already assessed this drilling technology as reasonably de-risked given its oil & gas heritage, and if directional drilling is converging as the dominant technical approach rather than one company's differentiated bet, the two tracked companies may now be investable where they were not during the Thermalis cycle. The risk is capital intensity — even with cost reduction, each well still costs **$5-10 million** to drill, requiring **$100M+** in total capital to reach utility scale.
+2. **Run full diligence on any EGS company using a technical approach materially different from the directional-drilling method** Northbridge assessed as reasonably de-risked during the Thermalis process, particularly companies pursuing pressure geothermal or superhot temperature regimes. The firm explicitly recorded that its Thermalis pass was thesis-specific to that company and not a signal against EGS broadly, and observed that directional drilling may be converging as the dominant approach rather than a differentiated edge. The risk is that novel approaches carry unproven technical execution risk that offsets any differentiation advantage, requiring deeper technical diligence than the oil-and-gas-heritage drilling methods the firm already assessed.
 
-3. **Monitor DOE's $171.5 million next-generation geothermal field test funding opportunity** (Letters of Intent due **March**) and track which companies secure awards, as federal funding at this scale can validate technical approaches and de-risk early-stage bets. The **November 2025** DOE reorganization that merged geothermal with fossil energy rather than renewables signals institutional support pairing geothermal with oil & gas expertise, consistent with the directional-drilling approach Northbridge has already assessed. The risk is regulatory — federal support under one administration does not guarantee continuity, and geothermal permitting remains slow despite the funding.
+3. **Track federal permitting reform and DOE funding priorities through the new Hydrocarbons and Geothermal Energy office for two quarters**, particularly any changes to the 5-10 year permitting timeline or lease auction frequency that developers cite as binding constraints. The DOE's **November 2025** merger of its geothermal and fossil energy offices represents a structural shift in administrative alignment, and permitting delays are explicitly named by multiple sources as a constraint on deployment. The risk is that administrative changes take years to translate into faster approvals, meaning improved economics and strong demand signals could remain stranded behind regulatory bottlenecks longer than the market currently prices in.
 
-4. **Track utility procurement patterns around 'firm dispatchable clean power'** through the Gridline Storage Systems portfolio relationship and other grid-tied portfolio companies, as LP interest in this framing and utility customer conversations treating geothermal as an assumed firm-generation source alongside storage suggest a demand-side tailwind that does not show up in geothermal deal flow directly. This is a single portfolio company's customer signal, not a quantified market survey, so monitoring costs nothing and could surface an investable thesis before it shows up in competitive Series B rounds. The risk is that the signal is anecdotal and does not translate into actual utility procurement at scale.
+4. **Prioritize EGS companies with signed utility PPAs or tech-company offtake agreements** over those still seeking customers, given that **Ormat** closed a **150 MW Google-backed PPA** and **Fervo** has partnerships with large tech companies for **500 MW** total. Demand from utilities modeling geothermal as firm generation alongside storage, and LP interest in dispatchable clean power as a hedge against intermittent renewables, both indicate customer pull is real rather than speculative. The risk is that transmission interconnection delays — cited alongside permitting as a deployment constraint — mean signed PPAs do not guarantee timely revenue, and a mismatch between project readiness and grid capacity could strand otherwise viable projects.
 
 ## Sources
 
-- https://energy.mit.edu/news/the-need-for-geothermal-funding-is-great-and-the-time-is-now-experts-say/
-- https://enkiai.com/geothermal/fervo-enhanced-geothermal-google/
-- https://fervoenergy.com/fervo-energy-announces-31-mw-power-purchase-agreement-with-shell-energy/
 - https://fervoenergy.com/fervo-energy-raises-462-million-series-e-to-accelerate-geothermal-development-and-meet-surging-energy-demand-with-clean-firm-power/
 - https://foleyhoag.com/news-and-insights/blogs/energy-and-climate-counsel/2026/march/new-daylight-for-geothermal-how-federal-support-and-bipartisan-permitting-reform-are-fueling-a-geot/
-- https://forgeglobal.com/fervo-energy_ipo/
-- https://globalenergymonitor.org/research/trump-administrations-policies-support-rapid-growth-geothermal-power-united-states-12-gw
+- https://investor.ormat.com/news-events/news/news-details/2026/Ormat-Technologies-Announces-the-Signing-of-Geothermal-Portfolio-PPA-of-Up-to-150-MW-to-Support-Googles-Data-Center-Operations-Through-NV-Energy/default.aspx
 - https://itif.org/publications/2026/05/18/advanced-geothermal-energy-widely-available-clean-maybe-cheap-enough/
-- https://marylandmatters.org/2026/07/28/maryland-geothermal-energy-program-faces-delays-amid-cost-concerns/
-- https://netzeroinsights.com/resources/agreements-geothermal-capacity/
-- https://pangea.stanford.edu/ERE/db/IGAstandard/record_detail.php?id
-- https://tracxn.com/d/trending-business-models/startups-in-enhanced-geothermal-systems-egs/__YO2K0L6rkJ_lt00ATuNO5LENBk8Emq_142DAMUk_Qoc
-- https://www.energy.gov/hgeo/geothermal/funding-notice-next-generation-geothermal-field-tests-and-geothermal-resource
+- https://pitchbook.com/profiles/company/442547-02
+- https://startupintros.com/orgs/fervo-energy
+- https://www.canarymedia.com/articles/geothermal/fervo-sage-partner-large-companies-tech
 - https://www.energypolicy.columbia.edu/publications/the-potential-contribution-of-enhanced-geothermal-systems-to-future-power-supply-roundtable-summary/
 - https://www.geothermal.org/our-impact/stories/fervo-energy-announces-70-reduction-geothermal-drilling-time
-- https://www.powermag.com/beyond-traditional-controls-managing-power-project-schedule-and-cost-overruns/
-- https://www.vcbacked.co/directory/industries/geothermal-energy
+- https://www.niskanencenter.org/geothermal-policy-reform-bridging-the-gaps/
+- https://www.quaise.com/news/quaise-energy-raises-134-million-in-first-close-of-series-b-to-build-worlds-first-superhot-geothermal-power-plant
+- https://www.quaise.com/news/quaise-energy-raises-21-million-to-accelerate-terawatt-scale-deep-geothermal-energy
+- https://www.sustainableviews.com/why-geothermal-is-not-ready-to-power-us-data-centres-fc976664/
+- https://www.thinkgeoenergy.com/sage-geosystems-closes-97-million-series-b-funding-round-to-support-pressure-geothermal-deployment/
 - internal_diligence_enhanced_geothermal.md
 - internal_portfolio_checkin_gridline_storage.md
 - internal_quarterly_energy_sector_scan.md

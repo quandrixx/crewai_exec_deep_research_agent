@@ -11,13 +11,13 @@ uv run kickoff "enhanced geothermal systems"
 
 ```
 TOPIC: enhanced geothermal systems
-  research   : 18 external + 8 internal claims
-  analysis   : 6 shifts, 4 companies, 3 funding events, 1 tensions, 4 recommendations
-  fact-check : PASSED (44 citations verified, 0 issues, 0 revision round(s))
+  research   : 15 external + 9 internal claims
+  analysis   : 6 shifts, 4 companies, 4 funding events, 1 tensions, 4 recommendations
+  fact-check : PASSED (43 citations verified, 0 issues, 0 revision round(s))
   cost       : $0.33 estimated
-    research      $0.13  claude-sonnet-5  (43,668 in / 5,919 out, 7 requests, 11,718 cached)
-    analysis      $0.09  claude-sonnet-4-5  (14,760 in / 2,207 out, 2 requests)
-    report        $0.11  claude-sonnet-4-5  (12,736 in / 4,068 out, 2 requests)
+    research      $0.13  claude-sonnet-5  (42,809 in / 6,166 out, 7 requests, 11,718 cached)
+    analysis      $0.09  claude-sonnet-4-5  (14,680 in / 2,271 out, 2 requests)
+    report        $0.11  claude-sonnet-4-5  (12,923 in / 3,885 out, 2 requests)
 
   written:
     output/enhanced_geothermal_systems/research.json
@@ -28,11 +28,12 @@ TOPIC: enhanced geothermal systems
     output/enhanced_geothermal_systems/report.md
 
   Should Northbridge Increase Sourcing Activity in Enhanced Geothermal Systems?
-  1208 words, 20 sources, fact-check status: passed
+  1256 words, 17 sources, fact-check status: passed
 ```
 
-That is a verbatim run, not an illustration — `output/` is checked in, so the
-run above is the one you are reading:
+That is one `uv run kickoff` invocation copied out of the terminal, not an
+illustration — `output/` is checked in, so the run above is the one you are
+reading:
 [`output/enhanced_geothermal_systems/report.md`](output/enhanced_geothermal_systems/report.md),
 alongside briefings on
 [small modular reactors](output/small_modular_reactors/report.md),
@@ -374,11 +375,17 @@ different model than the research agents.
   on vocabulary overlap alone, which an arbitrary claim from the same run
   clears about half the time. Tightening further trades false negatives for
   false positives, and a false positive withholds a good report.
-- **The report length guardrail doesn't measure the whole document.** It runs on
-  the style reviewer's output, and the verified funding block is spliced in
-  afterwards, so the shipped body is longer than what was checked. The ceiling
-  now reserves 100 words for that, but it's a reserve, not a measurement — a
-  briefing with many funding rounds could still exceed it.
+- **Briefings run long.** The house target is 800-1100 words; recent runs ship
+  1180-1350. Two separate causes, one fixed and one not. The guardrail runs on
+  the style reviewer's output and the verified funding block is spliced in
+  *afterwards*, so the shipped body is longer than what was checked — the
+  ceiling now reserves 100 words for that, which keeps briefings under the hard
+  limit but is a reserve, not a measurement. Underneath that, the prose itself
+  has grown, and a round of prompt tightening did not move it: asked for 2-3
+  sentences per recommendation, a live run returned four every time, and a
+  "no more than a third of the body" instruction was satisfied by the *other*
+  sections growing instead. The next attempt should give the recommendation
+  section an absolute word budget rather than a proportional one.
 - **The external researcher over-produces**, returning ~20 claims where the task
   asks for 8–15. All are well-sourced; it's a prompt-adherence gap.
 - **One revision round, then escalation.** Bounded deliberately — a pipeline

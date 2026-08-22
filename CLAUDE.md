@@ -121,12 +121,12 @@ it to match.
   demo into a bland one.
 
 **Where to resume:**
-- `README.md` is written and current as of the tension/fact-check work. The one
-  thing outstanding is that the report-length prompt tightening
-  (`_FUNDING_BLOCK_RESERVE` plus the section-budget instructions in the report
-  crew's two tasks) is **unverified** - it has not been run live. Expect the
-  guardrail to bounce drafts on topics whose prose already sits near the
-  ceiling; molten salt and wave/tidal both would.
+- `README.md` is written and current; its headline run block is a verbatim
+  `uv run kickoff "enhanced geothermal systems"` from 2026-08-21.
+- **The report-length prompt tightening failed and needs another attempt.**
+  `_FUNDING_BLOCK_RESERVE` works - that run shipped 1256 words with prose at
+  1177 against the 1200 ceiling, inside the 1300 hard limit and with no
+  guardrail bounce. The prompt half did not; see gap #10.
 
 The prose-restatement fix noted as unverified last session is now **confirmed
 working** - a full CLI run on molten salt reactors produced a Where Capital Is
@@ -609,11 +609,26 @@ CrewAI is ever upgraded.
    the guardrail approved. Live, after the tension work made reports longer:
    molten salt shipped 1344 words and wave/tidal 1323, both over the guardrail's
    1300 ceiling, both having passed because their pre-splice prose was 1286 and
-   1242. Four of the five saved runs are now also above the 800-1100 house
-   target. Pre-existing, not caused by the schema change - but exposed by it,
-   and unfixed. A guardrail cannot see the table because it only gets the
-   TaskOutput; the options are lowering `_MAX_WORDS` to leave table headroom or
-   re-checking length in `ReportCrew.run` after the splice.
+   1242.
+
+   **The measurement half is fixed.** `_FUNDING_BLOCK_RESERVE` (100 words) puts
+   `_MAX_WORDS` at 1200 of prose, so the shipped body stays under 1300. A
+   guardrail cannot see the table - it only gets the TaskOutput - so this is a
+   reserve, not a measurement, and a briefing with many funding rounds could
+   still exceed it. Verified live: a full EGS run shipped 1256 words, prose
+   1177, no bounce.
+
+   **The prose is still too long, and one attempt to fix that already failed.**
+   The report prompts were given a section budget: 2-3 sentences per
+   recommendation, and no more than about a third of the body for that section.
+   The live run returned **four** sentences in all four recommendations (95-108
+   words each), and the proportional rule was satisfied at 33% by the OTHER
+   sections growing - Capital Flows +28, Competitive Landscape +29, while
+   Recommendations moved 412 -> 410. **A proportional budget is circular**: it
+   can always be met by inflating the denominator. Next attempt should give the
+   section an absolute word budget, and should note that "2-3 sentences"
+   conflicts with the action + reasoning + risk + specificity the same task
+   demands - gap #9's pattern once more.
 
 11. **Every cited field is now verified by the gate.** `check_citations` covers
    recommendations, company profiles, funding events, tensions and market

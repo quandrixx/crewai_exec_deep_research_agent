@@ -101,6 +101,39 @@ class MarketShift(BaseModel):
     )
 
 
+class Tension(BaseModel):
+    """Maps to the 'Where Sources Disagree' section.
+
+    This section used to cross the crew boundary as a bare string, which made
+    it the only cited section in the briefing the fact-check gate could not
+    see - a fabricated internal position here passed every check in the
+    pipeline. Splitting the citations by side is what makes a deterministic
+    check possible: a disagreement between internal and external sources must
+    by definition cite at least one claim of each kind, and that is decidable
+    in plain Python. citation_check_tool verifies both that the indices
+    resolve and that the claims they land on really are of the type they were
+    filed under, so "internal sources say X" cannot be built out of external
+    claims.
+
+    Neither list carries a default, deliberately - see the note in CLAUDE.md
+    about truncated output validating into an empty list.
+    """
+    statement: str = Field(
+        description="The disagreement itself: Northbridge's internal position, "
+                     "the external evidence pointing the other way, and what a "
+                     "reader would have to believe differently after reading it."
+    )
+    internal_claim_indices: list[int] = Field(
+        description="Indices into AnalysisResult.all_claims for the INTERNAL "
+                     "claims stating Northbridge's position. Never empty - a "
+                     "tension with no internal side is not a tension."
+    )
+    external_claim_indices: list[int] = Field(
+        description="Indices into AnalysisResult.all_claims for the EXTERNAL "
+                     "claims that point the other way. Never empty."
+    )
+
+
 class CompanyProfile(BaseModel):
     """Maps to 'Competitive Landscape: Leaders & New Entrants'."""
     name: str
@@ -165,7 +198,7 @@ class InvestmentJudgment(BaseModel):
     only describes the landscape has failed at its actual purpose.
     """
     executive_summary: str
-    tensions_or_conflicts: list[str] = Field(
+    tensions_or_conflicts: list[Tension] = Field(
         description="Empty list is valid and expected when internal/external "
                      "sources genuinely agree - do not manufacture tension."
     )
@@ -181,7 +214,7 @@ class AnalysisResult(BaseModel):
     incumbents: list[CompanyProfile]
     new_entrants: list[CompanyProfile]
     funding_events: list[FundingEvent]
-    tensions_or_conflicts: list[str] = Field(
+    tensions_or_conflicts: list[Tension] = Field(
         default_factory=list,
         description="Empty list is valid and expected when internal/external "
                      "sources genuinely agree - do not manufacture tension."

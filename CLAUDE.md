@@ -76,7 +76,7 @@ it to match.
 
 ## Current status
 
-**Built and verified (tests run and passing - 218 total):**
+**Built and verified (tests run and passing - 225 total):**
 - `models.py` - full Pydantic schema for the pipeline
 - `flows/deep_research_flow.py` - the orchestrating Flow (intake → research →
   analysis → fact-check gate → report, with bounded retry + human escalation).
@@ -204,6 +204,40 @@ fact-check gate*, because the indices all still resolve. Change the ordering in
 The agents never reproduce claims - only indices. Asking an LLM to echo 28
 claims verbatim is pure cost and risk: reworded text breaks every index, and a
 large payload is what got truncated in a live Research Crew run.
+
+**"Where Sources Disagree" is structured, not free text.** `Tension` carries a
+`statement` plus `internal_claim_indices` and `external_claim_indices`. It was
+originally `list[str]`, which made it the only cited section in the briefing the
+fact-check gate could not see at all - a fabricated internal position there
+passed every check in the pipeline. Splitting the citations by side is what
+makes the check deterministic: a disagreement between internal and external
+sources must by definition cite at least one claim of each kind, and the gate
+verifies both that the indices resolve **and that each claim's `source_type`
+matches the side it was filed under**. An external claim filed as Northbridge's
+internal position is now a hard fail. Regenerating the five saved runs took
+`verified_count` up substantially (SMR 31 -> 57) purely from citations that were
+never checked before.
+
+The prompt was reworked alongside it, because the schema alone does not decide
+what belongs in the section. Live runs were producing items that were plainly
+agreement - one literally said external data "confirms" the internal signal. Two
+causes, both fixed: the prompt's own "check whether external evidence has since
+overtaken the reasoning" line reframed the section as *temporal supersession*
+rather than disagreement (gap #9's pattern again - the more specific instruction
+won), and nothing told the model that performing a check an internal document
+asked for and finding agreement is not a conflict. The task now states the test
+explicitly ("what would a reader have to believe differently"), lists both what
+IS and what is NOT a tension, and the shape of `Tension` enforces the rest.
+
+Measured across the five saved topics: 10 tensions before, 7 after, with the two
+outright confirmations gone and every survivor citing real claims on both sides.
+Note the first tightening over-corrected and silently dropped a legitimate
+tension, which only showed up by reading all of them - **when tuning this
+prompt, read the output rather than counting it.** A word-list guardrail on
+agreement language was considered and rejected: tested against real output it
+flagged two genuine tensions out of three hits, because "consistent with" and
+"validation" appear in perfectly good disagreements. The structured check is the
+one that holds up.
 
 **Both agents are toolless on purpose.** Every fact in the report must trace to
 a claim the Research Crew gathered. An analyst that could search the web would
@@ -551,7 +585,26 @@ CrewAI is ever upgraded.
    following the more specific one. When a task states a budget, tie it to the
    list it has to cover and give an explicit ceiling. Claim counts have the
    same shape: live runs returned 31, then 20, then 19 against a stated 8-15.
-10. **Internal document filenames are part of the deliverable.** They're cited
+10. **The report length guardrail measures a shorter document than it ships.**
+   `report_guardrails.py` validates the style reviewer's draft, and
+   `_insert_funding_block()` splices the rendered funding table in *afterwards*
+   (gap #6). So `body_markdown` as saved runs up to ~80 words longer than what
+   the guardrail approved. Live, after the tension work made reports longer:
+   molten salt shipped 1344 words and wave/tidal 1323, both over the guardrail's
+   1300 ceiling, both having passed because their pre-splice prose was 1286 and
+   1242. Four of the five saved runs are now also above the 800-1100 house
+   target. Pre-existing, not caused by the schema change - but exposed by it,
+   and unfixed. A guardrail cannot see the table because it only gets the
+   TaskOutput; the options are lowering `_MAX_WORDS` to leave table headroom or
+   re-checking length in `ReportCrew.run` after the splice.
+
+11. **`MarketShift.supporting_claim_indices` is still not verified.** With
+   tensions covered, this is the last cited field the fact-check gate does not
+   check - `check_citations` covers recommendations, company profiles, funding
+   events and tensions only. `analysis_guardrails.py` checks the indices are
+   non-negative, but nothing confirms they resolve.
+
+12. **Internal document filenames are part of the deliverable.** They're cited
    verbatim in the report's Sources appendix, so they follow a consistent
    `internal_*` convention and are spelled correctly. Three tests assert
    specific filenames; renaming a doc means updating

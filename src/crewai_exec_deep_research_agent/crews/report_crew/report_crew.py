@@ -171,7 +171,7 @@ def _format_analysis_block(analysis: AnalysisResult) -> str:
     ] or ["  (none identified)"]
 
     lines += ["", "WHERE SOURCES DISAGREE:"]
-    lines += [f"  - {t}" for t in analysis.tensions_or_conflicts] or [
+    lines += [f"  - {t.statement}" for t in analysis.tensions_or_conflicts] or [
         "  (none - internal and external sources agree; OMIT this section entirely)"
     ]
 

@@ -20,6 +20,7 @@ from crewai_exec_deep_research_agent.models import (
     FundingEvent,
     Recommendation,
     RecommendationAction,
+    Tension,
 )
 from crewai_exec_deep_research_agent.tools.citation_check_tool import (
     check_citations,
@@ -553,6 +554,96 @@ def test_a_corpus_too_small_to_rank_terms_falls_back_to_plain_overlap():
         supporting_claim_indices=[1],
     )])
     assert check_citations(analysis).passed is True
+
+
+# ---------------------------------------------------------------------------
+# Tensions must cite real claims on both sides of the disagreement
+# ---------------------------------------------------------------------------
+
+def tension_claims() -> list[SourcedClaim]:
+    return [
+        make_claim("The NRC approved two SMR designs in 2025 and 2026.",
+                   "https://example.test/nrc", SourceType.EXTERNAL),          # 0
+        make_claim("Global VC investment in nuclear exceeded $4.5 billion.",
+                   "https://example.test/vc", SourceType.EXTERNAL),           # 1
+        make_claim("Northbridge passed on two SMR developers citing the NRC "
+                   "licensing backlog.",
+                   "internal_thesis.md", SourceType.INTERNAL),                # 2
+        make_claim("The deal team flagged Developer X as worth revisiting.",
+                   "internal_thesis.md", SourceType.INTERNAL),                # 3
+    ]
+
+
+def tension_analysis(**tension_fields) -> AnalysisResult:
+    return base_analysis(
+        all_claims=tension_claims(),
+        tensions_or_conflicts=[Tension(**tension_fields)],
+    )
+
+
+def valid_tension(**overrides) -> AnalysisResult:
+    fields = dict(
+        statement="Northbridge passed citing the NRC licensing backlog, but "
+                  "the NRC has since approved two SMR designs.",
+        internal_claim_indices=[2],
+        external_claim_indices=[0],
+    )
+    fields.update(overrides)
+    return tension_analysis(**fields)
+
+
+def test_valid_tension_citing_both_sides_passes():
+    result = check_citations(valid_tension())
+    assert result.passed is True, [i.problem for i in result.issues]
+    assert result.verified_count == 2
+
+
+def test_tension_with_no_internal_side_is_flagged():
+    """Two external claims disagreeing with each other is not what this
+    section reports."""
+    result = check_citations(valid_tension(internal_claim_indices=[]))
+    assert result.passed is False
+    assert "cites no internal claims" in result.issues[0].problem
+
+
+def test_tension_with_no_external_side_is_flagged():
+    result = check_citations(valid_tension(external_claim_indices=[]))
+    assert result.passed is False
+    assert "cites no external claims" in result.issues[0].problem
+
+
+def test_tension_citing_an_external_claim_as_internal_is_flagged():
+    """The check the structure exists to make possible.
+
+    Index 0 resolves, so every structural check passes and the old free-text
+    section would have shipped this untouched - but it is an external claim
+    filed as Northbridge's internal position, which means the reported
+    disagreement was assembled from claims that never disagreed.
+    """
+    result = check_citations(valid_tension(internal_claim_indices=[0]))
+    assert result.passed is False
+    assert any("but that claim is external" in i.problem for i in result.issues)
+
+
+def test_tension_citing_an_internal_claim_as_external_is_flagged():
+    result = check_citations(valid_tension(external_claim_indices=[3]))
+    assert result.passed is False
+    assert any("but that claim is internal" in i.problem for i in result.issues)
+
+
+def test_tension_with_an_out_of_range_index_is_flagged():
+    result = check_citations(valid_tension(external_claim_indices=[99]))
+    assert result.passed is False
+    assert any("does not exist" in i.problem for i in result.issues)
+
+
+def test_a_tension_citing_claims_from_both_sides_counts_every_index():
+    """verified_count covers both sides, not just one."""
+    result = check_citations(valid_tension(
+        internal_claim_indices=[2, 3], external_claim_indices=[0, 1],
+    ))
+    assert result.passed is True, [i.problem for i in result.issues]
+    assert result.verified_count == 4
 
 
 # ---------------------------------------------------------------------------

@@ -15,6 +15,10 @@ claim reference:
   3. FundingEvent.source_claim_index          - funding amounts/dates are
      exactly the kind of specific, checkable detail worth verifying,
      since they're also the easiest thing for an LLM to quietly invent.
+  4. Tension.internal_claim_indices /
+     Tension.external_claim_indices          - both sides of a claimed
+     disagreement, checked for the one thing that makes it a disagreement:
+     that each side cites claims of the type it says it does.
 
 Three failure classes are distinguished:
   - STRUCTURAL: the cited index doesn't exist at all. Always a hard fail.
@@ -29,13 +33,22 @@ Three failure classes are distinguished:
     Swap in a narrowly-scoped LLM call here later if the heuristic proves
     too noisy or too lax - keep any such call scoped to a single
     claim/citation pair, not a free re-analysis of the whole report.
+  - MISATTRIBUTED: a tension citing a claim on the wrong side of the split -
+    an 'internal' index pointing at an external claim, or vice versa. Always a
+    hard fail: it is the difference between reporting a real disagreement and
+    inventing one out of claims that never disagreed.
   - UNNAMED: a company profile whose cited claims never mention the company.
     Company profiles get this extra check because WEAK_SUPPORT is close to
     useless for them - see _check_company_is_named.
 """
 
 import re
-from crewai_exec_deep_research_agent.models import AnalysisResult, CitationIssue, FactCheckResult
+from crewai_exec_deep_research_agent.models import (
+    AnalysisResult,
+    CitationIssue,
+    FactCheckResult,
+    SourceType,
+)
 
 
 _STOPWORDS = {
@@ -331,6 +344,46 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
             _check_company_is_named(
                 event.company_name, [cited_claim], all_claim_texts, label, issues,
             )
+
+    # -- 4. Tensions ---------------------------------------------------
+    # The section that had no verification at all before it was given a
+    # structure. Everything below is decidable in plain Python precisely
+    # because the citations are split by side.
+    for tension in analysis.tensions_or_conflicts:
+        label = f"Tension '{tension.statement[:50]}'"
+        cited = []
+        for indices, expected_type in (
+            (tension.internal_claim_indices, SourceType.INTERNAL),
+            (tension.external_claim_indices, SourceType.EXTERNAL),
+        ):
+            if not indices:
+                issues.append(CitationIssue(
+                    claim_or_entity=tension.statement,
+                    problem=(
+                        f"{label} cites no {expected_type.value} claims. A "
+                        f"disagreement between internal and external sources "
+                        f"needs at least one claim from each side."
+                    ),
+                ))
+                continue
+            for idx in indices:
+                if not _validate_index(idx, max_index, label, tension.statement, issues):
+                    continue
+                verified += 1
+                claim = analysis.all_claims[idx]
+                cited.append(claim.claim)
+                if claim.source_type is not expected_type:
+                    issues.append(CitationIssue(
+                        claim_or_entity=tension.statement,
+                        problem=(
+                            f"{label} lists claim {idx} as "
+                            f"{expected_type.value}, but that claim is "
+                            f"{claim.source_type.value} "
+                            f"('{claim.claim[:60]}...'). A tension built from "
+                            f"claims on one side is not a disagreement."
+                        ),
+                    ))
+        _check_weak_support(tension.statement, cited, label, issues, distinctive_terms)
 
     return FactCheckResult(
         passed=len(issues) == 0,

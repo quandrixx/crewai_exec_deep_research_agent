@@ -193,8 +193,20 @@ def validate_investment_judgment(output: TaskOutput) -> tuple[bool, Any]:
         _check_indices(rec.supporting_claim_indices, label, problems)
 
     for index, tension in enumerate(judgment.tensions_or_conflicts):
-        if not tension.strip():
-            problems.append(f"tensions_or_conflicts[{index}] is empty")
+        label = f"tensions_or_conflicts[{index}]"
+        if not tension.statement.strip():
+            problems.append(f"{label} has an empty statement")
+            continue
+        # Both sides required. Whether the indices land on claims of the right
+        # TYPE needs the claim list, so that half lives in the fact-check gate;
+        # what is decidable from the output alone is decided here, where a
+        # failure costs one task retry instead of a whole crew re-run.
+        _check_indices(
+            tension.internal_claim_indices, f"{label} internal side", problems,
+        )
+        _check_indices(
+            tension.external_claim_indices, f"{label} external side", problems,
+        )
 
     if problems:
         return _fail(
@@ -202,6 +214,9 @@ def validate_investment_judgment(output: TaskOutput) -> tuple[bool, Any]:
             "Every recommendation must cite the numbered claims that justify "
             "it, so the committee can trace a decision back to evidence. An "
             "empty tensions_or_conflicts list is fine when internal and "
-            "external sources genuinely agree - do not manufacture tension.",
+            "external sources genuinely agree - do not manufacture tension. "
+            "Every tension you DO report must cite at least one internal and "
+            "at least one external claim; that is what makes it a "
+            "disagreement rather than an observation.",
         )
     return (True, output)

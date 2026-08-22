@@ -27,6 +27,7 @@ from crewai_exec_deep_research_agent.crews.report_crew.report_crew import (
     render_markdown,
 )
 from crewai_exec_deep_research_agent.models import (
+    Tension,
     AnalysisResult,
     CompanyProfile,
     EntityType,
@@ -254,7 +255,11 @@ def test_analysis_block_tells_the_writer_to_omit_an_empty_tensions_section():
 
 def test_analysis_block_includes_tensions_when_they_exist():
     block = _format_analysis_block(
-        analysis(tensions_or_conflicts=["Internal thesis contradicts recent evidence."])
+        analysis(tensions_or_conflicts=[Tension(
+            statement="Internal thesis contradicts recent evidence.",
+            internal_claim_indices=[1],
+            external_claim_indices=[0],
+        )])
     )
     assert "Internal thesis contradicts recent evidence." in block
     assert "OMIT this section" not in block

@@ -1,16 +1,16 @@
 {
   "topic": "green hydrogen electrolyzers",
-  "executive_summary": "Green hydrogen electrolyzers face a fundamental demand problem despite improving technology and generous tax incentives. The 2027 construction deadline for Section 45V eligibility creates a narrow window, but 90% of announced capacity lacks identified buyers, real-world electrolyzer costs remain 60-300% above published assumptions, and major incumbents like BP and Air Products are canceling projects. The sector is not investable at scale today. Monitor technology plays like Hysata for 12-18 months while the demand picture clarifies, with the risk that the 2027 deadline passes before viable offtake materializes.",
+  "executive_summary": "Green hydrogen electrolyzers present a monitor-and-wait opportunity, not an immediate investment. Section 45V tax credits created a 2027 construction deadline that triggered both genuine project momentum and forced market selection, but major cancellations by Air Products and BP in 2025 demonstrate that subsidy-dependent economics remain fragile. Real-world electrolyzer costs running 60-300% above published projections and only 10% of announced 2030 capacity having identified buyers indicate the sector is still working through fundamental commercial viability questions. Active monitoring makes sense given large projects reaching FID and substantial venture capital flowing to efficiency-focused new entrants, but capital deployment should wait for clearer evidence that projects can pencil without maximum subsidy support.",
   "market_shifts": [
     {
-      "description": "Final rules for the Section 45V Clean Hydrogen Production Tax Credit were released on January 3, 2025, offering up to $3.00 per kilogram of clean hydrogen as a 10-year incentive, but eligibility was restricted in mid-2025 to facilities beginning construction before the end of 2027.",
+      "description": "U.S. Treasury and IRS released final rules for Section 45V Clean Hydrogen Production Tax Credit on January 3, 2025, offering up to $3.00/kg as a 10-year incentive, but revised law in mid-2025 limited eligibility to facilities beginning construction before end of 2027.",
       "supporting_claim_indices": [
         8,
         9
       ]
     },
     {
-      "description": "Multiple large-scale hydrogen projects were cancelled between December 2025 and February 2025, including BP's 1.5 GW Duqm project in Oman (150,000 tonnes annually) and Air Products' $500 million Massena plant (35 tons per day), driven by regulatory changes rendering existing power supplies ineligible for tax credits, elevated production costs, and weak demand.",
+      "description": "Major project cancellations occurred in 2025-2026: Air Products exited three U.S. projects including a $500M Massena plant in February 2025 after regulatory changes made existing hydroelectric power ineligible for tax credits, and BP cancelled the 1.5 GW Duqm project in Oman in December 2025.",
       "supporting_claim_indices": [
         19,
         20,
@@ -19,7 +19,7 @@
       ]
     },
     {
-      "description": "Three large green hydrogen projects reached Final Investment Decision in 2026: Orica's 50 MW Hunter Valley Hub (the largest Australian renewable hydrogen project to reach FID), the 30 MW Barrow Green Hydrogen Project, and Hy2gen's 275 MW Courant decarbonized ammonium nitrate project.",
+      "description": "Three large-scale green hydrogen projects reached Final Investment Decision in 2026: Orica's Hunter Valley Hub (50 MW, largest Australian renewable hydrogen project), the Barrow project (30 MW), and movement toward FEED for Hy2gen's 275 MW Courant project.",
       "supporting_claim_indices": [
         14,
         15,
@@ -27,46 +27,28 @@
       ]
     },
     {
-      "description": "The first long-term green hydrogen offtake agreement of scale was signed on March 12, 2025, when RWE and TotalEnergies committed to a 15-year contract for approximately 30,000 metric tons per year for TotalEnergies' Leuna refinery, even as only 10% of globally announced projects have identified buyers.",
-      "supporting_claim_indices": [
-        13,
-        18
-      ]
-    },
-    {
-      "description": "Real-world 2024 electrolyzer system costs averaged $3,000/kW, 60% to 300% higher than previously cited assumptions of $1,800/kW, while PEM electrolyzer CAPEX fell from roughly $1,200-$1,500 per kW in 2020 to approximately $700-$1,000 per kW by 2026.",
+      "description": "PEM electrolyzer capital costs fell from roughly $1,200-$1,500/kW in 2020 to approximately $700-$1,000/kW by 2026, though real-world 2024 system costs averaging $3,000/kW suggest actual costs remain 60-300% higher than commonly cited projections.",
       "supporting_claim_indices": [
         11,
         12
       ]
     },
     {
-      "description": "U.S. Department of Energy awarded $34 million in tax credits to John Cockerill Hydrogen's Baytown Gigafactory in Texas, expected to produce 1 GW per year of alkaline electrolyzer manufacturing capacity and create 200 jobs, marking a major incumbent's expansion into U.S. manufacturing.",
+      "description": "First major long-term offtake agreement signed in March 2025 between RWE and TotalEnergies for 30,000 metric tons/year over 15 years, while only 10% of announced capacity planned by 2030 has identified buyers despite 255 developers actively negotiating agreements.",
       "supporting_claim_indices": [
-        6,
-        7
+        13,
+        17,
+        18
       ]
     }
   ],
   "incumbents": [
     {
-      "name": "John Cockerill Hydrogen",
-      "entity_type": "incumbent",
-      "founded_year": null,
-      "funding_stage": "unknown",
-      "differentiation": "Established alkaline electrolyzer manufacturer expanding into U.S. market with a new 1 GW per year gigafactory in Baytown, Texas, awarded $34 million in DOE tax credits.",
-      "supporting_claim_indices": [
-        5,
-        6,
-        7
-      ]
-    },
-    {
       "name": "Plug Power",
       "entity_type": "incumbent",
       "founded_year": null,
       "funding_stage": "public",
-      "differentiation": "Secured three major electrolyzer supply contracts in 2026 totaling 355 MW (275 MW for Hy2gen's Courant project, 50 MW for Orica's Hunter Valley Hub, and 30 MW for Barrow), with all three projects reaching Final Investment Decision.",
+      "differentiation": "Secured three major electrolyzer supply contracts in 2026, including the largest Australian renewable hydrogen project (50 MW Hunter Valley), a 30 MW Barrow project, and a 275 MW FEED contract for Hy2gen's Courant ammonium nitrate decarbonization project.",
       "supporting_claim_indices": [
         14,
         15,
@@ -74,24 +56,15 @@
       ]
     },
     {
-      "name": "Air Products",
+      "name": "John Cockerill Hydrogen",
       "entity_type": "incumbent",
       "founded_year": null,
-      "funding_stage": "public",
-      "differentiation": "Exited three U.S.-based hydrogen projects in February 2025, including canceling a planned $500 million liquid green hydrogen plant in Massena, New York, after regulatory changes rendered its hydroelectric power supply ineligible for tax credits.",
+      "funding_stage": "unknown",
+      "differentiation": "Entered U.S. market with a Baytown, Texas alkaline electrolyzer gigafactory awarded $34M in DOE tax credits, designed for 1 GW/year manufacturing capacity and 200 new jobs.",
       "supporting_claim_indices": [
-        19,
-        20
-      ]
-    },
-    {
-      "name": "BP",
-      "entity_type": "incumbent",
-      "founded_year": null,
-      "funding_stage": "public",
-      "differentiation": "Cancelled the gigascale 1.5 GW Duqm Green Hydrogen Project in Oman in December 2025, which had been designed to produce 150,000 tonnes of hydrogen annually.",
-      "supporting_claim_indices": [
-        21
+        5,
+        6,
+        7
       ]
     }
   ],
@@ -101,7 +74,7 @@
       "entity_type": "new_entrant",
       "founded_year": null,
       "funding_stage": "series_c",
-      "differentiation": "Raised $380 million in an oversubscribed Series C round in October 2023, bringing total funding to approximately $600 million from investors including Energy Impact Partners, Fifth Wall, and Fortescue.",
+      "differentiation": "Raised $380M in an oversubscribed Series C in October 2023, bringing total funding to approximately $600M from investors including Energy Impact Partners, Fifth Wall, and Fortescue.",
       "supporting_claim_indices": [
         0,
         1
@@ -112,7 +85,7 @@
       "entity_type": "new_entrant",
       "founded_year": null,
       "funding_stage": "series_b",
-      "differentiation": "Achieved 95% system efficiency with its capillary-fed electrolyser technology at commercial scale, versus roughly 75% for existing commercial electrolysers, equating to 39.4-41.6 kWh per kg of H2, confirmed in peer-reviewed research.",
+      "differentiation": "Achieved 95% system efficiency at commercial scale with capillary-fed electrolyser technology versus roughly 75% for existing commercial electrolysers, confirmed in peer-reviewed research showing 39.4-41.6 kWh/kg H2 at 0.8 A/cm\u00b2.",
       "supporting_claim_indices": [
         2,
         3,
@@ -142,45 +115,42 @@
   "recommendations": [
     {
       "action": "monitor",
-      "text": "Track Hysata's commercialization progress for 12-18 months given its peer-reviewed 95% efficiency achievement versus 75% for commercial alternatives, representing a 20-percentage-point improvement that could materially alter project economics if it scales. The risk is that superior technology proves irrelevant if offtake demand remains weak and the 2027 construction deadline for Section 45V eligibility expires before projects can secure buyers.",
+      "text": "Track Section 45V utilization and project execution through the December 2027 construction deadline to assess whether tax credit economics can translate announced projects into operating assets, with the risk that the deadline creates artificial urgency followed by a funding cliff rather than genuine commercial momentum. The spread between Air Products cancelling projects when regulatory changes eliminated subsidy eligibility and three large projects reaching FID in 2026 suggests the tax credit is necessary but may not be sufficient for project viability.",
       "supporting_claim_indices": [
-        3,
-        4,
         8,
         9,
-        18
-      ]
-    },
-    {
-      "action": "monitor",
-      "text": "Watch whether the three 2026 Final Investment Decision projects\u2014Orica's 50 MW Hunter Valley Hub, the 30 MW Barrow project, and Hy2gen's 275 MW Courant facility\u2014reach commercial operation and demonstrate viable unit economics by mid-2027. These are the first projects of scale to clear FID in the current regulatory environment. The risk is capital-intensity: real-world electrolyzer costs average $3,000/kW, not the $1,800/kW assumption most models use, meaning these projects may still fail to prove commercial viability even with tax credits.",
-      "supporting_claim_indices": [
-        12,
+        19,
+        21,
         14,
         15,
         16
       ]
     },
     {
-      "action": "pass",
-      "text": "Pass on electrolyzer manufacturing or project development plays until demand fundamentals improve. Only 10% of announced global capacity has identified buyers, BP canceled a 150,000 tonne-per-year project in December 2025, and Air Products exited a $500 million plant in February 2025 after regulatory changes. The RWE-TotalEnergies 30,000 tonne-per-year offtake agreement is the lone bright spot in a market where developers are broadly scaling back due to weak demand and elevated costs. The regulatory risk is timeline: the 2027 construction deadline for Section 45V means projects that cannot secure offtake in the next 12 months lose their primary subsidy, and there is no evidence the offtake gap is closing at the required pace.",
+      "action": "monitor",
+      "text": "Follow Hysata's commercialization trajectory and any efficiency validation by third-party projects, given that 95% system efficiency versus 75% incumbent performance represents the kind of step-change that could alter unit economics if it scales beyond pilot, with the technical risk that capillary-fed electrolysis faces durability or manufacturing challenges not visible in lab demonstrations. A $111M Series B in May 2024 and peer-reviewed Nature Communications validation provide credibility, but efficiency advantages proven at small scale often fail to survive manufacturing reality.",
       "supporting_claim_indices": [
-        13,
-        18,
-        19,
-        20,
-        21,
-        22,
-        9
+        2,
+        3,
+        4
       ]
     },
     {
-      "action": "source_deals",
-      "text": "Source deals in green hydrogen end-use applications\u2014particularly industrial buyers with existing gray hydrogen consumption like refineries or ammonia producers\u2014rather than electrolyzer technology or project developers. The TotalEnergies 15-year offtake for 30,000 tonnes annually at its Leuna refinery demonstrates that offtake is the binding constraint, not technology or subsidy availability. The risk is that even industrial users with clear decarbonization mandates prove unwilling to pay the premium for green hydrogen at scale, but this is a lower-risk entry point than manufacturing or project development given capital requirements.",
+      "action": "pass",
+      "text": "Defer active deal sourcing in electrolyzer manufacturers until offtake contract penetration rises meaningfully above the current 10% of announced 2030 capacity, because capital equipment suppliers face existential demand risk when their customers cannot secure buyers. The gap between 255 developers negotiating offtake agreements and only 10% of capacity having identified buyers indicates the hydrogen market is still hunting for its demand base, and electrolyzer manufacturers cannot outrun that uncertainty regardless of their technology or balance sheet.",
       "supporting_claim_indices": [
-        13,
+        17,
         18,
         22
+      ]
+    },
+    {
+      "action": "monitor",
+      "text": "Watch for clarity on real-world installed system costs through 2027, given that published projections of $700-$1,000/kW clash with reported 2024 averages of $3,000/kW, because cost assumptions underpin every production economics model and a persistent 60-300% gap between forecast and reality makes current project pro formas unreliable for investment decisions. DOE targets of $2/kg by 2026 and $1/kg by 2031 become unachievable if the denominator is wrong by a factor of two, regardless of subsidy support.",
+      "supporting_claim_indices": [
+        10,
+        11,
+        12
       ]
     }
   ],

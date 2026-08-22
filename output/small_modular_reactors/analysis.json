@@ -1,65 +1,72 @@
 {
   "topic": "small modular reactors",
-  "executive_summary": "Light-water SMR developers are now investable at growth stage, driven by regulatory acceleration that directly addresses Northbridge's original pass rationale and new corporate offtake demand that did not exist eighteen months ago. The NRC licensing path has de-risked faster than the firm anticipated, Developer X's favorable pre-application outcome validates revisiting that decision, and LP demand-side interest is real rather than thematic. The thesis is to re-engage Developer X in priority diligence while sourcing additional light-water SMR deals at Series B and later, treating molten salt reactor designs as a separate, longer-horizon bet that remains on monitor status.",
+  "executive_summary": "The small modular reactor sector is investable now at the growth stage, driven by regulatory acceleration and corporate offtake agreements that did not exist when Northbridge passed eighteen months ago. Re-open diligence on light-water SMR developers, specifically the company flagged internally as Developer X given its favorable NRC pre-application outcome. The main risk is capital intensity - NuScale's cancelled first project showed costs reaching $20,139 per kilowatt, comparable to large reactor cost overruns - though regulatory pathway risk has materially decreased since the original pass decision.",
   "market_shifts": [
     {
-      "description": "NRC regulatory approvals accelerated substantially in 2025-2026: NuScale's uprated 77-MWe SMR design received approval in May 2025, Oklo's Principal Design Criteria Topical Report for its Aurora Powerhouse was approved May 2026, and the NRC rolled out reforms to fast-track three major regulations for small reactor licensing in May 2026 under a Trump executive order mandate.",
+      "description": "The NRC approved two SMR designs in a 12-month window (NuScale's uprated 77-megawatt design in May 2025, making it the second NRC-approved SMR design, and Oklo's Principal Design Criteria topical report in May 2026), compared to prior years where no SMR designs had received full approval.",
       "supporting_claim_indices": [
         6,
-        7,
         9
       ]
     },
     {
-      "description": "Corporate offtake agreements emerged as a new demand driver for SMRs, led by tech hyperscalers: Google and Kairos Power signed what is reported as the first corporate agreement to develop a fleet of SMRs in the U.S., and Meta signed a nuclear power agreement with Oklo in January 2026 for future advanced microreactor offtake as part of 6.6 GW of firm power agreements.",
+      "description": "In May 2026, the NRC rolled out regulatory reforms to fast-track three major regulations for small reactor licensing, mandated by a May 2025 executive order requiring faster approvals - a direct policy intervention to accelerate the licensing pathway that did not exist in prior regulatory cycles.",
+      "supporting_claim_indices": [
+        7
+      ]
+    },
+    {
+      "description": "Major technology companies signed first-of-their-kind corporate offtake agreements for SMR power in 2025-2026: Google and Kairos Power signed the first reported corporate agreement to develop an SMR fleet in the United States, and Meta signed a nuclear offtake agreement with Oklo in January 2026 as part of 6.6 GW of firm power commitments.",
       "supporting_claim_indices": [
         12,
         13
       ]
     },
     {
-      "description": "Global venture capital investment in nuclear energy startups exceeded $4.5 billion across 81 companies in 2026 year-to-date as of late July 2026, with the U.S. nuclear energy sector specifically seeing $1.78 billion in funding in 2026 year-to-date.",
+      "description": "Global venture capital investment in nuclear energy startups exceeded $4.5 billion across 81 companies in 2026 year-to-date as of late July, with U.S. nuclear sector funding at $1.78 billion in the same period - a capital influx that marks a sharp increase from historical investment levels in the sector.",
       "supporting_claim_indices": [
         1,
         4
       ]
     },
     {
-      "description": "The UK moved from government funding commitment to contractual execution: after selecting Rolls-Royce SMR as preferred technology partner with \u00a32.6 billion allocated in June 2025, Rolls-Royce SMR signed a landmark contract with Great British Energy \u2013 Nuclear on April 13, 2026 to build the UK's first SMR fleet, with Wylfa selected to host the first units.",
+      "description": "Rolls-Royce SMR secured contractual certainty to build Europe's first SMR fleet through a landmark contract with Great British Energy \u2013 Nuclear in April 2026, following UK government selection as preferred technology partner in June 2025 with \u00a32.6 billion allocated - representing the first large-scale national commitment to SMR deployment in Europe.",
       "supporting_claim_indices": [
         10,
         11
       ]
     },
     {
-      "description": "The U.S. Department of Energy reissued a $900 million Gen III+ small modular reactor solicitation in March 2025 specifically to help commercialize Gen III+ SMRs, representing a new federal funding mechanism entering the market.",
+      "description": "X-energy completed a capital trajectory from $700 million Series C-1 in February 2025 to a $1.02 billion IPO at $10.1 billion valuation in April 2026 - the first SMR developer to reach public markets and demonstrating a new financing path for the sector beyond venture rounds.",
       "supporting_claim_indices": [
-        8
+        0,
+        2
       ]
     }
   ],
   "incumbents": [
     {
+      "name": "NuScale Power",
+      "entity_type": "incumbent",
+      "founded_year": null,
+      "funding_stage": "public",
+      "differentiation": "NuScale is the only SMR developer with two NRC-approved designs, having received approval for its uprated 77-megawatt-electric reactor in May 2025 as the second SMR design approved by the NRC, though its first-of-a-kind project was cancelled in November 2023 as costs surged to $130 per megawatt-hour (a 124% increase from original estimates) and capital costs reached $20,139 per kilowatt.",
+      "supporting_claim_indices": [
+        6,
+        16,
+        17,
+        18
+      ]
+    },
+    {
       "name": "Rolls-Royce SMR",
       "entity_type": "incumbent",
       "founded_year": null,
       "funding_stage": "unknown",
-      "differentiation": "Selected as the UK government's preferred small modular reactor technology partner in June 2025 with \u00a32.6 billion allocated, and signed a landmark contract in April 2026 to build the UK's first SMR fleet at Wylfa, making it the only SMR developer with government-backed fleet deployment underway in Europe.",
+      "differentiation": "Rolls-Royce SMR is the only developer to secure a national government contract to build an entire SMR fleet, selected as the UK's preferred technology partner in June 2025 with \u00a32.6 billion allocated and signing a contract with Great British Energy \u2013 Nuclear in April 2026 to build the first units at Wylfa.",
       "supporting_claim_indices": [
         10,
         11
-      ]
-    },
-    {
-      "name": "NuScale Power",
-      "entity_type": "incumbent",
-      "founded_year": null,
-      "funding_stage": "unknown",
-      "differentiation": "Received NRC approval for its uprated 77-megawatt-electric SMR design in May 2025, making it the second SMR design approved by the NRC, though it cancelled its first-of-a-kind UAMPS Carbon Free Power Project in November 2023 as costs surged 124% to $130 per megawatt-hour.",
-      "supporting_claim_indices": [
-        6,
-        16,
-        17
       ]
     }
   ],
@@ -69,7 +76,7 @@
       "entity_type": "new_entrant",
       "founded_year": null,
       "funding_stage": "public",
-      "differentiation": "Completed an upsized $700 million Series C-1 funding round in February 2025, then priced an upsized IPO at $23 per share on April 23, 2026, raising approximately $1.02 billion in gross proceeds at a valuation around $10.1 billion, making it the highest-valued SMR developer with a public exit.",
+      "differentiation": "X-energy is the first SMR developer to complete an IPO, raising $1.02 billion at a $10.1 billion valuation in April 2026 after completing a $700 million Series C-1 in February 2025, demonstrating a capital-raising path to public markets ahead of other developers.",
       "supporting_claim_indices": [
         0,
         2
@@ -80,10 +87,9 @@
       "entity_type": "new_entrant",
       "founded_year": null,
       "funding_stage": "unknown",
-      "differentiation": "Signed what is reported to be the first corporate agreement to develop a fleet of small modular reactors in the United States with Google, and had grown to 533 employees as of June 30, 2026, though its valuation was not publicly disclosed with third-party estimates ranging from $400 million to $650 million as of 2025.",
+      "differentiation": "Kairos Power signed the first reported corporate agreement with Google to develop a fleet of small modular reactors in the United States, and had scaled to 533 employees as of June 2026.",
       "supporting_claim_indices": [
         3,
-        5,
         12
       ]
     },
@@ -92,7 +98,7 @@
       "entity_type": "new_entrant",
       "founded_year": null,
       "funding_stage": "unknown",
-      "differentiation": "Had its NRC Principal Design Criteria Topical Report for its Aurora Powerhouse in Idaho approved on May 6, 2026, and signed a nuclear power agreement with Meta in January 2026 for offtake from future advanced microreactors as part of Meta's 6.6 GW of firm power agreements.",
+      "differentiation": "Oklo received NRC approval for its Principal Design Criteria Topical Report for the Aurora Powerhouse in Idaho on May 6, 2026, and signed a nuclear offtake agreement with Meta in January 2026 for power from future advanced microreactors.",
       "supporting_claim_indices": [
         9,
         13
@@ -104,7 +110,7 @@
       "company_name": "X-energy",
       "round": "series_c",
       "amount_usd": 700000000.0,
-      "date": "February 2025",
+      "date": "2025-02",
       "lead_investor": null,
       "source_claim_index": 0
     },
@@ -112,56 +118,93 @@
       "company_name": "X-energy",
       "round": "public",
       "amount_usd": 1020000000.0,
-      "date": "April 23, 2026",
+      "date": "2026-04-23",
       "lead_investor": null,
       "source_claim_index": 2
     }
   ],
   "tensions_or_conflicts": [
-    "Northbridge passed on two SMR developers eighteen months ago primarily due to regulatory-timeline risk, assuming the NRC licensing path would be slower than companies projected. Since then, the NRC approved NuScale's uprated design in May 2025, approved Oklo's Principal Design Criteria Topical Report in May 2026, and rolled out fast-track reforms in May 2026 under executive mandate - the regulatory environment accelerated substantially faster than the original pass thesis anticipated, and one of the passed companies (Developer X) has received a favorable NRC pre-application outcome that was specifically flagged as worth revisiting.",
-    "Northbridge's internal view eighteen months ago did not factor in corporate data center offtake agreements as a demand driver, because that form of corporate interest had not yet emerged. External evidence now shows Google-Kairos and Meta-Oklo corporate agreements signed in the last year, and two of Northbridge's largest LPs have specifically asked about advanced nuclear exposure in the last two quarterly calls citing this offtake interest, creating a demand-side tailwind that post-dates the original investment decision.",
-    "Northbridge's internal deal flow shows advanced nuclear inbound pitches up quarter-over-quarter, which the sourcing team attributes to the corporate data-center offtake narrative. However, the firm's own guidance flags inbound deal flow as a lagging, self-selected signal that should be checked against external published data - and external data shows global VC investment in nuclear energy startups exceeded $4.5 billion across 81 companies in 2026 year-to-date, confirming the deal-flow increase reflects a real market shift rather than firm-specific selection bias."
-  ],
-  "recommendations": [
     {
-      "action": "prioritize_diligence",
-      "text": "Re-open diligence on Developer X specifically, the light-water SMR company Northbridge passed on eighteen months ago that has since received a favorable NRC pre-application engagement outcome. The original pass was driven by regulatory-timeline risk, and the NRC has since approved two SMR designs and rolled out fast-track reforms under executive mandate, directly addressing the concern that justified the pass. The risk is that favorable pre-application signals do not guarantee full design certification approval or that the NRC backlog re-emerges if political support shifts, but the regulatory de-risking since the original decision is sufficient to justify re-engagement.",
-      "supporting_claim_indices": [
-        20,
-        21,
+      "statement": "Northbridge passed on two SMR developers eighteen months ago primarily due to regulatory-timeline risk, assuming both companies expected a faster NRC licensing path than was realistic given the design certification backlog at the time. External evidence since then shows the NRC approved two SMR designs in a 12-month window (NuScale's uprated design in May 2025 and Oklo's topical report in May 2026), and in May 2026 the NRC rolled out reforms to fast-track three major regulations for small reactor licensing under a presidential executive order - a direct policy intervention to accelerate licensing. A reader would have to believe the regulatory pathway has materially accelerated beyond what Northbridge assumed was realistic when making the original pass decision, reducing the timeline risk that drove that decision.",
+      "internal_claim_indices": [
+        20
+      ],
+      "external_claim_indices": [
         6,
         7,
         9
       ]
     },
     {
-      "action": "source_deals",
-      "text": "Actively source light-water SMR developers at Series B and later stages, targeting companies with demonstrated NRC engagement or design certification progress, to build pipeline beyond Developer X. Corporate offtake agreements from Google, Meta, and others represent a new demand-side tailwind that did not exist when Northbridge last looked at this sector, two of the firm's largest LPs have specifically asked about advanced nuclear exposure citing this corporate interest, and global VC investment in nuclear energy startups exceeded $4.5 billion in 2026 year-to-date, confirming market momentum. The risk is capital intensity: NuScale's cancelled first project saw costs surge 124% to $130 per megawatt-hour and capital costs comparable to the overrun-plagued Vogtle large reactor project, so SMR developers will require patient capital through commercial demonstration.",
-      "supporting_claim_indices": [
-        12,
-        13,
-        24,
+      "statement": "Northbridge's inbound deal-flow tagged 'advanced nuclear' increased quarter-over-quarter, which the sourcing team attributed largely to the corporate data-center offtake narrative rather than changes in the underlying technology landscape. However, external evidence shows that major technology companies signed first-of-their-kind corporate offtake agreements (Google and Kairos Power for the first reported corporate SMR fleet agreement in the United States, and Meta with Oklo in January 2026 for 6.6 GW of firm power commitments), X-energy completed a $1.02 billion IPO at $10.1 billion valuation in April 2026, global venture capital investment in nuclear energy startups exceeded $4.5 billion across 81 companies in 2026 year-to-date, and Rolls-Royce SMR secured a contract to build Europe's first SMR fleet. A reader would have to believe the corporate offtake narrative represents a fundamental demand-side shift rather than promotional noise, and that the deal-flow increase reflects a real market shift in the underlying technology landscape rather than just hype.",
+      "internal_claim_indices": [
+        25,
+        27
+      ],
+      "external_claim_indices": [
+        0,
         1,
+        2,
+        10,
+        11,
+        12,
+        13
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "action": "prioritize_diligence",
+      "text": "Re-open diligence on the SMR developer internally referred to as Developer X, which received a favorable NRC pre-application engagement outcome after Northbridge's original pass decision. The regulatory-timeline risk that drove the original pass has materially decreased: the NRC approved two SMR designs in a 12-month window and rolled out fast-track reforms in May 2026 under presidential mandate, addressing the design certification backlog concern. Two of Northbridge's largest LPs have specifically asked about advanced nuclear exposure in the last two quarterly calls, citing corporate offtake interest, and an existing portfolio company CEO reported utility customers increasingly modeling storage alongside assumed firm nuclear generation. The main risk is capital intensity - NuScale's first project was cancelled as costs reached $20,139 per kilowatt, comparable to large reactor cost overruns, and a 2025 ITIF report states SMRs will likely initially cost as much per kilowatt as large reactors or more.",
+      "supporting_claim_indices": [
+        6,
+        7,
+        9,
         16,
         17,
-        18
+        18,
+        19,
+        20,
+        21,
+        23,
+        24,
+        28
+      ]
+    },
+    {
+      "action": "source_deals",
+      "text": "Actively source light-water SMR developers that have secured corporate offtake agreements or are in active NRC pre-application engagement, focusing on companies at Series B or later with demonstrated progress on the regulatory pathway. Google and Kairos Power signed the first corporate SMR fleet agreement, Meta signed with Oklo, and X-energy reached a $10.1 billion public valuation - corporate offtake provides both demand validation and a financing structure that addresses the capital-intensity problem that killed NuScale's first project. The NRC's May 2026 fast-track reforms and two design approvals in twelve months represent a materially different regulatory environment than existed during Northbridge's original pass decision. The main risk is technical execution and cost escalation - NuScale's electricity cost estimates rose 124% to $130 per megawatt-hour, and early SMRs will likely cost as much per kilowatt as large reactors.",
+      "supporting_claim_indices": [
+        0,
+        2,
+        6,
+        7,
+        9,
+        12,
+        13,
+        16,
+        17,
+        19,
+        20,
+        21
       ]
     },
     {
       "action": "monitor",
-      "text": "Continue monitoring molten salt reactor developers as a separate sub-thesis without active sourcing, maintaining Northbridge's existing view that MSR designs are technically compelling but likely 5+ years further from commercial demonstration than light-water SMR designs due to different regulatory pathways and added fuel-cycle and materials-corrosion technical risk. The regulatory acceleration and corporate offtake demand that justify re-opening light-water SMR diligence do not materially change the MSR timeline, and the firm's technical advisor's informal assessment remains that MSR designs face longer development horizons. The risk is missing early-stage entry points if an MSR developer achieves unexpected regulatory or technical milestones, but current evidence does not justify changing the timeline view.",
+      "text": "Monitor molten salt reactor developers for two quarters but do not prioritize diligence yet. Northbridge's technical advisor views MSR designs as technically compelling with better passive safety and higher thermal efficiency, but likely 5+ years further from commercial demonstration than light-water SMR designs due to different regulatory pathway and added fuel-cycle and materials-corrosion technical risk. The regulatory acceleration and corporate offtake tailwinds apply primarily to light-water designs that are closer to NRC approval, and the timeline risk for MSR remains largely unchanged from the original assessment. The main risk is that MSR developers secure large corporate offtake agreements before light-water SMR cost issues become fully visible, creating LP pressure to invest before the technical risks are adequately resolved.",
       "supporting_claim_indices": [
         22,
         23
       ]
     },
     {
-      "action": "monitor",
-      "text": "Track whether corporate offtake agreements translate to actual dedicated on-site power delivery or remain grid-market transactions, as this distinction affects SMR revenue model assumptions and unit economics. A Carnegie Endowment analysis from June 2026 notes that under Meta's nuclear agreement, power continues to be sold and delivered to the regional grid market rather than dedicated on-site for data centers, and a July 2026 Bulletin of the Atomic Scientists article argues nuclear power will be unable to meet data center electricity needs in the near term. The risk is that corporate offtake narratives are driving valuations ahead of actual contracted revenue structures, which would compress SMR developer economics if hyperscaler agreements prove to be grid purchases rather than dedicated capacity.",
+      "action": "pass",
+      "text": "Pass on NuScale Power despite its two NRC-approved designs. NuScale cancelled its first-of-a-kind project in November 2023 as costs surged to $130 per megawatt-hour (124% increase from original estimates) and capital costs reached $20,139 per kilowatt, comparable to the cost overrun-plagued Vogtle large reactor project. While NuScale has regulatory approval that other developers lack, its demonstrated inability to control costs on an actual deployment project is disqualifying - the capital-intensity risk is no longer theoretical. Other developers with corporate offtake agreements (X-energy, Kairos, Oklo) have financing structures that may better absorb cost escalation risk than NuScale's cancelled utility-partnership model.",
       "supporting_claim_indices": [
-        14,
-        15,
-        13
+        6,
+        16,
+        17,
+        18
       ]
     }
   ],

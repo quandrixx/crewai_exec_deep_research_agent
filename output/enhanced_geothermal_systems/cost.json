@@ -1,5 +1,5 @@
 {
-  "total_cost_usd": 0.3142716,
+  "total_cost_usd": 0.32773410000000003,
   "notes": [],
   "stages": [
     {
@@ -15,22 +15,22 @@
     {
       "stage": "analysis",
       "model": "claude-sonnet-4-5",
-      "prompt_tokens": 13099,
+      "prompt_tokens": 14760,
       "cached_prompt_tokens": 0,
-      "cache_creation_tokens": 13093,
-      "completion_tokens": 2093,
+      "cache_creation_tokens": 14754,
+      "completion_tokens": 2207,
       "requests": 2,
-      "cost_usd": 0.08051174999999999
+      "cost_usd": 0.0884505
     },
     {
       "stage": "report",
       "model": "claude-sonnet-4-5",
-      "prompt_tokens": 12463,
+      "prompt_tokens": 12736,
       "cached_prompt_tokens": 0,
-      "cache_creation_tokens": 12457,
-      "completion_tokens": 3768,
+      "cache_creation_tokens": 12730,
+      "completion_tokens": 4068,
       "requests": 2,
-      "cost_usd": 0.10325175
+      "cost_usd": 0.1087755
     }
   ]
 }

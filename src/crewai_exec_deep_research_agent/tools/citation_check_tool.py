@@ -8,7 +8,7 @@ the same kind of process (an LLM) that could hallucinate in the first
 place. Everything here is plain Python: index lookups and keyword overlap,
 nothing that calls out to a model.
 
-Checks three things, one per structured entity type that carries a
+Checks four things, one per structured entity type that carries a
 claim reference:
   1. Recommendation.supporting_claim_indices  - the obvious one
   2. CompanyProfile.supporting_claim_indices  - incumbents + new entrants

@@ -212,6 +212,13 @@ def test_merged_result_passes_the_flows_citation_gate(monkeypatch):
         ],
     )
     real_landscape = landscape(
+        # Realistic wording here too: market shifts are weak-support checked
+        # like everything else, and the default fixture's "A shift." shares no
+        # vocabulary with any claim.
+        market_shifts=[MarketShift(
+            description="Regulatory approval timelines for reactor designs shortened in 2026.",
+            supporting_claim_indices=[0],
+        )],
         incumbents=[CompanyProfile(
             name="Incumbent Co", entity_type=EntityType.INCUMBENT,
             differentiation="Holds a shortened regulatory approval for its reactor design.",

@@ -8,7 +8,7 @@ the same kind of process (an LLM) that could hallucinate in the first
 place. Everything here is plain Python: index lookups and keyword overlap,
 nothing that calls out to a model.
 
-Checks four things, one per structured entity type that carries a
+Checks five things, one per structured entity type that carries a
 claim reference:
   1. Recommendation.supporting_claim_indices  - the obvious one
   2. CompanyProfile.supporting_claim_indices  - incumbents + new entrants
@@ -19,6 +19,10 @@ claim reference:
      Tension.external_claim_indices          - both sides of a claimed
      disagreement, checked for the one thing that makes it a disagreement:
      that each side cites claims of the type it says it does.
+  5. MarketShift.supporting_claim_indices    - the 'What's Changing' section.
+     Nothing here is specific to a shift the way a company has a name or a
+     tension has two sides, so this gets the general treatment: the indices
+     must resolve, and something cited must relate to the shift described.
 
 Three failure classes are distinguished:
   - STRUCTURAL: the cited index doesn't exist at all. Always a hard fail.
@@ -384,6 +388,24 @@ def check_citations(analysis: AnalysisResult) -> FactCheckResult:
                         ),
                     ))
         _check_weak_support(tension.statement, cited, label, issues, distinctive_terms)
+
+    # -- 5. Market shifts ------------------------------------------------
+    for shift in analysis.market_shifts:
+        label = f"Market shift '{shift.description[:50]}'"
+        if not shift.supporting_claim_indices:
+            issues.append(CitationIssue(
+                claim_or_entity=shift.description,
+                problem=f"{label} has no supporting claims cited.",
+            ))
+            continue
+        cited = []
+        for idx in shift.supporting_claim_indices:
+            if _validate_index(idx, max_index, label, shift.description, issues):
+                verified += 1
+                cited.append(analysis.all_claims[idx].claim)
+        _check_weak_support(
+            shift.description, cited, label, issues, distinctive_terms,
+        )
 
     return FactCheckResult(
         passed=len(issues) == 0,

@@ -18,6 +18,7 @@ from crewai_exec_deep_research_agent.models import (
     EntityType,
     FundingStage,
     FundingEvent,
+    MarketShift,
     Recommendation,
     RecommendationAction,
     Tension,
@@ -644,6 +645,52 @@ def test_a_tension_citing_claims_from_both_sides_counts_every_index():
     ))
     assert result.passed is True, [i.problem for i in result.issues]
     assert result.verified_count == 4
+
+
+# ---------------------------------------------------------------------------
+# Market shifts are cited like everything else
+# ---------------------------------------------------------------------------
+
+def test_valid_market_shift_citation_passes():
+    analysis = base_analysis(market_shifts=[MarketShift(
+        description="Two governments introduced tax credits for electrolyzer manufacturing.",
+        supporting_claim_indices=[2],
+    )])
+    result = check_citations(analysis)
+    assert result.passed is True, [i.problem for i in result.issues]
+    assert result.verified_count == 1
+
+
+def test_market_shift_with_out_of_range_index_fails():
+    analysis = base_analysis(market_shifts=[MarketShift(
+        description="Two governments introduced tax credits for electrolyzer manufacturing.",
+        supporting_claim_indices=[99],
+    )])
+    result = check_citations(analysis)
+    assert result.passed is False
+    assert "does not exist" in result.issues[0].problem
+
+
+def test_market_shift_with_no_citations_fails():
+    """'What's Changing' is the section a reader trusts most on specifics, so
+    an uncited shift is as bad as an uncited recommendation."""
+    analysis = base_analysis(market_shifts=[MarketShift(
+        description="The sector is attracting interest.",
+        supporting_claim_indices=[],
+    )])
+    result = check_citations(analysis)
+    assert result.passed is False
+    assert "no supporting claims cited" in result.issues[0].problem
+
+
+def test_market_shift_citing_an_unrelated_claim_is_flagged():
+    analysis = base_analysis(market_shifts=[MarketShift(
+        description="Two governments introduced tax credits for electrolyzer manufacturing.",
+        supporting_claim_indices=[0],  # a funding round claim
+    )])
+    result = check_citations(analysis)
+    assert result.passed is False
+    assert "shared terminology" in result.issues[0].problem
 
 
 # ---------------------------------------------------------------------------
